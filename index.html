@@ -426,9 +426,16 @@
 
     function formatComp(raw) {
       if (!raw) return 'Não informada';
-      const clean = raw.replace(/[^0-9]/g, '');
-      if (clean.length === 6) return `${clean.slice(0, 4)}/${clean.slice(4)}`;
-      return raw;
+      const trimmed = raw.trim();
+      if (/^\d{2}\/\d{4}$/.test(trimmed) || /^\d{4}\/\d{2}$/.test(trimmed)) return trimmed;
+      const clean = trimmed.replace(/[^0-9]/g, '');
+      if (clean.length === 6) {
+        if (clean.startsWith('19') || clean.startsWith('20')) {
+          return `${clean.slice(0, 4)}/${clean.slice(4)}`;
+        }
+        return `${clean.slice(0, 2)}/${clean.slice(2)}`;
+      }
+      return trimmed;
     }
 
     function normalizeSearch(str) {
@@ -1095,7 +1102,7 @@
         { label: 'Financiamento', value: proc.CO_FINANCIAMENTO ? `${proc.CO_FINANCIAMENTO} - ${state.financiamento[proc.CO_FINANCIAMENTO] || ''}` : '—' },
         { label: 'Rubrica', value: proc.CO_RUBRICA ? `${proc.CO_RUBRICA} - ${state.rubricas[proc.CO_RUBRICA] || ''}` : 'Não se aplica' },
         { label: 'Competência Vigente', value: proc.DT_COMPETENCIA ? `${proc.DT_COMPETENCIA.slice(0, 4)}/${proc.DT_COMPETENCIA.slice(4)}` : '—' },
-        { label: 'Competência de Inclusão', value: proc.dtInclusao ? formatComp(proc.dtInclusao) : 'Não informada' },
+        { label: 'Competência de Inclusão', value: proc.dtInclusao ? proc.dtInclusao : 'Não informada' },
         { label: 'Ato Normativo de Inclusão', value: proc.atoNormativo || 'Não informado', span2: true }
       ];
 
@@ -1537,7 +1544,7 @@
         return [
           p.CO_PROCEDIMENTO,
           `"${(p.NO_PROCEDIMENTO || '').replace(/"/g, '""')}"`,
-          p.excluded ? `Excluído (${p.DT_EXCLUSAO || ''})` : 'Ativo',
+          p.excluded ? `Excluído (${formatComp(p.DT_EXCLUSAO)})` : 'Ativo',
           `"${COMPLEXIDADE_MAP[p.TP_COMPLEXIDADE] || p.TP_COMPLEXIDADE || ''}"`,
           `"${regList.replace(/"/g, '""')}"`,
           formatCurrencyCents(p.VL_SA),
@@ -1586,7 +1593,7 @@
     }
 
     async function tryAutoLoadInclusoes() {
-      const candidates = ['./dados/inclusoes.csv', './dados/inclusoes.txt'];
+      const candidates = ['./dados/inclusoes.csv', './dados/Inclusoes.csv', './inclusoes.csv', './dados/inclusoes.txt'];
       for (const url of candidates) {
         try {
           const res = await fetch(url, { cache: 'no-store' });
@@ -1596,6 +1603,7 @@
           if (text.includes('\uFFFD')) {
             text = new TextDecoder('iso-8859-1').decode(buf);
           }
+          text = text.replace(/^\uFEFF/, '');
           const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
           if (lines.length === 0) return;
 
@@ -1622,19 +1630,27 @@
             const cols = parseCsvLine(lines[i], sep);
             const code = (cols[idxCode] || '').replace(/[.\-\s]/g, '');
             if (!code) continue;
-            incMap[code] = {
-              dtInclusao: (cols[idxComp] || '').trim(),
-              atoNormativo: cols.slice(idxAto).join(' ').trim()
-            };
+            const compVal = (cols[idxComp] || '').trim();
+            const atoVal = cols.slice(idxAto).join(', ').trim();
+            if (!incMap[code]) {
+              incMap[code] = { comps: [], atos: [] };
+            }
+            if (compVal && !incMap[code].comps.includes(compVal)) incMap[code].comps.push(compVal);
+            if (atoVal && !incMap[code].atos.includes(atoVal)) incMap[code].atos.push(atoVal);
           }
 
+          let matched = 0;
           state.procedures.forEach(p => {
             if (!p.excluded && incMap[p.CO_PROCEDIMENTO]) {
-              p.dtInclusao = incMap[p.CO_PROCEDIMENTO].dtInclusao;
-              p.atoNormativo = incMap[p.CO_PROCEDIMENTO].atoNormativo;
+              p.dtInclusao = incMap[p.CO_PROCEDIMENTO].comps.map(formatComp).join(' | ');
+              p.atoNormativo = incMap[p.CO_PROCEDIMENTO].atos.join(' | ');
+              matched++;
             }
           });
           if (selectedCode) renderDetail();
+          if (matched > 0) {
+            showToast(`Inclusões carregadas (${matched.toLocaleString('pt-BR')} procedimentos).`);
+          }
           return;
         } catch (e) {
           // Ignora se ./dados/inclusoes.csv ainda não existir
@@ -1643,7 +1659,7 @@
     }
 
     async function tryAutoLoadExcluded() {
-      const candidates = ['./dados/excluidos.csv', './dados/excluidos.txt'];
+      const candidates = ['./dados/excluidos.csv', './dados/Excluidos.csv', './excluidos.csv', './dados/excluidos.txt'];
       for (const url of candidates) {
         try {
           const res = await fetch(url, { cache: 'no-store' });
@@ -1653,6 +1669,7 @@
           if (text.includes('\uFFFD')) {
             text = new TextDecoder('iso-8859-1').decode(buf);
           }
+          text = text.replace(/^\uFEFF/, '');
           const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
           if (lines.length === 0) return;
 
