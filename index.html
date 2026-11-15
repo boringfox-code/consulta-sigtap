@@ -31,8 +31,8 @@
         <div class="min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <h1 class="text-base sm:text-lg font-bold text-slate-900 truncate">Explorador SIGTAP</h1>
-            <span id="competenciaBadge" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-              Demonstração (2026/11)
+            <span id="competenciaBadge" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+              Aguardando base SIGTAP
             </span>
           </div>
           <p class="text-xs text-slate-500 truncate">Pesquisa por código, nome, descrição e atributos estruturais</p>
@@ -40,20 +40,6 @@
       </div>
 
       <div class="flex items-center gap-2 flex-wrap">
-        <label for="zipInput" class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-600 hover:bg-teal-700 text-white transition shadow-sm">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-          </svg>
-          <span>Carregar .ZIP</span>
-          <input id="zipInput" type="file" accept=".zip" class="hidden" />
-        </label>
-        <label for="filesInput" class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-          </svg>
-          <span>Carregar Pasta / .TXTs</span>
-          <input id="filesInput" type="file" multiple class="hidden" />
-        </label>
         <button id="exportCsvBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -321,168 +307,26 @@
       '3': 'Concomitante'
     };
 
-    // --- Demo Dataset (grounded in SIGTAP structure) ---
-    function createDemoState() {
+    // --- Empty Initial State (read-only viewer) ---
+    function createEmptyState() {
       return {
-        isDemo: true,
-        competencia: '202611',
-        grupos: {
-          '01': 'Ações de promoção e prevenção em saúde',
-          '02': 'Procedimentos com finalidade diagnóstica',
-          '03': 'Procedimentos clínicos',
-          '04': 'Procedimentos cirúrgicos'
-        },
-        financiamento: {
-          '01': 'Atenção Básica (PAB)',
-          '06': 'Média e Alta Complexidade (MAC)',
-          '04': 'Fundo de Ações Estratégicas e Compensação (FAEC)'
-        },
-        rubricas: {
-          '040001': 'Ações Estratégicas / Incentivos',
-          '060001': 'Teto MAC'
-        },
-        registros: {
-          '01': 'BPA (Consolidado)',
-          '02': 'BPA (Individualizado)',
-          '03': 'AIH (Proc. Principal)',
-          '06': 'APAC (Proc. Principal)',
-          '10': 'e-SUS APS'
-        },
-        ocupacoes: {
-          '515105': 'Agente Comunitário de Saúde',
-          '223505': 'Enfermeiro',
-          '225142': 'Médico da Estratégia de Saúde da Família',
-          '225125': 'Médico Clínico',
-          '225135': 'Médico Dermatologista',
-          '225250': 'Médico Ginecologista e Obstetra',
-          '223208': 'Cirurgião Dentista - Clínico Geral',
-          '322205': 'Técnico de Enfermagem'
-        },
-        servicos: {
-          '135': 'Serviço de Reabilitação',
-          '140': 'Serviço de Atenção Domiciliar',
-          '106': 'Serviço de Diagnóstico por Imagem',
-          '120': 'Serviço de Atenção à Saúde Auditiva'
-        },
-        servicoClassif: {
-          '135001': 'Reabilitação Física',
-          '140001': 'Atenção Domiciliar Tipo 1',
-          '106002': 'Ultrassonografia',
-          '120001': 'Atenção Básica / Média Complexidade'
-        },
-        cids: {
-          'A150': 'Tuberculose pulmonar, com confirmação por exame microscópico da expectoração',
-          'A153': 'Tuberculose pulmonar, com confirmação por meio não especificado',
-          'I10': 'Hipertensão essencial (primária)',
-          'E119': 'Diabetes mellitus não-insulino-dependente - sem complicações',
-          'Z000': 'Exame médico geral'
-        },
-        regrasCond: {
-          '0001': 'Exige vínculo com equipe de Atenção Primária no CNES',
-          '0014': 'Permitido apenas para estabelecimentos habilitados na linha de cuidado'
-        },
-        procedures: [
-          {
-            CO_PROCEDIMENTO: '0301040192',
-            NO_PROCEDIMENTO: 'TRATAMENTO DIRETAMENTE OBSERVADO (TDO) DE TUBERCULOSE',
-            TP_COMPLEXIDADE: '1',
-            TP_SEXO: 'I',
-            QT_MAXIMA_EXECUCAO: '0031',
-            QT_DIAS_PERMANENCIA: '9999',
-            QT_PONTOS: '0000',
-            VL_IDADE_MINIMA: '0000',
-            VL_IDADE_MAXIMA: '1320',
-            VL_SH: '0000000000',
-            VL_SA: '0000000000',
-            VL_SP: '0000000000',
-            CO_FINANCIAMENTO: '01',
-            CO_RUBRICA: '',
-            DT_COMPETENCIA: '202611',
-            desc: 'Acompanhamento presencial da tomada da medicação antituberculose por profissional de saúde capacitado, visando garantir adesão ao esquema terapêutico e redução de abandono.',
-            cbos: ['515105', '223505', '225142', '322205'],
-            servicos: [],
-            registros: ['02', '10'],
-            cids: ['A150', 'A153'],
-            regras: ['0001'],
-            compativeis: []
-          },
-          {
-            CO_PROCEDIMENTO: '0301040079',
-            NO_PROCEDIMENTO: 'ESCUTA INICIAL / ORIENTAÇÃO (ACOLHIMENTO À DEMANDA ESPONTÂNEA)',
-            TP_COMPLEXIDADE: '1',
-            TP_SEXO: 'I',
-            QT_MAXIMA_EXECUCAO: '9999',
-            QT_DIAS_PERMANENCIA: '9999',
-            QT_PONTOS: '0000',
-            VL_IDADE_MINIMA: '0000',
-            VL_IDADE_MAXIMA: '1320',
-            VL_SH: '0000000000',
-            VL_SA: '0000000000',
-            VL_SP: '0000000000',
-            CO_FINANCIAMENTO: '01',
-            CO_RUBRICA: '',
-            DT_COMPETENCIA: '202611',
-            desc: 'Acolhimento com escuta qualificada realizado por profissional de nível superior ou médio da equipe de atenção básica para avaliação de necessidade de saúde e direcionamento de conduta.',
-            cbos: ['223505', '225142', '223208', '322205'],
-            servicos: [],
-            registros: ['01', '10'],
-            cids: [],
-            regras: ['0001'],
-            compativeis: []
-          },
-          {
-            CO_PROCEDIMENTO: '0205010040',
-            NO_PROCEDIMENTO: 'ULTRASSONOGRAFIA DOPPLER COLORIDO DE VASOS',
-            TP_COMPLEXIDADE: '2',
-            TP_SEXO: 'I',
-            QT_MAXIMA_EXECUCAO: '0003',
-            QT_DIAS_PERMANENCIA: '9999',
-            QT_PONTOS: '0000',
-            VL_IDADE_MINIMA: '0000',
-            VL_IDADE_MAXIMA: '1320',
-            VL_SH: '0000000000',
-            VL_SA: '0000003960',
-            VL_SP: '0000000000',
-            CO_FINANCIAMENTO: '06',
-            CO_RUBRICA: '060001',
-            DT_COMPETENCIA: '202611',
-            desc: 'Exame diagnóstico por imagem com mapeamento de fluxo vascular por Doppler colorido para avaliação arterial ou venosa periférica e cervical.',
-            cbos: ['225125', '225250'],
-            servicos: [{ serv: '106', classif: '002' }],
-            registros: ['02'],
-            cids: ['I10', 'E119'],
-            regras: [],
-            compativeis: []
-          },
-          {
-            CO_PROCEDIMENTO: '0301010072',
-            NO_PROCEDIMENTO: 'CONSULTA MÉDICA EM ATENÇÃO ESPECIALIZADA',
-            TP_COMPLEXIDADE: '2',
-            TP_SEXO: 'I',
-            QT_MAXIMA_EXECUCAO: '9999',
-            QT_DIAS_PERMANENCIA: '9999',
-            QT_PONTOS: '0000',
-            VL_IDADE_MINIMA: '0000',
-            VL_IDADE_MAXIMA: '1320',
-            VL_SH: '0000000000',
-            VL_SA: '0000001000',
-            VL_SP: '0000000000',
-            CO_FINANCIAMENTO: '06',
-            CO_RUBRICA: '060001',
-            DT_COMPETENCIA: '202611',
-            desc: 'Atendimento médico ambulatorial especializado para diagnóstico, tratamento e seguimento clínico de condições que demandam atenção secundária ou terciária.',
-            cbos: ['225125', '225135', '225250'],
-            servicos: [{ serv: '135', classif: '001' }],
-            registros: ['02'],
-            cids: ['Z000', 'I10', 'E119'],
-            regras: [],
-            compativeis: [{ co_compat: '0205010040', tp: '1', qt: '0001' }]
-          }
-        ]
+        isDemo: false,
+        loaded: false,
+        competencia: '',
+        grupos: {},
+        financiamento: {},
+        rubricas: {},
+        registros: {},
+        ocupacoes: {},
+        servicos: {},
+        servicoClassif: {},
+        cids: {},
+        regrasCond: {},
+        procedures: []
       };
     }
 
-    let state = createDemoState();
+    let state = createEmptyState();
     let filteredProcedures = [];
     let selectedCode = null;
     let currentPage = 1;
@@ -626,6 +470,7 @@
 
         const newState = {
           isDemo: false,
+          loaded: true,
           competencia: procRows[0]?.DT_COMPETENCIA || '',
           grupos: {},
           financiamento: {},
@@ -720,14 +565,14 @@
     // --- UI Population & Filtering ---
     function updateCompetenciaBadge() {
       const badge = document.getElementById('competenciaBadge');
-      const comp = state.competencia ? `${state.competencia.slice(0, 4)}/${state.competencia.slice(4)}` : 'S/ Comp.';
-      if (state.isDemo) {
-        badge.textContent = `Demonstração (${comp})`;
-        badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800';
-      } else {
-        badge.textContent = `Competência ${comp} (${state.procedures.length.toLocaleString('pt-BR')} proc.)`;
-        badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800';
+      if (!state.loaded) {
+        badge.textContent = 'Aguardando base SIGTAP';
+        badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600';
+        return;
       }
+      const comp = state.competencia ? `${state.competencia.slice(0, 4)}/${state.competencia.slice(4)}` : 'S/ Comp.';
+      badge.textContent = `Competência ${comp} (${state.procedures.length.toLocaleString('pt-BR')} proc.)`;
+      badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800';
     }
 
     function populateFilterSelects() {
@@ -853,6 +698,15 @@
       document.getElementById('pageIndicator').textContent = `${currentPage} / ${totalPages}`;
       document.getElementById('prevPageBtn').disabled = currentPage <= 1;
       document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+
+      if (!state.loaded) {
+        listEl.innerHTML = `
+          <div class="p-8 text-center text-sm text-slate-500 space-y-1">
+            <p class="font-medium text-slate-600">Nenhuma base SIGTAP carregada.</p>
+            <p class="text-xs text-slate-400">Publique o pacote oficial em <span class="font-mono">dados/sigtap_atual.zip</span> no repositório para iniciar as consultas.</p>
+          </div>`;
+        return;
+      }
 
       if (total === 0) {
         listEl.innerHTML = `
@@ -1180,35 +1034,7 @@
       showToast('CSV exportado.');
     });
 
-    document.getElementById('zipInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      if (typeof JSZip === 'undefined') {
-        showToast('Biblioteca ZIP indisponível; use "Carregar Pasta / .TXTs".');
-        return;
-      }
-      const zip = await JSZip.loadAsync(file);
-      const fileMap = {};
-      zip.forEach((relPath, entry) => {
-        if (!entry.dir) {
-          const base = relPath.split('/').pop();
-          fileMap[base] = () => entry.async('arraybuffer');
-        }
-      });
-      await loadFromFileMap(fileMap);
-      e.target.value = '';
-    });
 
-    document.getElementById('filesInput').addEventListener('change', async (e) => {
-      const files = Array.from(e.target.files || []);
-      if (files.length === 0) return;
-      const fileMap = {};
-      files.forEach(f => {
-        fileMap[f.name] = () => f.arrayBuffer();
-      });
-      await loadFromFileMap(fileMap);
-      e.target.value = '';
-    });
 
     async function tryAutoLoadZip() {
       if (!window.location.protocol.startsWith('http') || typeof JSZip === 'undefined') return;
