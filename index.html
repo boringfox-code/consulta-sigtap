@@ -73,7 +73,7 @@
         <!-- Main Search Input -->
         <div class="md:col-span-7 relative">
           <label for="searchInput" class="block text-xs font-medium text-[#3B5956] mb-1">
-            Pesquisa geral (código, nome, descrição, atributo ou portaria)
+            Pesquisa principal (código, nome ou descrição)
           </label>
           <div class="relative">
             <svg class="w-4 h-4 text-[#6B8E89] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@
             <input
               id="searchInput"
               type="text"
-              placeholder="Ex.: 0301040192, 03.01.04.019-2, tuberculose, PT 404..."
+              placeholder="Ex.: 0301040192, 03.01.04.019-2, tuberculose, escuta inicial..."
               class="w-full pl-9 pr-3 py-2 text-sm bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C] focus:border-[#3A8E8C]"
             />
           </div>
@@ -92,7 +92,7 @@
         <div class="md:col-span-3">
           <label for="searchScope" class="block text-xs font-medium text-[#3B5956] mb-1">Buscar em</label>
           <select id="searchScope" class="w-full px-3 py-2 text-sm border border-[#B7D1CA] rounded-none bg-white focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]">
-            <option value="all">Código, Nome, Descrição e Atributos</option>
+            <option value="all">Código, Nome e Descrição</option>
             <option value="code">Somente Código</option>
             <option value="name">Somente Nome</option>
             <option value="desc">Somente Descrição</option>
@@ -113,7 +113,7 @@
 
       <!-- Advanced Attribute Filters -->
       <div id="advancedFilters" class="pt-3 border-t border-[#DCEAE5] space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
           <div>
             <label for="filterGrupo" class="block text-xs font-medium text-[#3B5956] mb-1">Grupo</label>
             <select id="filterGrupo" class="w-full px-2.5 py-1.5 text-xs border border-[#B7D1CA] rounded-none bg-white focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]">
@@ -147,6 +147,13 @@
             <input id="filterRegraInput" type="text" placeholder="Ex.: código ou descrição..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
             <div id="dropdownRegra" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
             <div id="chipsRegra" class="flex flex-wrap gap-1 mt-1.5"></div>
+          </div>
+
+          <div class="relative">
+            <label for="filterAtributoCompInput" class="block text-xs font-medium text-[#3B5956] mb-1">Atributos Complementares (múltiplo)</label>
+            <input id="filterAtributoCompInput" type="text" placeholder="Ex.: código ou atributo..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
+            <div id="dropdownAtributoComp" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="chipsAtributoComp" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
         </div>
 
@@ -285,6 +292,13 @@
                   <!-- Populated by JS -->
                 </div>
               </div>
+
+              <div>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-[#3B5956] mb-2">Atributos Complementares</h3>
+                <div id="detAtributosCompList" class="flex flex-wrap gap-1.5">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
             </div>
 
             <!-- Tab: CBOs -->
@@ -384,7 +398,7 @@
         habObrigatoriasSet: {},
         habComplementoSet: {},
         regrasCond: {},
-        inclusoesMap: {},
+        atributosComp: {},
         procedures: []
       };
     }
@@ -396,7 +410,8 @@
       servico: [],
       habilitacao: [],
       complemento: [],
-      regra: []
+      regra: [],
+      atributoComp: []
     };
     let filteredProcedures = [];
     let selectedCode = null;
@@ -565,8 +580,9 @@
         const cidRows = await parseTable('tb_cid');
         const habRows = await parseTable('tb_habilitacao');
         const regraRows = await parseTable('tb_regra_condicionada');
+        const atribCompRows = await parseTable('tb_atributo_complementar');
 
-        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Habilitação, Registro)...';
+        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Habilitação, Atributos)...';
         const rlOcup = await parseTable('rl_procedimento_ocupacao');
         const rlServ = await parseTable('rl_procedimento_servico');
         const rlHab = await parseTable('rl_procedimento_habilitacao');
@@ -574,6 +590,7 @@
         const rlReg = await parseTable('rl_procedimento_registro');
         const rlCid = await parseTable('rl_procedimento_cid');
         const rlRegra = await parseTable('rl_procedimento_regra_cond');
+        const rlAtribComp = await parseTable('rl_procedimento_atributo');
         const rlCompat = await parseTable('rl_procedimento_compativel');
 
         const newState = {
@@ -594,7 +611,7 @@
           habObrigatoriasSet: {},
           habComplementoSet: {},
           regrasCond: {},
-          inclusoesMap: {},
+          atributosComp: {},
           procedures: []
         };
 
@@ -626,6 +643,11 @@
           if (code) newState.habilitacoes[code] = name;
         });
         regraRows.forEach(r => { if (r.CO_REGRA_CONDICIONADA) newState.regrasCond[r.CO_REGRA_CONDICIONADA] = r.NO_REGRA_CONDICIONADA; });
+        atribCompRows.forEach(r => {
+          const code = r.CO_ATRIBUTO_COMPLEMENTAR || Object.values(r)[0];
+          const name = r.NO_ATRIBUTO_COMPLEMENTAR || Object.values(r)[1] || '';
+          if (code) newState.atributosComp[code] = name;
+        });
 
         const descMap = {};
         descRows.forEach(r => { if (r.CO_PROCEDIMENTO) descMap[r.CO_PROCEDIMENTO] = r.DS_PROCEDIMENTO; });
@@ -644,6 +666,7 @@
             habilitacoes: [],
             incrementos: [],
             regras: [],
+            atributosComp: [],
             compativeis: []
           };
           procMap[r.CO_PROCEDIMENTO] = p;
@@ -691,6 +714,11 @@
         rlRegra.forEach(r => {
           const p = procMap[r.CO_PROCEDIMENTO];
           if (p && r.CO_REGRA_CONDICIONADA) p.regras.push(r.CO_REGRA_CONDICIONADA);
+        });
+        rlAtribComp.forEach(r => {
+          const p = procMap[r.CO_PROCEDIMENTO];
+          const atr = r.CO_ATRIBUTO_COMPLEMENTAR || Object.values(r)[1];
+          if (p && atr) p.atributosComp.push(atr);
         });
         rlCompat.forEach(r => {
           const p = procMap[r.CO_PROCEDIMENTO_PRINCIPAL];
@@ -805,6 +833,7 @@
       const habQ = noHabilitacao ? '' : normalizeSearch(document.getElementById('filterHabilitacao').value.trim());
       const compQ = normalizeSearch(document.getElementById('filterComplemento').value.trim());
       const regraQ = normalizeSearch(document.getElementById('filterRegraInput').value.trim());
+      const atribCompQ = normalizeSearch(document.getElementById('filterAtributoCompInput').value.trim());
 
       const selReg = multiSelected.registro.map(x => x.key);
       const selCbo = noCbo ? [] : multiSelected.cbo.map(x => x.key);
@@ -812,6 +841,7 @@
       const selHab = noHabilitacao ? [] : multiSelected.habilitacao.map(x => x.key);
       const selComp = multiSelected.complemento.map(x => x.key);
       const selRegra = multiSelected.regra.map(x => x.key);
+      const selAtribComp = multiSelected.atributoComp.map(x => x.key);
 
       // Active filter count badge
       const activeCount = [
@@ -821,7 +851,8 @@
         selServ.length > 0 || servQ,
         selHab.length > 0 || habQ,
         selComp.length > 0 || compQ,
-        selRegra.length > 0 || regraQ
+        selRegra.length > 0 || regraQ,
+        selAtribComp.length > 0 || atribCompQ
       ].filter(Boolean).length;
       const countBadge = document.getElementById('activeFiltersCount');
       if (activeCount > 0) {
@@ -887,6 +918,14 @@
           if (!matchRegra) return false;
         }
 
+        if (selAtribComp.length > 0) {
+          if (!selAtribComp.some(ac => p.atributosComp.includes(ac))) return false;
+        } else if (atribCompQ) {
+          const matchAtrib = p.atributosComp.some(ac => ac.toLowerCase().includes(atribCompQ) || normalizeSearch(state.atributosComp[ac] || '').includes(atribCompQ));
+          if (!matchAtrib) return false;
+        }
+
+        // Main search restricted strictly to Code, Name, and Description
         if (query) {
           const codeMatch = codeQuery && p.CO_PROCEDIMENTO.toLowerCase().includes(codeQuery);
           const nameMatch = normalizeSearch(p.NO_PROCEDIMENTO).includes(query);
@@ -894,21 +933,7 @@
           if (scope === 'code') return codeMatch;
           if (scope === 'name') return nameMatch;
           if (scope === 'desc') return descMatch;
-
-          if (codeMatch || nameMatch || descMatch) return true;
-          const attrStrings = [
-            COMPLEXIDADE_MAP[p.TP_COMPLEXIDADE] || '',
-            SEXO_MAP[p.TP_SEXO] || '',
-            state.financiamento[p.CO_FINANCIAMENTO] || '',
-            state.rubricas[p.CO_RUBRICA] || '',
-            p.dtInclusao || '',
-            p.atoNormativo || '',
-            ...p.cbos.map(c => `${c} ${state.ocupacoes[c] || ''}`),
-            ...p.registros.map(r => `${r} ${state.registros[r] || ''}`),
-            ...p.servicos.map(s => `${s.serv} ${state.servicos[s.serv] || ''} ${s.classif} ${state.servicoClassif[s.serv + s.classif] || ''}`),
-            ...p.cids.map(c => `${c} ${state.cids[c] || ''}`)
-          ];
-          return attrStrings.some(str => normalizeSearch(str).includes(query));
+          return codeMatch || nameMatch || descMatch;
         }
 
         return true;
@@ -1080,6 +1105,18 @@
           <div class="text-xs sm:text-sm font-semibold text-[#172A29] mt-0.5 break-words">${escapeHtml(a.value)}</div>
         </div>
       `).join('');
+
+      const atribCompEl = document.getElementById('detAtributosCompList');
+      if (!proc.atributosComp || proc.atributosComp.length === 0) {
+        atribCompEl.innerHTML = '<p class="text-xs text-[#6B8E89]">Nenhum atributo complementar vinculado.</p>';
+      } else {
+        atribCompEl.innerHTML = proc.atributosComp.map(ac => `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-[#E6F1FA] border border-[#B6D4EA] text-xs text-[#1E567D]">
+            <span class="font-mono font-semibold">${escapeHtml(ac)}</span>
+            <span>${escapeHtml(state.atributosComp[ac] || 'Atributo complementar')}</span>
+          </span>
+        `).join('');
+      }
 
       document.getElementById('countCbos').textContent = String(proc.cbos.length);
       document.getElementById('countServicos').textContent = String(proc.servicos.length);
@@ -1285,6 +1322,9 @@
       if (type === 'regra') {
         return Object.keys(state.regrasCond).sort().map(k => ({ key: k, label: `${k} - ${state.regrasCond[k]}` }));
       }
+      if (type === 'atributoComp') {
+        return Object.keys(state.atributosComp).sort().map(k => ({ key: k, label: `${k} - ${state.atributosComp[k]}` }));
+      }
       return [];
     }
 
@@ -1360,6 +1400,7 @@
     setupMultiSelect('habilitacao', 'filterHabilitacao', 'dropdownHabilitacao', 'chipsHabilitacao');
     setupMultiSelect('complemento', 'filterComplemento', 'dropdownComplemento', 'chipsComplemento');
     setupMultiSelect('regra', 'filterRegraInput', 'dropdownRegra', 'chipsRegra');
+    setupMultiSelect('atributoComp', 'filterAtributoCompInput', 'dropdownAtributoComp', 'chipsAtributoComp');
 
     function toggleGrayDisabled(checked, inputId, wrapId, dropdownId) {
       const input = document.getElementById(inputId);
@@ -1405,14 +1446,17 @@
       multiSelected.habilitacao = [];
       multiSelected.complemento = [];
       multiSelected.regra = [];
+      multiSelected.atributoComp = [];
       renderMultiChips('registro', 'chipsRegistro');
       renderMultiChips('cbo', 'chipsCbo');
       renderMultiChips('servico', 'chipsServico');
       renderMultiChips('habilitacao', 'chipsHabilitacao');
       renderMultiChips('complemento', 'chipsComplemento');
       renderMultiChips('regra', 'chipsRegra');
+      renderMultiChips('atributoComp', 'chipsAtributoComp');
       document.getElementById('filterRegistroInput').value = '';
       document.getElementById('filterRegraInput').value = '';
+      document.getElementById('filterAtributoCompInput').value = '';
       document.getElementById('filterNoCbo').checked = false;
       document.getElementById('filterNoServico').checked = false;
       document.getElementById('filterNoHabilitacao').checked = false;
@@ -1657,6 +1701,7 @@
               habilitacoes: [],
               incrementos: [],
               regras: [],
+              atributosComp: [],
               compativeis: []
             });
             added++;
