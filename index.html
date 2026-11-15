@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explorador SIGTAP — Pesquisa de Procedimentos e Atributos</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Top Bar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-lg bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-base sm:text-lg font-bold text-slate-900 truncate">Explorador SIGTAP</h1>
+            <span id="competenciaBadge" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+              Demonstração (2026/11)
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 truncate">Pesquisa por código, nome, descrição e atributos estruturais</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <label for="zipInput" class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-600 hover:bg-teal-700 text-white transition shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+          <span>Carregar .ZIP</span>
+          <input id="zipInput" type="file" accept=".zip" class="hidden" />
+        </label>
+        <label for="filesInput" class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+          </svg>
+          <span>Carregar Pasta / .TXTs</span>
+          <input id="filesInput" type="file" multiple class="hidden" />
+        </label>
+        <button id="exportCsvBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>Exportar CSV</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Loading Banner -->
+  <div id="loadingBanner" class="hidden bg-teal-50 border-b border-teal-200 px-4 py-2.5">
+    <div class="max-w-7xl mx-auto flex items-center gap-3 text-xs sm:text-sm text-teal-800">
+      <svg class="w-4 h-4 animate-spin shrink-0 text-teal-600" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+      <span id="loadingText">Processando arquivos SIGTAP (ISO-8859-1)...</span>
+    </div>
+  </div>
+
+  <!-- Main Workspace -->
+  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 flex-1 flex flex-col gap-4">
+
+    <!-- Search & Filters Card -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+        <!-- Main Search Input -->
+        <div class="md:col-span-7 relative">
+          <label for="searchInput" class="block text-xs font-medium text-slate-600 mb-1">
+            Pesquisa geral (código, nome, descrição ou atributo)
+          </label>
+          <div class="relative">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Ex.: 0301040192, 03.01.04.019-2, tuberculose, escuta inicial..."
+              class="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            />
+          </div>
+        </div>
+
+        <!-- Search Scope -->
+        <div class="md:col-span-3">
+          <label for="searchScope" class="block text-xs font-medium text-slate-600 mb-1">Buscar em</label>
+          <select id="searchScope" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="all">Código, Nome, Descrição e Atributos</option>
+            <option value="code">Somente Código</option>
+            <option value="name">Somente Nome</option>
+            <option value="desc">Somente Descrição</option>
+          </select>
+        </div>
+
+        <!-- Toggle Advanced Filters -->
+        <div class="md:col-span-2 flex items-end gap-2">
+          <button id="toggleFiltersBtn" type="button" class="w-full px-3 py-2 text-sm font-medium rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 transition flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            <span>Filtros</span>
+            <span id="activeFiltersCount" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-teal-600 text-white">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Advanced Attribute Filters -->
+      <div id="advancedFilters" class="pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div>
+          <label for="filterGrupo" class="block text-xs font-medium text-slate-600 mb-1">Grupo</label>
+          <select id="filterGrupo" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="">Todos os grupos</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="filterComplexidade" class="block text-xs font-medium text-slate-600 mb-1">Complexidade</label>
+          <select id="filterComplexidade" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="">Todas</option>
+            <option value="0">0 - Não se aplica</option>
+            <option value="1">1 - Atenção Básica</option>
+            <option value="2">2 - Média Complexidade</option>
+            <option value="3">3 - Alta Complexidade</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="filterSexo" class="block text-xs font-medium text-slate-600 mb-1">Sexo permitido</label>
+          <select id="filterSexo" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="">Todos</option>
+            <option value="I">I - Indiferente / Ambos</option>
+            <option value="M">M - Masculino</option>
+            <option value="F">F - Feminino</option>
+            <option value="N">N - Não se aplica</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="filterRegistro" class="block text-xs font-medium text-slate-600 mb-1">Instrumento de Registro</label>
+          <select id="filterRegistro" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="">Todos os registros</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="filterCbo" class="block text-xs font-medium text-slate-600 mb-1">CBO exigido (código ou nome)</label>
+          <input id="filterCbo" type="text" placeholder="Ex.: 515105 ou Agente Comunitário" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        </div>
+
+        <div>
+          <label for="filterServico" class="block text-xs font-medium text-slate-600 mb-1">Serviço / Classificação</label>
+          <input id="filterServico" type="text" placeholder="Ex.: 135 ou Reabilitação" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        </div>
+
+        <div>
+          <label for="filterCid" class="block text-xs font-medium text-slate-600 mb-1">CID-10 vinculado</label>
+          <input id="filterCid" type="text" placeholder="Ex.: A15 ou Tuberculose" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        </div>
+
+        <div class="flex items-end">
+          <button id="clearFiltersBtn" type="button" class="w-full px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 transition">
+            Limpar todos os filtros
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results & Detail Split Layout -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-0">
+
+      <!-- Left: Procedure List -->
+      <div class="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden max-h-[70vh] lg:max-h-[calc(100vh-270px)]">
+        <div class="px-4 py-2.5 border-b border-slate-200 bg-slate-50 flex items-center justify-between gap-2">
+          <span id="resultsSummary" class="text-xs font-semibold text-slate-600">0 procedimentos</span>
+          <div class="flex items-center gap-1.5 text-xs text-slate-500">
+            <button id="prevPageBtn" type="button" class="px-2 py-1 rounded border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-40">Anterior</button>
+            <span id="pageIndicator" class="px-1 font-medium">1 / 1</span>
+            <button id="nextPageBtn" type="button" class="px-2 py-1 rounded border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-40">Próxima</button>
+          </div>
+        </div>
+
+        <div id="procedureList" class="divide-y divide-slate-100 overflow-y-auto custom-scroll flex-1">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Right: Procedure Details -->
+      <div id="detailPanel" class="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden max-h-[80vh] lg:max-h-[calc(100vh-270px)]">
+        <div id="detailEmpty" class="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400">
+          <svg class="w-12 h-12 mb-3 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <p class="text-sm font-medium text-slate-600">Selecione um procedimento na lista</p>
+          <p class="text-xs text-slate-400 mt-1">Os atributos completos, descrição e vínculos aparecerão aqui.</p>
+        </div>
+
+        <div id="detailContent" class="hidden flex-1 flex flex-col overflow-hidden">
+          <!-- Detail Header -->
+          <div class="p-4 border-b border-slate-200 bg-slate-50/70">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div class="space-y-1 min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span id="detCode" class="font-mono text-sm font-bold px-2.5 py-0.5 rounded-md bg-teal-100 text-teal-800"></span>
+                  <button id="copyCodeBtn" type="button" class="text-xs px-2 py-0.5 rounded border border-slate-300 bg-white hover:bg-slate-100 text-slate-600 transition">
+                    Copiar código
+                  </button>
+                  <span id="detComplexidadeBadge" class="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-200 text-slate-700"></span>
+                </div>
+                <h2 id="detName" class="text-base sm:text-lg font-bold text-slate-900 leading-snug"></h2>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detail Tabs -->
+          <div class="border-b border-slate-200 bg-white px-4 flex gap-4 overflow-x-auto text-xs font-medium">
+            <button data-tab="atributos" class="detail-tab py-2.5 border-b-2 border-teal-600 text-teal-700 whitespace-nowrap">Atributos e Descrição</button>
+            <button data-tab="cbos" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">CBOs (<span id="countCbos">0</span>)</button>
+            <button data-tab="servicos" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Serviço/Classif. (<span id="countServicos">0</span>)</button>
+            <button data-tab="registros" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Registros (<span id="countRegistros">0</span>)</button>
+            <button data-tab="cids" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">CIDs (<span id="countCids">0</span>)</button>
+            <button data-tab="compat" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Compatib./Regras (<span id="countCompat">0</span>)</button>
+          </div>
+
+          <!-- Tab Bodies -->
+          <div class="p-4 overflow-y-auto custom-scroll flex-1 space-y-4">
+            <!-- Tab: Atributos -->
+            <div id="tab-atributos" class="tab-pane space-y-4">
+              <div>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Descrição do Procedimento</h3>
+                <p id="detDesc" class="text-sm text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-3 leading-relaxed"></p>
+              </div>
+
+              <div>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Atributos Gerais</h3>
+                <div id="detAttributesGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab: CBOs -->
+            <div id="tab-cbos" class="tab-pane hidden space-y-3">
+              <input id="innerCboSearch" type="text" placeholder="Filtrar CBOs deste procedimento..." class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+              <div id="detCbosList" class="space-y-1.5"></div>
+            </div>
+
+            <!-- Tab: Serviços -->
+            <div id="tab-servicos" class="tab-pane hidden space-y-2">
+              <div id="detServicosList" class="space-y-1.5"></div>
+            </div>
+
+            <!-- Tab: Registros -->
+            <div id="tab-registros" class="tab-pane hidden space-y-2">
+              <div id="detRegistrosList" class="space-y-1.5"></div>
+            </div>
+
+            <!-- Tab: CIDs -->
+            <div id="tab-cids" class="tab-pane hidden space-y-3">
+              <input id="innerCidSearch" type="text" placeholder="Filtrar CIDs deste procedimento..." class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+              <div id="detCidsList" class="space-y-1.5"></div>
+            </div>
+
+            <!-- Tab: Compatibilidades / Regras -->
+            <div id="tab-compat" class="tab-pane hidden space-y-4">
+              <div>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Regras Condicionadas</h3>
+                <div id="detRegrasList" class="space-y-1.5"></div>
+              </div>
+              <div>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Procedimentos Compatíveis / Excludentes</h3>
+                <div id="detCompatList" class="space-y-1.5"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-4 right-4 z-50 hidden px-4 py-2.5 rounded-lg bg-slate-900 text-white text-xs font-medium shadow-lg transition-opacity"></div>
+
+  <script>
+    // --- Reference Dictionaries ---
+    const COMPLEXIDADE_MAP = {
+      '0': 'Não se aplica',
+      '1': 'Atenção Básica',
+      '2': 'Média Complexidade',
+      '3': 'Alta Complexidade'
+    };
+
+    const SEXO_MAP = {
+      'I': 'Indiferente / Ambos',
+      'M': 'Masculino',
+      'F': 'Feminino',
+      'N': 'Não se aplica'
+    };
+
+    const COMPAT_MAP = {
+      '1': 'Compatível',
+      '2': 'Incompatível / Excludente',
+      '3': 'Concomitante'
+    };
+
+    // --- Demo Dataset (grounded in SIGTAP structure) ---
+    function createDemoState() {
+      return {
+        isDemo: true,
+        competencia: '202611',
+        grupos: {
+          '01': 'Ações de promoção e prevenção em saúde',
+          '02': 'Procedimentos com finalidade diagnóstica',
+          '03': 'Procedimentos clínicos',
+          '04': 'Procedimentos cirúrgicos'
+        },
+        financiamento: {
+          '01': 'Atenção Básica (PAB)',
+          '06': 'Média e Alta Complexidade (MAC)',
+          '04': 'Fundo de Ações Estratégicas e Compensação (FAEC)'
+        },
+        rubricas: {
+          '040001': 'Ações Estratégicas / Incentivos',
+          '060001': 'Teto MAC'
+        },
+        registros: {
+          '01': 'BPA (Consolidado)',
+          '02': 'BPA (Individualizado)',
+          '03': 'AIH (Proc. Principal)',
+          '06': 'APAC (Proc. Principal)',
+          '10': 'e-SUS APS'
+        },
+        ocupacoes: {
+          '515105': 'Agente Comunitário de Saúde',
+          '223505': 'Enfermeiro',
+          '225142': 'Médico da Estratégia de Saúde da Família',
+          '225125': 'Médico Clínico',
+          '225135': 'Médico Dermatologista',
+          '225250': 'Médico Ginecologista e Obstetra',
+          '223208': 'Cirurgião Dentista - Clínico Geral',
+          '322205': 'Técnico de Enfermagem'
+        },
+        servicos: {
+          '135': 'Serviço de Reabilitação',
+          '140': 'Serviço de Atenção Domiciliar',
+          '106': 'Serviço de Diagnóstico por Imagem',
+          '120': 'Serviço de Atenção à Saúde Auditiva'
+        },
+        servicoClassif: {
+          '135001': 'Reabilitação Física',
+          '140001': 'Atenção Domiciliar Tipo 1',
+          '106002': 'Ultrassonografia',
+          '120001': 'Atenção Básica / Média Complexidade'
+        },
+        cids: {
+          'A150': 'Tuberculose pulmonar, com confirmação por exame microscópico da expectoração',
+          'A153': 'Tuberculose pulmonar, com confirmação por meio não especificado',
+          'I10': 'Hipertensão essencial (primária)',
+          'E119': 'Diabetes mellitus não-insulino-dependente - sem complicações',
+          'Z000': 'Exame médico geral'
+        },
+        regrasCond: {
+          '0001': 'Exige vínculo com equipe de Atenção Primária no CNES',
+          '0014': 'Permitido apenas para estabelecimentos habilitados na linha de cuidado'
+        },
+        procedures: [
+          {
+            CO_PROCEDIMENTO: '0301040192',
+            NO_PROCEDIMENTO: 'TRATAMENTO DIRETAMENTE OBSERVADO (TDO) DE TUBERCULOSE',
+            TP_COMPLEXIDADE: '1',
+            TP_SEXO: 'I',
+            QT_MAXIMA_EXECUCAO: '0031',
+            QT_DIAS_PERMANENCIA: '9999',
+            QT_PONTOS: '0000',
+            VL_IDADE_MINIMA: '0000',
+            VL_IDADE_MAXIMA: '1320',
+            VL_SH: '0000000000',
+            VL_SA: '0000000000',
+            VL_SP: '0000000000',
+            CO_FINANCIAMENTO: '01',
+            CO_RUBRICA: '',
+            DT_COMPETENCIA: '202611',
+            desc: 'Acompanhamento presencial da tomada da medicação antituberculose por profissional de saúde capacitado, visando garantir adesão ao esquema terapêutico e redução de abandono.',
+            cbos: ['515105', '223505', '225142', '322205'],
+            servicos: [],
+            registros: ['02', '10'],
+            cids: ['A150', 'A153'],
+            regras: ['0001'],
+            compativeis: []
+          },
+          {
+            CO_PROCEDIMENTO: '0301040079',
+            NO_PROCEDIMENTO: 'ESCUTA INICIAL / ORIENTAÇÃO (ACOLHIMENTO À DEMANDA ESPONTÂNEA)',
+            TP_COMPLEXIDADE: '1',
+            TP_SEXO: 'I',
+            QT_MAXIMA_EXECUCAO: '9999',
+            QT_DIAS_PERMANENCIA: '9999',
+            QT_PONTOS: '0000',
+            VL_IDADE_MINIMA: '0000',
+            VL_IDADE_MAXIMA: '1320',
+            VL_SH: '0000000000',
+            VL_SA: '0000000000',
+            VL_SP: '0000000000',
+            CO_FINANCIAMENTO: '01',
+            CO_RUBRICA: '',
+            DT_COMPETENCIA: '202611',
+            desc: 'Acolhimento com escuta qualificada realizado por profissional de nível superior ou médio da equipe de atenção básica para avaliação de necessidade de saúde e direcionamento de conduta.',
+            cbos: ['223505', '225142', '223208', '322205'],
+            servicos: [],
+            registros: ['01', '10'],
+            cids: [],
+            regras: ['0001'],
+            compativeis: []
+          },
+          {
+            CO_PROCEDIMENTO: '0205010040',
+            NO_PROCEDIMENTO: 'ULTRASSONOGRAFIA DOPPLER COLORIDO DE VASOS',
+            TP_COMPLEXIDADE: '2',
+            TP_SEXO: 'I',
+            QT_MAXIMA_EXECUCAO: '0003',
+            QT_DIAS_PERMANENCIA: '9999',
+            QT_PONTOS: '0000',
+            VL_IDADE_MINIMA: '0000',
+            VL_IDADE_MAXIMA: '1320',
+            VL_SH: '0000000000',
+            VL_SA: '0000003960',
+            VL_SP: '0000000000',
+            CO_FINANCIAMENTO: '06',
+            CO_RUBRICA: '060001',
+            DT_COMPETENCIA: '202611',
+            desc: 'Exame diagnóstico por imagem com mapeamento de fluxo vascular por Doppler colorido para avaliação arterial ou venosa periférica e cervical.',
+            cbos: ['225125', '225250'],
+            servicos: [{ serv: '106', classif: '002' }],
+            registros: ['02'],
+            cids: ['I10', 'E119'],
+            regras: [],
+            compativeis: []
+          },
+          {
+            CO_PROCEDIMENTO: '0301010072',
+            NO_PROCEDIMENTO: 'CONSULTA MÉDICA EM ATENÇÃO ESPECIALIZADA',
+            TP_COMPLEXIDADE: '2',
+            TP_SEXO: 'I',
+            QT_MAXIMA_EXECUCAO: '9999',
+            QT_DIAS_PERMANENCIA: '9999',
+            QT_PONTOS: '0000',
+            VL_IDADE_MINIMA: '0000',
+            VL_IDADE_MAXIMA: '1320',
+            VL_SH: '0000000000',
+            VL_SA: '0000001000',
+            VL_SP: '0000000000',
+            CO_FINANCIAMENTO: '06',
+            CO_RUBRICA: '060001',
+            DT_COMPETENCIA: '202611',
+            desc: 'Atendimento médico ambulatorial especializado para diagnóstico, tratamento e seguimento clínico de condições que demandam atenção secundária ou terciária.',
+            cbos: ['225125', '225135', '225250'],
+            servicos: [{ serv: '135', classif: '001' }],
+            registros: ['02'],
+            cids: ['Z000', 'I10', 'E119'],
+            regras: [],
+            compativeis: [{ co_compat: '0205010040', tp: '1', qt: '0001' }]
+          }
+        ]
+      };
+    }
+
+    let state = createDemoState();
+    let filteredProcedures = [];
+    let selectedCode = null;
+    let currentPage = 1;
+    const PAGE_SIZE = 50;
+
+    // --- Helpers ---
+    function formatCode(code) {
+      if (!code || code.length !== 10) return code || '';
+      return `${code.slice(0, 2)}.${code.slice(2, 4)}.${code.slice(4, 6)}.${code.slice(6, 9)}-${code.slice(9)}`;
+    }
+
+    function normalizeSearch(str) {
+      return (str || '')
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function formatCurrencyCents(raw) {
+      const n = parseInt(raw, 10);
+      if (isNaN(n)) return 'R$ 0,00';
+      return (n / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function formatAgeMonths(raw) {
+      const n = parseInt(raw, 10);
+      if (isNaN(n) || n === 9999) return 'Não se aplica';
+      if (n === 0) return '0 meses';
+      const years = Math.floor(n / 12);
+      const months = n % 12;
+      if (years > 0 && months > 0) return `${years}a ${months}m (${n}m)`;
+      if (years > 0) return `${years} anos (${n}m)`;
+      return `${months} meses`;
+    }
+
+    function formatNumericAttr(raw) {
+      const n = parseInt(raw, 10);
+      if (isNaN(n) || n === 9999) return 'Não se aplica';
+      return n.toLocaleString('pt-BR');
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.add('hidden'), 2800);
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    // --- Fixed-width SIGTAP Parser (using *_layout.txt) ---
+    function parseLayoutCsv(text) {
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+      if (lines.length < 2) return [];
+      const cols = [];
+      for (let i = 1; i < lines.length; i++) {
+        const parts = lines[i].split(',').map(p => p.trim());
+        if (parts.length >= 4) {
+          cols.push({
+            name: parts[0],
+            len: parseInt(parts[1], 10),
+            start: parseInt(parts[2], 10) - 1,
+            end: parseInt(parts[3], 10),
+            type: parts[4] || 'VARCHAR2'
+          });
+        }
+      }
+      return cols;
+    }
+
+    function parseFixedWidth(text, layoutCols) {
+      const lines = text.split(/\r?\n/);
+      const rows = [];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line || line.trim().length === 0) continue;
+        const obj = {};
+        for (let c = 0; c < layoutCols.length; c++) {
+          const col = layoutCols[c];
+          obj[col.name] = line.slice(col.start, col.end).trim();
+        }
+        rows.push(obj);
+      }
+      return rows;
+    }
+
+    async function loadFromFileMap(fileMap) {
+      const banner = document.getElementById('loadingBanner');
+      const loadingText = document.getElementById('loadingText');
+      banner.classList.remove('hidden');
+
+      try {
+        const decoder = new TextDecoder('iso-8859-1');
+        const readText = async (name) => {
+          const key = Object.keys(fileMap).find(k => k.toLowerCase() === name.toLowerCase());
+          if (!key) return null;
+          const buf = await fileMap[key]();
+          return decoder.decode(buf);
+        };
+
+        const parseTable = async (baseName) => {
+          const layoutTxt = await readText(`${baseName}_layout.txt`);
+          const dataTxt = await readText(`${baseName}.txt`);
+          if (!layoutTxt || !dataTxt) return [];
+          const cols = parseLayoutCsv(layoutTxt);
+          return parseFixedWidth(dataTxt, cols);
+        };
+
+        loadingText.textContent = 'Lendo procedimentos e descrições...';
+        const procRows = await parseTable('tb_procedimento');
+        if (procRows.length === 0) {
+          showToast('Arquivo tb_procedimento.txt ou tb_procedimento_layout.txt não encontrado.');
+          banner.classList.add('hidden');
+          return;
+        }
+
+        const descRows = await parseTable('tb_descricao');
+        const grupoRows = await parseTable('tb_grupo');
+        const finRows = await parseTable('tb_financiamento');
+        const rubRows = await parseTable('tb_rubrica');
+        const regRows = await parseTable('tb_registro');
+        const ocupRows = await parseTable('tb_ocupacao');
+        const servRows = await parseTable('tb_servico');
+        const servClassRows = await parseTable('tb_servico_classificacao');
+        const cidRows = await parseTable('tb_cid');
+        const regraRows = await parseTable('tb_regra_condicionada');
+
+        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Registro, CID)...';
+        const rlOcup = await parseTable('rl_procedimento_ocupacao');
+        const rlServ = await parseTable('rl_procedimento_servico');
+        const rlReg = await parseTable('rl_procedimento_registro');
+        const rlCid = await parseTable('rl_procedimento_cid');
+        const rlRegra = await parseTable('rl_procedimento_regra_cond');
+        const rlCompat = await parseTable('rl_procedimento_compativel');
+
+        const newState = {
+          isDemo: false,
+          competencia: procRows[0]?.DT_COMPETENCIA || '',
+          grupos: {},
+          financiamento: {},
+          rubricas: {},
+          registros: {},
+          ocupacoes: {},
+          servicos: {},
+          servicoClassif: {},
+          cids: {},
+          regrasCond: {},
+          procedures: []
+        };
+
+        grupoRows.forEach(r => { if (r.CO_GRUPO) newState.grupos[r.CO_GRUPO] = r.NO_GRUPO; });
+        finRows.forEach(r => { if (r.CO_FINANCIAMENTO) newState.financiamento[r.CO_FINANCIAMENTO] = r.NO_FINANCIAMENTO; });
+        rubRows.forEach(r => { if (r.CO_RUBRICA) newState.rubricas[r.CO_RUBRICA] = r.NO_RUBRICA; });
+        regRows.forEach(r => { if (r.CO_REGISTRO) newState.registros[r.CO_REGISTRO] = r.NO_REGISTRO; });
+        ocupRows.forEach(r => { if (r.CO_OCUPACAO) newState.ocupacoes[r.CO_OCUPACAO] = r.NO_OCUPACAO; });
+        servRows.forEach(r => { if (r.CO_SERVICO) newState.servicos[r.CO_SERVICO] = r.NO_SERVICO; });
+        servClassRows.forEach(r => {
+          if (r.CO_SERVICO && r.CO_CLASSIFICACAO) {
+            newState.servicoClassif[r.CO_SERVICO + r.CO_CLASSIFICACAO] = r.NO_CLASSIFICACAO;
+          }
+        });
+        cidRows.forEach(r => { if (r.CO_CID) newState.cids[r.CO_CID] = r.NO_CID; });
+        regraRows.forEach(r => { if (r.CO_REGRA_CONDICIONADA) newState.regrasCond[r.CO_REGRA_CONDICIONADA] = r.NO_REGRA_CONDICIONADA; });
+
+        const descMap = {};
+        descRows.forEach(r => { if (r.CO_PROCEDIMENTO) descMap[r.CO_PROCEDIMENTO] = r.DS_PROCEDIMENTO; });
+
+        const procMap = {};
+        procRows.forEach(r => {
+          const p = {
+            ...r,
+            desc: descMap[r.CO_PROCEDIMENTO] || '',
+            cbos: [],
+            servicos: [],
+            registros: [],
+            cids: [],
+            regras: [],
+            compativeis: []
+          };
+          procMap[r.CO_PROCEDIMENTO] = p;
+          newState.procedures.push(p);
+        });
+
+        rlOcup.forEach(r => {
+          const p = procMap[r.CO_PROCEDIMENTO];
+          if (p && r.CO_OCUPACAO) p.cbos.push(r.CO_OCUPACAO);
+        });
+        rlServ.forEach(r => {
+          const p = procMap[r.CO_PROCEDIMENTO];
+          if (p && r.CO_SERVICO) p.servicos.push({ serv: r.CO_SERVICO, classif: r.CO_CLASSIFICACAO || '' });
+        });
+        rlReg.forEach(r => {
+          const p = procMap[r.CO_PROCEDIMENTO];
+          if (p && r.CO_REGISTRO) p.registros.push(r.CO_REGISTRO);
+        });
+        rlCid.forEach(r => {
+          const p = procMap[r.CO_PROCEDIMENTO];
+          if (p && r.CO_CID) p.cids.push(r.CO_CID);
+        });
+        rlRegra.forEach(r => {
+          const p = procMap[r.CO_PROCEDIMENTO];
+          if (p && r.CO_REGRA_CONDICIONADA) p.regras.push(r.CO_REGRA_CONDICIONADA);
+        });
+        rlCompat.forEach(r => {
+          const p = procMap[r.CO_PROCEDIMENTO_PRINCIPAL];
+          if (p && r.CO_PROCEDIMENTO_COMPATIVEL) {
+            p.compativeis.push({
+              co_compat: r.CO_PROCEDIMENTO_COMPATIVEL,
+              tp: r.TP_COMPATIBILIDADE,
+              qt: r.QT_PERMITIDA
+            });
+          }
+        });
+
+        state = newState;
+        selectedCode = null;
+        populateFilterSelects();
+        applyFilters();
+        updateCompetenciaBadge();
+        showToast(`${state.procedures.length.toLocaleString('pt-BR')} procedimentos carregados.`);
+      } catch (err) {
+        console.error(err);
+        showToast('Erro ao processar os arquivos SIGTAP.');
+      } finally {
+        banner.classList.add('hidden');
+      }
+    }
+
+    // --- UI Population & Filtering ---
+    function updateCompetenciaBadge() {
+      const badge = document.getElementById('competenciaBadge');
+      const comp = state.competencia ? `${state.competencia.slice(0, 4)}/${state.competencia.slice(4)}` : 'S/ Comp.';
+      if (state.isDemo) {
+        badge.textContent = `Demonstração (${comp})`;
+        badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800';
+      } else {
+        badge.textContent = `Competência ${comp} (${state.procedures.length.toLocaleString('pt-BR')} proc.)`;
+        badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800';
+      }
+    }
+
+    function populateFilterSelects() {
+      const grpSel = document.getElementById('filterGrupo');
+      grpSel.innerHTML = '<option value="">Todos os grupos</option>';
+      Object.keys(state.grupos).sort().forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = `${k} - ${state.grupos[k]}`;
+        grpSel.appendChild(opt);
+      });
+
+      const regSel = document.getElementById('filterRegistro');
+      regSel.innerHTML = '<option value="">Todos os registros</option>';
+      Object.keys(state.registros).sort().forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = `${k} - ${state.registros[k]}`;
+        regSel.appendChild(opt);
+      });
+    }
+
+    function applyFilters() {
+      const rawQuery = document.getElementById('searchInput').value.trim();
+      const query = normalizeSearch(rawQuery);
+      const codeQuery = rawQuery.replace(/[.\-\s]/g, '').toLowerCase();
+      const scope = document.getElementById('searchScope').value;
+
+      const grupo = document.getElementById('filterGrupo').value;
+      const complexidade = document.getElementById('filterComplexidade').value;
+      const sexo = document.getElementById('filterSexo').value;
+      const registro = document.getElementById('filterRegistro').value;
+      const cboQ = normalizeSearch(document.getElementById('filterCbo').value.trim());
+      const servQ = normalizeSearch(document.getElementById('filterServico').value.trim());
+      const cidQ = normalizeSearch(document.getElementById('filterCid').value.trim());
+
+      // Active filter count badge
+      const activeCount = [grupo, complexidade, sexo, registro, cboQ, servQ, cidQ].filter(Boolean).length;
+      const countBadge = document.getElementById('activeFiltersCount');
+      if (activeCount > 0) {
+        countBadge.textContent = String(activeCount);
+        countBadge.classList.remove('hidden');
+      } else {
+        countBadge.classList.add('hidden');
+      }
+
+      filteredProcedures = state.procedures.filter(p => {
+        if (grupo && !p.CO_PROCEDIMENTO.startsWith(grupo)) return false;
+        if (complexidade && p.TP_COMPLEXIDADE !== complexidade) return false;
+        if (sexo && p.TP_SEXO !== sexo) return false;
+        if (registro && !p.registros.includes(registro)) return false;
+
+        if (cboQ) {
+          const matchCbo = p.cbos.some(c => {
+            const nome = normalizeSearch(state.ocupacoes[c] || '');
+            return c.includes(cboQ) || nome.includes(cboQ);
+          });
+          if (!matchCbo) return false;
+        }
+
+        if (servQ) {
+          const matchServ = p.servicos.some(s => {
+            const sName = normalizeSearch(state.servicos[s.serv] || '');
+            const cName = normalizeSearch(state.servicoClassif[s.serv + s.classif] || '');
+            return s.serv.includes(servQ) || s.classif.includes(servQ) || sName.includes(servQ) || cName.includes(servQ);
+          });
+          if (!matchServ) return false;
+        }
+
+        if (cidQ) {
+          const matchCid = p.cids.some(c => {
+            const cName = normalizeSearch(state.cids[c] || '');
+            return normalizeSearch(c).includes(cidQ) || cName.includes(cidQ);
+          });
+          if (!matchCid) return false;
+        }
+
+        if (query) {
+          const codeMatch = codeQuery && p.CO_PROCEDIMENTO.toLowerCase().includes(codeQuery);
+          const nameMatch = normalizeSearch(p.NO_PROCEDIMENTO).includes(query);
+          const descMatch = normalizeSearch(p.desc).includes(query);
+          if (scope === 'code') return codeMatch;
+          if (scope === 'name') return nameMatch;
+          if (scope === 'desc') return descMatch;
+
+          if (codeMatch || nameMatch || descMatch) return true;
+          // Also match attributes in "all" mode
+          const attrStrings = [
+            COMPLEXIDADE_MAP[p.TP_COMPLEXIDADE] || '',
+            SEXO_MAP[p.TP_SEXO] || '',
+            state.financiamento[p.CO_FINANCIAMENTO] || '',
+            state.rubricas[p.CO_RUBRICA] || '',
+            ...p.cbos.map(c => `${c} ${state.ocupacoes[c] || ''}`),
+            ...p.registros.map(r => `${r} ${state.registros[r] || ''}`),
+            ...p.servicos.map(s => `${s.serv} ${state.servicos[s.serv] || ''} ${s.classif} ${state.servicoClassif[s.serv + s.classif] || ''}`),
+            ...p.cids.map(c => `${c} ${state.cids[c] || ''}`)
+          ];
+          return attrStrings.some(str => normalizeSearch(str).includes(query));
+        }
+
+        return true;
+      });
+
+      currentPage = 1;
+      renderList();
+
+      if (filteredProcedures.length > 0 && !filteredProcedures.some(p => p.CO_PROCEDIMENTO === selectedCode)) {
+        selectProcedure(filteredProcedures[0].CO_PROCEDIMENTO);
+      } else if (filteredProcedures.length === 0) {
+        selectedCode = null;
+        renderDetail();
+      }
+    }
+
+    function renderList() {
+      const listEl = document.getElementById('procedureList');
+      const total = filteredProcedures.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      document.getElementById('resultsSummary').textContent =
+        `${total.toLocaleString('pt-BR')} procedimento${total === 1 ? '' : 's'}`;
+      document.getElementById('pageIndicator').textContent = `${currentPage} / ${totalPages}`;
+      document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+      document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+
+      if (total === 0) {
+        listEl.innerHTML = `
+          <div class="p-8 text-center text-sm text-slate-400">
+            Nenhum procedimento encontrado para os filtros informados.
+          </div>`;
+        return;
+      }
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const slice = filteredProcedures.slice(start, start + PAGE_SIZE);
+
+      listEl.innerHTML = slice.map(p => {
+        const active = p.CO_PROCEDIMENTO === selectedCode;
+        return `
+          <button
+            type="button"
+            data-code="${escapeHtml(p.CO_PROCEDIMENTO)}"
+            class="proc-item w-full text-left px-4 py-3 transition hover:bg-teal-50/60 ${active ? 'bg-teal-50 border-l-4 border-teal-600' : 'border-l-4 border-transparent'}"
+          >
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <span class="font-mono text-xs font-semibold text-teal-700">${formatCode(p.CO_PROCEDIMENTO)}</span>
+              <span class="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                ${escapeHtml(COMPLEXIDADE_MAP[p.TP_COMPLEXIDADE] || p.TP_COMPLEXIDADE)}
+              </span>
+            </div>
+            <div class="text-sm font-medium text-slate-800 line-clamp-2 leading-snug">
+              ${escapeHtml(p.NO_PROCEDIMENTO)}
+            </div>
+            <div class="mt-1.5 flex flex-wrap gap-2 text-[11px] text-slate-500">
+              <span>CBOs: ${p.cbos.length}</span>
+              <span>•</span>
+              <span>Serv.: ${p.servicos.length}</span>
+              <span>•</span>
+              <span>SA: ${formatCurrencyCents(p.VL_SA)}</span>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectProcedure(code) {
+      selectedCode = code;
+      renderList();
+      renderDetail();
+    }
+
+    function renderDetail() {
+      const emptyEl = document.getElementById('detailEmpty');
+      const contentEl = document.getElementById('detailContent');
+      const proc = state.procedures.find(p => p.CO_PROCEDIMENTO === selectedCode);
+
+      if (!proc) {
+        emptyEl.classList.remove('hidden');
+        contentEl.classList.add('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      contentEl.classList.remove('hidden');
+
+      document.getElementById('detCode').textContent = formatCode(proc.CO_PROCEDIMENTO);
+      document.getElementById('detName').textContent = proc.NO_PROCEDIMENTO;
+      document.getElementById('detComplexidadeBadge').textContent =
+        COMPLEXIDADE_MAP[proc.TP_COMPLEXIDADE] || `Complexidade ${proc.TP_COMPLEXIDADE}`;
+      document.getElementById('detDesc').textContent =
+        proc.desc || 'Descrição não informada nesta base (verifique tb_descricao.txt).';
+
+      const attrs = [
+        { label: 'Sexo Permitido', value: SEXO_MAP[proc.TP_SEXO] || proc.TP_SEXO || '—' },
+        { label: 'Idade Mínima', value: formatAgeMonths(proc.VL_IDADE_MINIMA) },
+        { label: 'Idade Máxima', value: formatAgeMonths(proc.VL_IDADE_MAXIMA) },
+        { label: 'Qtd. Máxima Execução', value: formatNumericAttr(proc.QT_MAXIMA_EXECUCAO) },
+        { label: 'Dias Permanência', value: formatNumericAttr(proc.QT_DIAS_PERMANENCIA) },
+        { label: 'Pontos', value: formatNumericAttr(proc.QT_PONTOS) },
+        { label: 'Valor Ambulatorial (SA)', value: formatCurrencyCents(proc.VL_SA) },
+        { label: 'Valor Hospitalar (SH)', value: formatCurrencyCents(proc.VL_SH) },
+        { label: 'Valor Profissional (SP)', value: formatCurrencyCents(proc.VL_SP) },
+        { label: 'Financiamento', value: proc.CO_FINANCIAMENTO ? `${proc.CO_FINANCIAMENTO} - ${state.financiamento[proc.CO_FINANCIAMENTO] || ''}` : '—' },
+        { label: 'Rubrica', value: proc.CO_RUBRICA ? `${proc.CO_RUBRICA} - ${state.rubricas[proc.CO_RUBRICA] || ''}` : 'Não se aplica' },
+        { label: 'Competência', value: proc.DT_COMPETENCIA ? `${proc.DT_COMPETENCIA.slice(0, 4)}/${proc.DT_COMPETENCIA.slice(4)}` : '—' }
+      ];
+
+      document.getElementById('detAttributesGrid').innerHTML = attrs.map(a => `
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+          <div class="text-[11px] font-medium text-slate-500">${escapeHtml(a.label)}</div>
+          <div class="text-xs sm:text-sm font-semibold text-slate-800 mt-0.5 break-words">${escapeHtml(a.value)}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('countCbos').textContent = String(proc.cbos.length);
+      document.getElementById('countServicos').textContent = String(proc.servicos.length);
+      document.getElementById('countRegistros').textContent = String(proc.registros.length);
+      document.getElementById('countCids').textContent = String(proc.cids.length);
+      document.getElementById('countCompat').textContent = String(proc.regras.length + proc.compativeis.length);
+
+      document.getElementById('innerCboSearch').value = '';
+      document.getElementById('innerCidSearch').value = '';
+      renderDetailCbos(proc);
+      renderDetailServicos(proc);
+      renderDetailRegistros(proc);
+      renderDetailCids(proc);
+      renderDetailCompat(proc);
+    }
+
+    function renderDetailCbos(proc) {
+      const q = normalizeSearch(document.getElementById('innerCboSearch').value.trim());
+      const items = proc.cbos.filter(c => {
+        if (!q) return true;
+        return c.includes(q) || normalizeSearch(state.ocupacoes[c] || '').includes(q);
+      });
+      const el = document.getElementById('detCbosList');
+      if (items.length === 0) {
+        el.innerHTML = '<p class="text-xs text-slate-400">Nenhum CBO vinculado ou correspondente ao filtro.</p>';
+        return;
+      }
+      el.innerHTML = items.slice(0, 300).map(c => `
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+          <span class="font-mono font-semibold text-teal-700 shrink-0">${escapeHtml(c)}</span>
+          <span class="text-slate-700">${escapeHtml(state.ocupacoes[c] || 'Ocupação (tb_ocupacao não carregada)')}</span>
+        </div>
+      `).join('') + (items.length > 300 ? `<p class="text-xs text-slate-400 pt-1">Mostrando 300 de ${items.length} CBOs. Use o filtro acima para refinar.</p>` : '');
+    }
+
+    function renderDetailServicos(proc) {
+      const el = document.getElementById('detServicosList');
+      if (proc.servicos.length === 0) {
+        el.innerHTML = '<p class="text-xs text-slate-400">Não exige Serviço/Classificação específico.</p>';
+        return;
+      }
+      el.innerHTML = proc.servicos.map(s => {
+        const servName = state.servicos[s.serv] || 'Serviço';
+        const className = state.servicoClassif[s.serv + s.classif] || 'Classificação';
+        return `
+          <div class="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-0.5">
+            <div class="font-semibold text-slate-800">
+              <span class="font-mono text-teal-700">${escapeHtml(s.serv)}</span> — ${escapeHtml(servName)}
+            </div>
+            <div class="text-slate-600">
+              Classificação <span class="font-mono font-medium">${escapeHtml(s.classif)}</span> — ${escapeHtml(className)}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderDetailRegistros(proc) {
+      const el = document.getElementById('detRegistrosList');
+      if (proc.registros.length === 0) {
+        el.innerHTML = '<p class="text-xs text-slate-400">Nenhum instrumento de registro vinculado.</p>';
+        return;
+      }
+      el.innerHTML = proc.registros.map(r => `
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+          <span class="font-mono font-semibold text-teal-700">${escapeHtml(r)}</span>
+          <span class="text-slate-700">${escapeHtml(state.registros[r] || 'Instrumento de Registro')}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderDetailCids(proc) {
+      const q = normalizeSearch(document.getElementById('innerCidSearch').value.trim());
+      const items = proc.cids.filter(c => {
+        if (!q) return true;
+        return normalizeSearch(c).includes(q) || normalizeSearch(state.cids[c] || '').includes(q);
+      });
+      const el = document.getElementById('detCidsList');
+      if (items.length === 0) {
+        el.innerHTML = '<p class="text-xs text-slate-400">Nenhum CID vinculado ou correspondente ao filtro.</p>';
+        return;
+      }
+      el.innerHTML = items.slice(0, 300).map(c => `
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+          <span class="font-mono font-semibold text-teal-700 shrink-0">${escapeHtml(c)}</span>
+          <span class="text-slate-700">${escapeHtml(state.cids[c] || 'CID-10 (tb_cid não carregada)')}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderDetailCompat(proc) {
+      const regrasEl = document.getElementById('detRegrasList');
+      regrasEl.innerHTML = proc.regras.length === 0
+        ? '<p class="text-xs text-slate-400">Nenhuma regra condicionada.</p>'
+        : proc.regras.map(r => `
+            <div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+              <span class="font-mono font-semibold text-amber-700">${escapeHtml(r)}</span>
+              <span class="text-slate-700">${escapeHtml(state.regrasCond[r] || 'Regra condicionada')}</span>
+            </div>
+          `).join('');
+
+      const compatEl = document.getElementById('detCompatList');
+      compatEl.innerHTML = proc.compativeis.length === 0
+        ? '<p class="text-xs text-slate-400">Nenhuma compatibilidade registrada.</p>'
+        : proc.compativeis.slice(0, 200).map(c => {
+            const target = state.procedures.find(p => p.CO_PROCEDIMENTO === c.co_compat);
+            return `
+              <div class="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <span class="font-mono font-semibold text-teal-700">${formatCode(c.co_compat)}</span>
+                  <span class="text-slate-700 ml-1">${escapeHtml(target ? target.NO_PROCEDIMENTO : '')}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[11px]">
+                  ${escapeHtml(COMPAT_MAP[c.tp] || c.tp)} (Qtd: ${formatNumericAttr(c.qt)})
+                </span>
+              </div>
+            `;
+          }).join('');
+    }
+
+    // --- Event Listeners ---
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('searchScope').addEventListener('change', applyFilters);
+    document.getElementById('filterGrupo').addEventListener('change', applyFilters);
+    document.getElementById('filterComplexidade').addEventListener('change', applyFilters);
+    document.getElementById('filterSexo').addEventListener('change', applyFilters);
+    document.getElementById('filterRegistro').addEventListener('change', applyFilters);
+    document.getElementById('filterCbo').addEventListener('input', applyFilters);
+    document.getElementById('filterServico').addEventListener('input', applyFilters);
+    document.getElementById('filterCid').addEventListener('input', applyFilters);
+
+    document.getElementById('toggleFiltersBtn').addEventListener('click', () => {
+      document.getElementById('advancedFilters').classList.toggle('hidden');
+    });
+
+    document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchScope').value = 'all';
+      document.getElementById('filterGrupo').value = '';
+      document.getElementById('filterComplexidade').value = '';
+      document.getElementById('filterSexo').value = '';
+      document.getElementById('filterRegistro').value = '';
+      document.getElementById('filterCbo').value = '';
+      document.getElementById('filterServico').value = '';
+      document.getElementById('filterCid').value = '';
+      applyFilters();
+    });
+
+    document.getElementById('prevPageBtn').addEventListener('click', () => {
+      if (currentPage > 1) { currentPage--; renderList(); }
+    });
+    document.getElementById('nextPageBtn').addEventListener('click', () => {
+      const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / PAGE_SIZE));
+      if (currentPage < totalPages) { currentPage++; renderList(); }
+    });
+
+    document.getElementById('procedureList').addEventListener('click', (e) => {
+      const btn = e.target.closest('.proc-item');
+      if (btn && btn.dataset.code) selectProcedure(btn.dataset.code);
+    });
+
+    document.querySelectorAll('.detail-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        document.querySelectorAll('.detail-tab').forEach(b => {
+          const active = b.dataset.tab === target;
+          b.classList.toggle('border-teal-600', active);
+          b.classList.toggle('text-teal-700', active);
+          b.classList.toggle('border-transparent', !active);
+          b.classList.toggle('text-slate-500', !active);
+        });
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+          pane.classList.toggle('hidden', pane.id !== `tab-${target}`);
+        });
+      });
+    });
+
+    document.getElementById('innerCboSearch').addEventListener('input', () => {
+      const proc = state.procedures.find(p => p.CO_PROCEDIMENTO === selectedCode);
+      if (proc) renderDetailCbos(proc);
+    });
+    document.getElementById('innerCidSearch').addEventListener('input', () => {
+      const proc = state.procedures.find(p => p.CO_PROCEDIMENTO === selectedCode);
+      if (proc) renderDetailCids(proc);
+    });
+
+    document.getElementById('copyCodeBtn').addEventListener('click', () => {
+      if (!selectedCode) return;
+      const text = selectedCode;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(`Código ${text} copiado.`)).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    });
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast(`Código ${text} copiado.`); }
+      catch { showToast('Não foi possível copiar.'); }
+      document.body.removeChild(ta);
+    }
+
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+      if (filteredProcedures.length === 0) {
+        showToast('Nenhum procedimento para exportar.');
+        return;
+      }
+      const headers = ['CO_PROCEDIMENTO', 'NO_PROCEDIMENTO', 'COMPLEXIDADE', 'SEXO', 'VL_SA', 'VL_SH', 'VL_SP', 'QTD_CBOS', 'QTD_SERVICOS'];
+      const rows = filteredProcedures.map(p => [
+        p.CO_PROCEDIMENTO,
+        `"${(p.NO_PROCEDIMENTO || '').replace(/"/g, '""')}"`,
+        `"${COMPLEXIDADE_MAP[p.TP_COMPLEXIDADE] || p.TP_COMPLEXIDADE}"`,
+        SEXO_MAP[p.TP_SEXO] || p.TP_SEXO,
+        formatCurrencyCents(p.VL_SA),
+        formatCurrencyCents(p.VL_SH),
+        formatCurrencyCents(p.VL_SP),
+        p.cbos.length,
+        p.servicos.length
+      ].join(';'));
+      const csv = '\uFEFF' + [headers.join(';'), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `sigtap_filtrado_${state.competencia || 'export'}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('CSV exportado.');
+    });
+
+    document.getElementById('zipInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (typeof JSZip === 'undefined') {
+        showToast('Biblioteca ZIP indisponível; use "Carregar Pasta / .TXTs".');
+        return;
+      }
+      const zip = await JSZip.loadAsync(file);
+      const fileMap = {};
+      zip.forEach((relPath, entry) => {
+        if (!entry.dir) {
+          const base = relPath.split('/').pop();
+          fileMap[base] = () => entry.async('arraybuffer');
+        }
+      });
+      await loadFromFileMap(fileMap);
+      e.target.value = '';
+    });
+
+    document.getElementById('filesInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
+      const fileMap = {};
+      files.forEach(f => {
+        fileMap[f.name] = () => f.arrayBuffer();
+      });
+      await loadFromFileMap(fileMap);
+      e.target.value = '';
+    });
+
+    async function tryAutoLoadZip() {
+      if (!window.location.protocol.startsWith('http') || typeof JSZip === 'undefined') return;
+      try {
+        const res = await fetch('./dados/sigtap_atual.zip', { cache: 'no-store' });
+        if (!res.ok) return;
+        const buf = await res.arrayBuffer();
+        const zip = await JSZip.loadAsync(buf);
+        const fileMap = {};
+        zip.forEach((relPath, entry) => {
+          if (!entry.dir) {
+            const base = relPath.split('/').pop();
+            fileMap[base] = () => entry.async('arraybuffer');
+          }
+        });
+        await loadFromFileMap(fileMap);
+      } catch (err) {
+        // Permanece no modo demonstração caso ./dados/sigtap_atual.zip não exista
+      }
+    }
+
+    // --- Initial Boot ---
+    populateFilterSelects();
+    applyFilters();
+    updateCompetenciaBadge();
+    tryAutoLoadZip();
+  </script>
+</body>
+</html>
