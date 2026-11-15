@@ -118,24 +118,16 @@
         </div>
 
         <div>
-          <label for="filterComplexidade" class="block text-xs font-medium text-slate-600 mb-1">Complexidade</label>
-          <select id="filterComplexidade" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option value="">Todas</option>
-            <option value="0">0 - Não se aplica</option>
-            <option value="1">1 - Atenção Básica</option>
-            <option value="2">2 - Média Complexidade</option>
-            <option value="3">3 - Alta Complexidade</option>
+          <label for="filterSubgrupo" class="block text-xs font-medium text-slate-600 mb-1">Subgrupo</label>
+          <select id="filterSubgrupo" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="">Todos os subgrupos</option>
           </select>
         </div>
 
         <div>
-          <label for="filterSexo" class="block text-xs font-medium text-slate-600 mb-1">Sexo permitido</label>
-          <select id="filterSexo" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option value="">Todos</option>
-            <option value="I">I - Indiferente / Ambos</option>
-            <option value="M">M - Masculino</option>
-            <option value="F">F - Feminino</option>
-            <option value="N">N - Não se aplica</option>
+          <label for="filterForma" class="block text-xs font-medium text-slate-600 mb-1">Forma de Organização</label>
+          <select id="filterForma" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <option value="">Todas as formas</option>
           </select>
         </div>
 
@@ -148,17 +140,23 @@
 
         <div>
           <label for="filterCbo" class="block text-xs font-medium text-slate-600 mb-1">CBO exigido (código ou nome)</label>
-          <input id="filterCbo" type="text" placeholder="Ex.: 515105 ou Agente Comunitário" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          <input id="filterCbo" type="text" placeholder="Ex.: 515105 ou Agente Comunitário" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:bg-slate-100 disabled:text-slate-400" />
         </div>
 
         <div>
           <label for="filterServico" class="block text-xs font-medium text-slate-600 mb-1">Serviço / Classificação</label>
-          <input id="filterServico" type="text" placeholder="Ex.: 135 ou Reabilitação" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          <input id="filterServico" type="text" placeholder="Ex.: 135 ou Reabilitação" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:bg-slate-100 disabled:text-slate-400" />
         </div>
 
-        <div>
-          <label for="filterCid" class="block text-xs font-medium text-slate-600 mb-1">CID-10 vinculado</label>
-          <input id="filterCid" type="text" placeholder="Ex.: A15 ou Tuberculose" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        <div class="flex flex-col justify-end gap-1.5 pt-1">
+          <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+            <input id="filterNoCbo" type="checkbox" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+            <span>Não exige CBO</span>
+          </label>
+          <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+            <input id="filterNoServico" type="checkbox" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+            <span>Não exige serviço</span>
+          </label>
         </div>
 
         <div class="flex items-end">
@@ -215,8 +213,19 @@
             </div>
           </div>
 
+          <!-- Excluded Notice -->
+          <div id="detExcludedNotice" class="hidden p-6 m-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 space-y-2">
+            <div class="flex items-center gap-2 font-semibold text-sm text-rose-800">
+              <svg class="w-5 h-5 shrink-0 text-rose-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span>Procedimento excluído. Favor consultar portal oficial do sigtap para mais informações</span>
+            </div>
+            <p id="detExcludedComp" class="text-xs text-rose-700"></p>
+          </div>
+
           <!-- Detail Tabs -->
-          <div class="border-b border-slate-200 bg-white px-4 flex gap-4 overflow-x-auto text-xs font-medium">
+          <div id="detTabsBar" class="border-b border-slate-200 bg-white px-4 flex gap-4 overflow-x-auto text-xs font-medium">
             <button data-tab="atributos" class="detail-tab py-2.5 border-b-2 border-teal-600 text-teal-700 whitespace-nowrap">Atributos e Descrição</button>
             <button data-tab="cbos" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">CBOs (<span id="countCbos">0</span>)</button>
             <button data-tab="servicos" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Serviço/Classif. (<span id="countServicos">0</span>)</button>
@@ -226,7 +235,7 @@
           </div>
 
           <!-- Tab Bodies -->
-          <div class="p-4 overflow-y-auto custom-scroll flex-1 space-y-4">
+          <div id="detTabBodies" class="p-4 overflow-y-auto custom-scroll flex-1 space-y-4">
             <!-- Tab: Atributos -->
             <div id="tab-atributos" class="tab-pane space-y-4">
               <div>
@@ -314,6 +323,8 @@
         loaded: false,
         competencia: '',
         grupos: {},
+        subgrupos: {},
+        formas: {},
         financiamento: {},
         rubricas: {},
         registros: {},
@@ -451,6 +462,8 @@
 
         const descRows = await parseTable('tb_descricao');
         const grupoRows = await parseTable('tb_grupo');
+        const subgrupoRows = await parseTable('tb_sub_grupo');
+        const formaRows = await parseTable('tb_forma_organizacao');
         const finRows = await parseTable('tb_financiamento');
         const rubRows = await parseTable('tb_rubrica');
         const regRows = await parseTable('tb_registro');
@@ -473,6 +486,8 @@
           loaded: true,
           competencia: procRows[0]?.DT_COMPETENCIA || '',
           grupos: {},
+          subgrupos: {},
+          formas: {},
           financiamento: {},
           rubricas: {},
           registros: {},
@@ -485,6 +500,16 @@
         };
 
         grupoRows.forEach(r => { if (r.CO_GRUPO) newState.grupos[r.CO_GRUPO] = r.NO_GRUPO; });
+        subgrupoRows.forEach(r => {
+          if (r.CO_GRUPO && r.CO_SUB_GRUPO) {
+            newState.subgrupos[r.CO_GRUPO + r.CO_SUB_GRUPO] = r.NO_SUB_GRUPO;
+          }
+        });
+        formaRows.forEach(r => {
+          if (r.CO_GRUPO && r.CO_SUB_GRUPO && r.CO_FORMA_ORGANIZACAO) {
+            newState.formas[r.CO_GRUPO + r.CO_SUB_GRUPO + r.CO_FORMA_ORGANIZACAO] = r.NO_FORMA_ORGANIZACAO;
+          }
+        });
         finRows.forEach(r => { if (r.CO_FINANCIAMENTO) newState.financiamento[r.CO_FINANCIAMENTO] = r.NO_FINANCIAMENTO; });
         rubRows.forEach(r => { if (r.CO_RUBRICA) newState.rubricas[r.CO_RUBRICA] = r.NO_RUBRICA; });
         regRows.forEach(r => { if (r.CO_REGISTRO) newState.registros[r.CO_REGISTRO] = r.NO_REGISTRO; });
@@ -575,6 +600,49 @@
       badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800';
     }
 
+    function populateSubgrupoSelect() {
+      const grp = document.getElementById('filterGrupo').value;
+      const subSel = document.getElementById('filterSubgrupo');
+      const prev = subSel.value;
+      subSel.innerHTML = '<option value="">Todos os subgrupos</option>';
+      Object.keys(state.subgrupos).sort().forEach(k => {
+        if (!grp || k.startsWith(grp)) {
+          const opt = document.createElement('option');
+          opt.value = k;
+          opt.textContent = `${k} - ${state.subgrupos[k]}`;
+          subSel.appendChild(opt);
+        }
+      });
+      if (prev && (!grp || prev.startsWith(grp)) && state.subgrupos[prev]) {
+        subSel.value = prev;
+      } else {
+        subSel.value = '';
+      }
+      populateFormaSelect();
+    }
+
+    function populateFormaSelect() {
+      const grp = document.getElementById('filterGrupo').value;
+      const sub = document.getElementById('filterSubgrupo').value;
+      const prefix = sub || grp;
+      const formaSel = document.getElementById('filterForma');
+      const prev = formaSel.value;
+      formaSel.innerHTML = '<option value="">Todas as formas</option>';
+      Object.keys(state.formas).sort().forEach(k => {
+        if (!prefix || k.startsWith(prefix)) {
+          const opt = document.createElement('option');
+          opt.value = k;
+          opt.textContent = `${k} - ${state.formas[k]}`;
+          formaSel.appendChild(opt);
+        }
+      });
+      if (prev && (!prefix || prev.startsWith(prefix)) && state.formas[prev]) {
+        formaSel.value = prev;
+      } else {
+        formaSel.value = '';
+      }
+    }
+
     function populateFilterSelects() {
       const grpSel = document.getElementById('filterGrupo');
       grpSel.innerHTML = '<option value="">Todos os grupos</option>';
@@ -584,6 +652,8 @@
         opt.textContent = `${k} - ${state.grupos[k]}`;
         grpSel.appendChild(opt);
       });
+
+      populateSubgrupoSelect();
 
       const regSel = document.getElementById('filterRegistro');
       regSel.innerHTML = '<option value="">Todos os registros</option>';
@@ -602,15 +672,16 @@
       const scope = document.getElementById('searchScope').value;
 
       const grupo = document.getElementById('filterGrupo').value;
-      const complexidade = document.getElementById('filterComplexidade').value;
-      const sexo = document.getElementById('filterSexo').value;
+      const subgrupo = document.getElementById('filterSubgrupo').value;
+      const forma = document.getElementById('filterForma').value;
       const registro = document.getElementById('filterRegistro').value;
-      const cboQ = normalizeSearch(document.getElementById('filterCbo').value.trim());
-      const servQ = normalizeSearch(document.getElementById('filterServico').value.trim());
-      const cidQ = normalizeSearch(document.getElementById('filterCid').value.trim());
+      const noCbo = document.getElementById('filterNoCbo').checked;
+      const noServico = document.getElementById('filterNoServico').checked;
+      const cboQ = noCbo ? '' : normalizeSearch(document.getElementById('filterCbo').value.trim());
+      const servQ = noServico ? '' : normalizeSearch(document.getElementById('filterServico').value.trim());
 
       // Active filter count badge
-      const activeCount = [grupo, complexidade, sexo, registro, cboQ, servQ, cidQ].filter(Boolean).length;
+      const activeCount = [grupo, subgrupo, forma, registro, cboQ, servQ, noCbo, noServico].filter(Boolean).length;
       const countBadge = document.getElementById('activeFiltersCount');
       if (activeCount > 0) {
         countBadge.textContent = String(activeCount);
@@ -621,9 +692,12 @@
 
       filteredProcedures = state.procedures.filter(p => {
         if (grupo && !p.CO_PROCEDIMENTO.startsWith(grupo)) return false;
-        if (complexidade && p.TP_COMPLEXIDADE !== complexidade) return false;
-        if (sexo && p.TP_SEXO !== sexo) return false;
+        if (subgrupo && !p.CO_PROCEDIMENTO.startsWith(subgrupo)) return false;
+        if (forma && !p.CO_PROCEDIMENTO.startsWith(forma)) return false;
         if (registro && !p.registros.includes(registro)) return false;
+
+        if (noCbo && (p.excluded || p.cbos.length > 0)) return false;
+        if (noServico && (p.excluded || p.servicos.length > 0)) return false;
 
         if (cboQ) {
           const matchCbo = p.cbos.some(c => {
@@ -640,14 +714,6 @@
             return s.serv.includes(servQ) || s.classif.includes(servQ) || sName.includes(servQ) || cName.includes(servQ);
           });
           if (!matchServ) return false;
-        }
-
-        if (cidQ) {
-          const matchCid = p.cids.some(c => {
-            const cName = normalizeSearch(state.cids[c] || '');
-            return normalizeSearch(c).includes(cidQ) || cName.includes(cidQ);
-          });
-          if (!matchCid) return false;
         }
 
         if (query) {
@@ -721,6 +787,29 @@
 
       listEl.innerHTML = slice.map(p => {
         const active = p.CO_PROCEDIMENTO === selectedCode;
+        if (p.excluded) {
+          const compExcl = p.DT_EXCLUSAO && p.DT_EXCLUSAO.length === 6 && /^\d{6}$/.test(p.DT_EXCLUSAO)
+            ? `${p.DT_EXCLUSAO.slice(0, 4)}/${p.DT_EXCLUSAO.slice(4)}`
+            : (p.DT_EXCLUSAO || 'Não informada');
+          return `
+            <button
+              type="button"
+              data-code="${escapeHtml(p.CO_PROCEDIMENTO)}"
+              class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-rose-100 border-l-4 border-rose-600' : 'bg-rose-50 hover:bg-rose-100/70 border-l-4 border-rose-300'}"
+            >
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <span class="font-mono text-xs font-semibold text-rose-800">${formatCode(p.CO_PROCEDIMENTO)}</span>
+                <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-rose-200/80 text-rose-900">Excluído</span>
+              </div>
+              <div class="text-sm font-medium text-rose-950 line-clamp-2 leading-snug">
+                ${escapeHtml(p.NO_PROCEDIMENTO)}
+              </div>
+              <div class="mt-1.5 text-[11px] font-medium text-rose-700">
+                Excluído na competência: ${escapeHtml(compExcl)}
+              </div>
+            </button>
+          `;
+        }
         return `
           <button
             type="button"
@@ -770,7 +859,30 @@
 
       document.getElementById('detCode').textContent = formatCode(proc.CO_PROCEDIMENTO);
       document.getElementById('detName').textContent = proc.NO_PROCEDIMENTO;
-      document.getElementById('detComplexidadeBadge').textContent =
+
+      const exclNotice = document.getElementById('detExcludedNotice');
+      const tabsBar = document.getElementById('detTabsBar');
+      const tabBodies = document.getElementById('detTabBodies');
+      const compBadge = document.getElementById('detComplexidadeBadge');
+
+      if (proc.excluded) {
+        compBadge.textContent = 'Excluído';
+        compBadge.className = 'text-xs font-medium px-2 py-0.5 rounded-full bg-rose-100 text-rose-800';
+        const compExcl = proc.DT_EXCLUSAO && proc.DT_EXCLUSAO.length === 6 && /^\d{6}$/.test(proc.DT_EXCLUSAO)
+          ? `${proc.DT_EXCLUSAO.slice(0, 4)}/${proc.DT_EXCLUSAO.slice(4)}`
+          : (proc.DT_EXCLUSAO || 'Não informada');
+        document.getElementById('detExcludedComp').textContent = `Competência de exclusão: ${compExcl}`;
+        exclNotice.classList.remove('hidden');
+        tabsBar.classList.add('hidden');
+        tabBodies.classList.add('hidden');
+        return;
+      }
+
+      exclNotice.classList.add('hidden');
+      tabsBar.classList.remove('hidden');
+      tabBodies.classList.remove('hidden');
+      compBadge.className = 'text-xs font-medium px-2 py-0.5 rounded-full bg-slate-200 text-slate-700';
+      compBadge.textContent =
         COMPLEXIDADE_MAP[proc.TP_COMPLEXIDADE] || `Complexidade ${proc.TP_COMPLEXIDADE}`;
       document.getElementById('detDesc').textContent =
         proc.desc || 'Descrição não informada nesta base (verifique tb_descricao.txt).';
@@ -919,13 +1031,32 @@
     // --- Event Listeners ---
     document.getElementById('searchInput').addEventListener('input', applyFilters);
     document.getElementById('searchScope').addEventListener('change', applyFilters);
-    document.getElementById('filterGrupo').addEventListener('change', applyFilters);
-    document.getElementById('filterComplexidade').addEventListener('change', applyFilters);
-    document.getElementById('filterSexo').addEventListener('change', applyFilters);
+    document.getElementById('filterGrupo').addEventListener('change', () => {
+      populateSubgrupoSelect();
+      applyFilters();
+    });
+    document.getElementById('filterSubgrupo').addEventListener('change', () => {
+      populateFormaSelect();
+      applyFilters();
+    });
+    document.getElementById('filterForma').addEventListener('change', applyFilters);
     document.getElementById('filterRegistro').addEventListener('change', applyFilters);
     document.getElementById('filterCbo').addEventListener('input', applyFilters);
     document.getElementById('filterServico').addEventListener('input', applyFilters);
-    document.getElementById('filterCid').addEventListener('input', applyFilters);
+
+    document.getElementById('filterNoCbo').addEventListener('change', (e) => {
+      const cboInput = document.getElementById('filterCbo');
+      cboInput.disabled = e.target.checked;
+      if (e.target.checked) cboInput.value = '';
+      applyFilters();
+    });
+
+    document.getElementById('filterNoServico').addEventListener('change', (e) => {
+      const servInput = document.getElementById('filterServico');
+      servInput.disabled = e.target.checked;
+      if (e.target.checked) servInput.value = '';
+      applyFilters();
+    });
 
     document.getElementById('toggleFiltersBtn').addEventListener('click', () => {
       document.getElementById('advancedFilters').classList.toggle('hidden');
@@ -935,12 +1066,14 @@
       document.getElementById('searchInput').value = '';
       document.getElementById('searchScope').value = 'all';
       document.getElementById('filterGrupo').value = '';
-      document.getElementById('filterComplexidade').value = '';
-      document.getElementById('filterSexo').value = '';
+      populateSubgrupoSelect();
       document.getElementById('filterRegistro').value = '';
       document.getElementById('filterCbo').value = '';
+      document.getElementById('filterCbo').disabled = false;
       document.getElementById('filterServico').value = '';
-      document.getElementById('filterCid').value = '';
+      document.getElementById('filterServico').disabled = false;
+      document.getElementById('filterNoCbo').checked = false;
+      document.getElementById('filterNoServico').checked = false;
       applyFilters();
     });
 
@@ -1051,8 +1184,80 @@
           }
         });
         await loadFromFileMap(fileMap);
+        await tryAutoLoadExcluded();
       } catch (err) {
-        // Permanece no modo demonstração caso ./dados/sigtap_atual.zip não exista
+        // Permanece aguardando base SIGTAP caso ./dados/sigtap_atual.zip não exista
+      }
+    }
+
+    async function tryAutoLoadExcluded() {
+      const candidates = ['./dados/excluidos.csv', './dados/excluidos.txt'];
+      for (const url of candidates) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) continue;
+          const buf = await res.arrayBuffer();
+          let text = new TextDecoder('utf-8').decode(buf);
+          if (text.includes('�')) {
+            text = new TextDecoder('iso-8859-1').decode(buf);
+          }
+          const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+          if (lines.length === 0) return;
+
+          const first = lines[0];
+          const sep = first.includes(';') ? ';' : (first.includes('\t') ? '\t' : ',');
+          const splitRow = (line) => line.split(sep).map(c => c.trim().replace(/^"|"$/g, ''));
+
+          const header = splitRow(first).map(h => normalizeSearch(h));
+          let idxCode = header.findIndex(h => h.includes('procedimento') && h.includes('cod') || h === 'co_procedimento' || h === 'codigo');
+          let idxName = header.findIndex(h => h.includes('nome') || h === 'no_procedimento' || h === 'procedimento' || h === 'descricao');
+          let idxComp = header.findIndex(h => h.includes('competencia') || h.includes('exclusao') || h === 'dt_exclusao');
+
+          let startIdx = 1;
+          if (idxCode === -1 && /^\d{10}$/.test(splitRow(first)[0].replace(/[.\-]/g, ''))) {
+            idxCode = 0; idxName = 1; idxComp = 2; startIdx = 0;
+          } else {
+            if (idxCode === -1) idxCode = 0;
+            if (idxName === -1) idxName = 1;
+            if (idxComp === -1) idxComp = 2;
+          }
+
+          const existing = new Set(state.procedures.map(p => p.CO_PROCEDIMENTO));
+          let added = 0;
+          for (let i = startIdx; i < lines.length; i++) {
+            const cols = splitRow(lines[i]);
+            const code = (cols[idxCode] || '').replace(/[.\-\s]/g, '');
+            if (!code) continue;
+            if (existing.has(code)) continue;
+            existing.add(code);
+            state.procedures.push({
+              excluded: true,
+              CO_PROCEDIMENTO: code,
+              NO_PROCEDIMENTO: cols[idxName] || 'Procedimento excluído',
+              DT_EXCLUSAO: (cols[idxComp] || '').replace(/[^0-9/]/g, ''),
+              TP_COMPLEXIDADE: '',
+              TP_SEXO: '',
+              VL_SA: '0',
+              VL_SH: '0',
+              VL_SP: '0',
+              desc: '',
+              cbos: [],
+              servicos: [],
+              registros: [],
+              cids: [],
+              regras: [],
+              compativeis: []
+            });
+            added++;
+          }
+          if (added > 0) {
+            applyFilters();
+            updateCompetenciaBadge();
+          }
+          return;
+        } catch (e) {
+          // Ignora se o arquivo de excluídos ainda não estiver presente
+        }
       }
     }
 
