@@ -109,60 +109,78 @@
       </div>
 
       <!-- Advanced Attribute Filters -->
-      <div id="advancedFilters" class="pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <div>
-          <label for="filterGrupo" class="block text-xs font-medium text-slate-600 mb-1">Grupo</label>
-          <select id="filterGrupo" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option value="">Todos os grupos</option>
-          </select>
+      <div id="advancedFilters" class="pt-3 border-t border-slate-100 space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div>
+            <label for="filterGrupo" class="block text-xs font-medium text-slate-600 mb-1">Grupo</label>
+            <select id="filterGrupo" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="">Todos os grupos</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="filterSubgrupo" class="block text-xs font-medium text-slate-600 mb-1">Subgrupo</label>
+            <select id="filterSubgrupo" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="">Todos os subgrupos</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="filterForma" class="block text-xs font-medium text-slate-600 mb-1">Forma de Organização</label>
+            <select id="filterForma" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="">Todas as formas</option>
+            </select>
+          </div>
+
+          <div class="relative">
+            <label for="filterRegistroInput" class="block text-xs font-medium text-slate-600 mb-1">Instrumento de Registro (múltiplo)</label>
+            <input id="filterRegistroInput" type="text" placeholder="Buscar e selecionar..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+            <div id="dropdownRegistro" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="chipsRegistro" class="flex flex-wrap gap-1 mt-1.5"></div>
+          </div>
         </div>
 
-        <div>
-          <label for="filterSubgrupo" class="block text-xs font-medium text-slate-600 mb-1">Subgrupo</label>
-          <select id="filterSubgrupo" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option value="">Todos os subgrupos</option>
-          </select>
-        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
+          <div id="wrapCbo" class="relative transition-opacity">
+            <label for="filterCbo" class="block text-xs font-medium text-slate-600 mb-1">CBO exigido (múltiplo)</label>
+            <input id="filterCbo" type="text" placeholder="Ex.: 515105 ou Agente..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed" />
+            <div id="dropdownCbo" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="chipsCbo" class="flex flex-wrap gap-1 mt-1.5"></div>
+          </div>
 
-        <div>
-          <label for="filterForma" class="block text-xs font-medium text-slate-600 mb-1">Forma de Organização</label>
-          <select id="filterForma" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option value="">Todas as formas</option>
-          </select>
-        </div>
+          <div id="wrapServico" class="relative transition-opacity">
+            <label for="filterServico" class="block text-xs font-medium text-slate-600 mb-1">Serviço / Classificação (múltiplo)</label>
+            <input id="filterServico" type="text" placeholder="Ex.: 135 ou Reabilitação..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed" />
+            <div id="dropdownServico" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="chipsServico" class="flex flex-wrap gap-1 mt-1.5"></div>
+          </div>
 
-        <div>
-          <label for="filterRegistro" class="block text-xs font-medium text-slate-600 mb-1">Instrumento de Registro</label>
-          <select id="filterRegistro" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option value="">Todos os registros</option>
-          </select>
-        </div>
+          <div id="wrapHabilitacao" class="relative transition-opacity">
+            <label for="filterHabilitacao" class="block text-xs font-medium text-slate-600 mb-1">Habilitação exigida (múltiplo)</label>
+            <input id="filterHabilitacao" type="text" placeholder="Ex.: código ou nome..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed" />
+            <div id="dropdownHabilitacao" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="chipsHabilitacao" class="flex flex-wrap gap-1 mt-1.5"></div>
+          </div>
 
-        <div>
-          <label for="filterCbo" class="block text-xs font-medium text-slate-600 mb-1">CBO exigido (código ou nome)</label>
-          <input id="filterCbo" type="text" placeholder="Ex.: 515105 ou Agente Comunitário" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:bg-slate-100 disabled:text-slate-400" />
-        </div>
-
-        <div>
-          <label for="filterServico" class="block text-xs font-medium text-slate-600 mb-1">Serviço / Classificação</label>
-          <input id="filterServico" type="text" placeholder="Ex.: 135 ou Reabilitação" class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:bg-slate-100 disabled:text-slate-400" />
-        </div>
-
-        <div class="flex flex-col justify-end gap-1.5 pt-1">
-          <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
-            <input id="filterNoCbo" type="checkbox" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
-            <span>Não exige CBO</span>
-          </label>
-          <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
-            <input id="filterNoServico" type="checkbox" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
-            <span>Não exige serviço</span>
-          </label>
-        </div>
-
-        <div class="flex items-end">
-          <button id="clearFiltersBtn" type="button" class="w-full px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 transition">
-            Limpar todos os filtros
-          </button>
+          <div class="flex flex-col justify-between gap-2 pt-1">
+            <div class="space-y-1.5">
+              <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+                <input id="filterNoCbo" type="checkbox" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+                <span>Não exige CBO</span>
+              </label>
+              <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none block">
+                <input id="filterNoServico" type="checkbox" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+                <span>Não exige serviço</span>
+              </label>
+              <label class="inline-flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none block">
+                <input id="filterNoHabilitacao" type="checkbox" class="rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+                <span>Não exige habilitação</span>
+              </label>
+            </div>
+            <button id="clearFiltersBtn" type="button" class="w-full px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 transition">
+              Limpar todos os filtros
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -230,6 +248,7 @@
             <button data-tab="cbos" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">CBOs (<span id="countCbos">0</span>)</button>
             <button data-tab="servicos" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Serviço/Classif. (<span id="countServicos">0</span>)</button>
             <button data-tab="registros" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Registros (<span id="countRegistros">0</span>)</button>
+            <button data-tab="habilitacoes" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Habilitações (<span id="countHabilitacoes">0</span>)</button>
             <button data-tab="cids" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">CIDs (<span id="countCids">0</span>)</button>
             <button data-tab="compat" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Compatib./Regras (<span id="countCompat">0</span>)</button>
           </div>
@@ -265,6 +284,11 @@
             <!-- Tab: Registros -->
             <div id="tab-registros" class="tab-pane hidden space-y-2">
               <div id="detRegistrosList" class="space-y-1.5"></div>
+            </div>
+
+            <!-- Tab: Habilitações -->
+            <div id="tab-habilitacoes" class="tab-pane hidden space-y-2">
+              <div id="detHabilitacoesList" class="space-y-1.5"></div>
             </div>
 
             <!-- Tab: CIDs -->
@@ -332,12 +356,19 @@
         servicos: {},
         servicoClassif: {},
         cids: {},
+        habilitacoes: {},
         regrasCond: {},
         procedures: []
       };
     }
 
     let state = createEmptyState();
+    const multiSelected = {
+      registro: [],
+      cbo: [],
+      servico: [],
+      habilitacao: []
+    };
     let filteredProcedures = [];
     let selectedCode = null;
     let currentPage = 1;
@@ -471,11 +502,13 @@
         const servRows = await parseTable('tb_servico');
         const servClassRows = await parseTable('tb_servico_classificacao');
         const cidRows = await parseTable('tb_cid');
+        const habRows = await parseTable('tb_habilitacao');
         const regraRows = await parseTable('tb_regra_condicionada');
 
-        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Registro, CID)...';
+        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Habilitação, Registro)...';
         const rlOcup = await parseTable('rl_procedimento_ocupacao');
         const rlServ = await parseTable('rl_procedimento_servico');
+        const rlHab = await parseTable('rl_procedimento_habilitacao');
         const rlReg = await parseTable('rl_procedimento_registro');
         const rlCid = await parseTable('rl_procedimento_cid');
         const rlRegra = await parseTable('rl_procedimento_regra_cond');
@@ -495,6 +528,7 @@
           servicos: {},
           servicoClassif: {},
           cids: {},
+          habilitacoes: {},
           regrasCond: {},
           procedures: []
         };
@@ -521,6 +555,11 @@
           }
         });
         cidRows.forEach(r => { if (r.CO_CID) newState.cids[r.CO_CID] = r.NO_CID; });
+        habRows.forEach(r => {
+          const code = r.CO_HABILITACAO || Object.values(r)[0];
+          const name = r.NO_HABILITACAO || Object.values(r)[1] || '';
+          if (code) newState.habilitacoes[code] = name;
+        });
         regraRows.forEach(r => { if (r.CO_REGRA_CONDICIONADA) newState.regrasCond[r.CO_REGRA_CONDICIONADA] = r.NO_REGRA_CONDICIONADA; });
 
         const descMap = {};
@@ -535,6 +574,7 @@
             servicos: [],
             registros: [],
             cids: [],
+            habilitacoes: [],
             regras: [],
             compativeis: []
           };
@@ -553,6 +593,11 @@
         rlReg.forEach(r => {
           const p = procMap[r.CO_PROCEDIMENTO];
           if (p && r.CO_REGISTRO) p.registros.push(r.CO_REGISTRO);
+        });
+        rlHab.forEach(r => {
+          const p = procMap[r.CO_PROCEDIMENTO];
+          const hab = r.CO_HABILITACAO || Object.values(r)[1];
+          if (p && hab) p.habilitacoes.push(hab);
         });
         rlCid.forEach(r => {
           const p = procMap[r.CO_PROCEDIMENTO];
@@ -655,14 +700,7 @@
 
       populateSubgrupoSelect();
 
-      const regSel = document.getElementById('filterRegistro');
-      regSel.innerHTML = '<option value="">Todos os registros</option>';
-      Object.keys(state.registros).sort().forEach(k => {
-        const opt = document.createElement('option');
-        opt.value = k;
-        opt.textContent = `${k} - ${state.registros[k]}`;
-        regSel.appendChild(opt);
-      });
+
     }
 
     function applyFilters() {
@@ -674,14 +712,28 @@
       const grupo = document.getElementById('filterGrupo').value;
       const subgrupo = document.getElementById('filterSubgrupo').value;
       const forma = document.getElementById('filterForma').value;
-      const registro = document.getElementById('filterRegistro').value;
       const noCbo = document.getElementById('filterNoCbo').checked;
       const noServico = document.getElementById('filterNoServico').checked;
+      const noHabilitacao = document.getElementById('filterNoHabilitacao').checked;
+
+      const regQ = normalizeSearch(document.getElementById('filterRegistroInput').value.trim());
       const cboQ = noCbo ? '' : normalizeSearch(document.getElementById('filterCbo').value.trim());
       const servQ = noServico ? '' : normalizeSearch(document.getElementById('filterServico').value.trim());
+      const habQ = noHabilitacao ? '' : normalizeSearch(document.getElementById('filterHabilitacao').value.trim());
+
+      const selReg = multiSelected.registro.map(x => x.key);
+      const selCbo = noCbo ? [] : multiSelected.cbo.map(x => x.key);
+      const selServ = noServico ? [] : multiSelected.servico.map(x => x.key);
+      const selHab = noHabilitacao ? [] : multiSelected.habilitacao.map(x => x.key);
 
       // Active filter count badge
-      const activeCount = [grupo, subgrupo, forma, registro, cboQ, servQ, noCbo, noServico].filter(Boolean).length;
+      const activeCount = [
+        grupo, subgrupo, forma, noCbo, noServico, noHabilitacao,
+        selReg.length > 0 || regQ,
+        selCbo.length > 0 || cboQ,
+        selServ.length > 0 || servQ,
+        selHab.length > 0 || habQ
+      ].filter(Boolean).length;
       const countBadge = document.getElementById('activeFiltersCount');
       if (activeCount > 0) {
         countBadge.textContent = String(activeCount);
@@ -694,26 +746,42 @@
         if (grupo && !p.CO_PROCEDIMENTO.startsWith(grupo)) return false;
         if (subgrupo && !p.CO_PROCEDIMENTO.startsWith(subgrupo)) return false;
         if (forma && !p.CO_PROCEDIMENTO.startsWith(forma)) return false;
-        if (registro && !p.registros.includes(registro)) return false;
+
+        if (selReg.length > 0) {
+          if (!selReg.some(r => p.registros.includes(r))) return false;
+        } else if (regQ) {
+          const matchReg = p.registros.some(r => r.toLowerCase().includes(regQ) || normalizeSearch(state.registros[r] || '').includes(regQ));
+          if (!matchReg) return false;
+        }
 
         if (noCbo && (p.excluded || p.cbos.length > 0)) return false;
         if (noServico && (p.excluded || p.servicos.length > 0)) return false;
+        if (noHabilitacao && (p.excluded || p.habilitacoes.length > 0)) return false;
 
-        if (cboQ) {
-          const matchCbo = p.cbos.some(c => {
-            const nome = normalizeSearch(state.ocupacoes[c] || '');
-            return c.includes(cboQ) || nome.includes(cboQ);
-          });
+        if (selCbo.length > 0) {
+          if (!selCbo.some(c => p.cbos.includes(c))) return false;
+        } else if (cboQ) {
+          const matchCbo = p.cbos.some(c => c.includes(cboQ) || normalizeSearch(state.ocupacoes[c] || '').includes(cboQ));
           if (!matchCbo) return false;
         }
 
-        if (servQ) {
+        if (selServ.length > 0) {
+          const matchServ = p.servicos.some(s => selServ.includes(s.serv) || selServ.includes(s.serv + ':' + s.classif));
+          if (!matchServ) return false;
+        } else if (servQ) {
           const matchServ = p.servicos.some(s => {
             const sName = normalizeSearch(state.servicos[s.serv] || '');
             const cName = normalizeSearch(state.servicoClassif[s.serv + s.classif] || '');
             return s.serv.includes(servQ) || s.classif.includes(servQ) || sName.includes(servQ) || cName.includes(servQ);
           });
           if (!matchServ) return false;
+        }
+
+        if (selHab.length > 0) {
+          if (!selHab.some(h => p.habilitacoes.includes(h))) return false;
+        } else if (habQ) {
+          const matchHab = p.habilitacoes.some(h => h.toLowerCase().includes(habQ) || normalizeSearch(state.habilitacoes[h] || '').includes(habQ));
+          if (!matchHab) return false;
         }
 
         if (query) {
@@ -912,6 +980,7 @@
       document.getElementById('countCbos').textContent = String(proc.cbos.length);
       document.getElementById('countServicos').textContent = String(proc.servicos.length);
       document.getElementById('countRegistros').textContent = String(proc.registros.length);
+      document.getElementById('countHabilitacoes').textContent = String(proc.habilitacoes.length);
       document.getElementById('countCids').textContent = String(proc.cids.length);
       document.getElementById('countCompat').textContent = String(proc.regras.length + proc.compativeis.length);
 
@@ -920,6 +989,7 @@
       renderDetailCbos(proc);
       renderDetailServicos(proc);
       renderDetailRegistros(proc);
+      renderDetailHabilitacoes(proc);
       renderDetailCids(proc);
       renderDetailCompat(proc);
     }
@@ -975,6 +1045,20 @@
         <div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
           <span class="font-mono font-semibold text-teal-700">${escapeHtml(r)}</span>
           <span class="text-slate-700">${escapeHtml(state.registros[r] || 'Instrumento de Registro')}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderDetailHabilitacoes(proc) {
+      const el = document.getElementById('detHabilitacoesList');
+      if (!proc.habilitacoes || proc.habilitacoes.length === 0) {
+        el.innerHTML = '<p class="text-xs text-slate-400">Não exige habilitação específica.</p>';
+        return;
+      }
+      el.innerHTML = proc.habilitacoes.map(h => `
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+          <span class="font-mono font-semibold text-teal-700 shrink-0">${escapeHtml(h)}</span>
+          <span class="text-slate-700">${escapeHtml(state.habilitacoes[h] || 'Habilitação')}</span>
         </div>
       `).join('');
     }
@@ -1040,21 +1124,126 @@
       applyFilters();
     });
     document.getElementById('filterForma').addEventListener('change', applyFilters);
-    document.getElementById('filterRegistro').addEventListener('change', applyFilters);
-    document.getElementById('filterCbo').addEventListener('input', applyFilters);
-    document.getElementById('filterServico').addEventListener('input', applyFilters);
+
+    function getMultiOptions(type) {
+      if (type === 'registro') {
+        return Object.keys(state.registros).sort().map(k => ({ key: k, label: `${k} - ${state.registros[k]}` }));
+      }
+      if (type === 'cbo') {
+        return Object.keys(state.ocupacoes).sort().map(k => ({ key: k, label: `${k} - ${state.ocupacoes[k]}` }));
+      }
+      if (type === 'servico') {
+        const opts = Object.keys(state.servicos).sort().map(k => ({ key: k, label: `${k} - ${state.servicos[k]}` }));
+        Object.keys(state.servicoClassif).sort().forEach(kc => {
+          const s = kc.slice(0, 3);
+          const c = kc.slice(3);
+          opts.push({ key: `${s}:${c}`, label: `${s}/${c} - ${state.servicoClassif[kc]}` });
+        });
+        return opts;
+      }
+      if (type === 'habilitacao') {
+        return Object.keys(state.habilitacoes).sort().map(k => ({ key: k, label: `${k} - ${state.habilitacoes[k]}` }));
+      }
+      return [];
+    }
+
+    function renderMultiChips(type, chipsId) {
+      const container = document.getElementById(chipsId);
+      const list = multiSelected[type];
+      container.innerHTML = list.map(item => `
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-teal-100 text-teal-800 max-w-full">
+          <span class="truncate max-w-[180px]" title="${escapeHtml(item.label)}">${escapeHtml(item.label)}</span>
+          <button type="button" data-remove-type="${type}" data-remove-key="${escapeHtml(item.key)}" class="hover:text-teal-950 font-bold leading-none">&times;</button>
+        </span>
+      `).join('');
+    }
+
+    function setupMultiSelect(type, inputId, dropdownId, chipsId) {
+      const input = document.getElementById(inputId);
+      const dropdown = document.getElementById(dropdownId);
+      const chips = document.getElementById(chipsId);
+
+      const showOptions = () => {
+        if (input.disabled) { dropdown.classList.add('hidden'); return; }
+        const q = normalizeSearch(input.value.trim());
+        const chosenKeys = new Set(multiSelected[type].map(x => x.key));
+        const matches = getMultiOptions(type)
+          .filter(o => !chosenKeys.has(o.key) && (!q || normalizeSearch(o.label).includes(q)))
+          .slice(0, 40);
+        if (matches.length === 0) {
+          dropdown.classList.add('hidden');
+          return;
+        }
+        dropdown.innerHTML = matches.map(m => `
+          <button type="button" data-pick-key="${escapeHtml(m.key)}" data-pick-label="${escapeHtml(m.label)}" class="w-full text-left px-2.5 py-1.5 hover:bg-teal-50 text-slate-700 border-b border-slate-100 last:border-0 truncate">
+            ${escapeHtml(m.label)}
+          </button>
+        `).join('');
+        dropdown.classList.remove('hidden');
+      };
+
+      input.addEventListener('focus', showOptions);
+      input.addEventListener('input', () => {
+        showOptions();
+        applyFilters();
+      });
+
+      dropdown.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-pick-key]');
+        if (!btn) return;
+        multiSelected[type].push({ key: btn.dataset.pickKey, label: btn.dataset.pickLabel });
+        input.value = '';
+        dropdown.classList.add('hidden');
+        renderMultiChips(type, chipsId);
+        applyFilters();
+      });
+
+      chips.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-remove-key]');
+        if (!btn) return;
+        multiSelected[type] = multiSelected[type].filter(x => x.key !== btn.dataset.removeKey);
+        renderMultiChips(type, chipsId);
+        applyFilters();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      });
+    }
+
+    setupMultiSelect('registro', 'filterRegistroInput', 'dropdownRegistro', 'chipsRegistro');
+    setupMultiSelect('cbo', 'filterCbo', 'dropdownCbo', 'chipsCbo');
+    setupMultiSelect('servico', 'filterServico', 'dropdownServico', 'chipsServico');
+    setupMultiSelect('habilitacao', 'filterHabilitacao', 'dropdownHabilitacao', 'chipsHabilitacao');
+
+    function toggleGrayDisabled(checked, inputId, wrapId, dropdownId) {
+      const input = document.getElementById(inputId);
+      const wrap = document.getElementById(wrapId);
+      const dd = document.getElementById(dropdownId);
+      input.disabled = checked;
+      if (checked) {
+        input.value = '';
+        dd.classList.add('hidden');
+        wrap.classList.add('opacity-50');
+      } else {
+        wrap.classList.remove('opacity-50');
+      }
+    }
 
     document.getElementById('filterNoCbo').addEventListener('change', (e) => {
-      const cboInput = document.getElementById('filterCbo');
-      cboInput.disabled = e.target.checked;
-      if (e.target.checked) cboInput.value = '';
+      toggleGrayDisabled(e.target.checked, 'filterCbo', 'wrapCbo', 'dropdownCbo');
       applyFilters();
     });
 
     document.getElementById('filterNoServico').addEventListener('change', (e) => {
-      const servInput = document.getElementById('filterServico');
-      servInput.disabled = e.target.checked;
-      if (e.target.checked) servInput.value = '';
+      toggleGrayDisabled(e.target.checked, 'filterServico', 'wrapServico', 'dropdownServico');
+      applyFilters();
+    });
+
+    document.getElementById('filterNoHabilitacao').addEventListener('change', (e) => {
+      toggleGrayDisabled(e.target.checked, 'filterHabilitacao', 'wrapHabilitacao', 'dropdownHabilitacao');
       applyFilters();
     });
 
@@ -1067,13 +1256,21 @@
       document.getElementById('searchScope').value = 'all';
       document.getElementById('filterGrupo').value = '';
       populateSubgrupoSelect();
-      document.getElementById('filterRegistro').value = '';
-      document.getElementById('filterCbo').value = '';
-      document.getElementById('filterCbo').disabled = false;
-      document.getElementById('filterServico').value = '';
-      document.getElementById('filterServico').disabled = false;
+      multiSelected.registro = [];
+      multiSelected.cbo = [];
+      multiSelected.servico = [];
+      multiSelected.habilitacao = [];
+      renderMultiChips('registro', 'chipsRegistro');
+      renderMultiChips('cbo', 'chipsCbo');
+      renderMultiChips('servico', 'chipsServico');
+      renderMultiChips('habilitacao', 'chipsHabilitacao');
+      document.getElementById('filterRegistroInput').value = '';
       document.getElementById('filterNoCbo').checked = false;
       document.getElementById('filterNoServico').checked = false;
+      document.getElementById('filterNoHabilitacao').checked = false;
+      toggleGrayDisabled(false, 'filterCbo', 'wrapCbo', 'dropdownCbo');
+      toggleGrayDisabled(false, 'filterServico', 'wrapServico', 'dropdownServico');
+      toggleGrayDisabled(false, 'filterHabilitacao', 'wrapHabilitacao', 'dropdownHabilitacao');
       applyFilters();
     });
 
@@ -1245,6 +1442,7 @@
               servicos: [],
               registros: [],
               cids: [],
+              habilitacoes: [],
               regras: [],
               compativeis: []
             });
