@@ -185,26 +185,31 @@
             <div id="dropdownComplemento" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
             <div id="chipsComplemento" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
+
           <div id="wrapCid" class="relative transition-opacity">
             <label for="filterCid" class="block text-xs font-medium text-[#3B5956] mb-1">CID (múltiplo)</label>
-            <input id="filterCid" type="text" placeholder="Ex.: A15 ou Tuberculose..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
+            <input id="filterCid" type="text" placeholder="Ex.: A15 ou Tuberculose..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C] disabled:bg-[#E7EFED] disabled:text-[#78928E] disabled:cursor-not-allowed" />
             <div id="dropdownCid" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
             <div id="chipsCid" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
 
           <div class="flex flex-col justify-between gap-2 pt-1">
-            <div class="space-y-1.5">
+            <div class="grid grid-cols-2 lg:grid-cols-1 gap-1">
               <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none">
                 <input id="filterNoCbo" type="checkbox" class="rounded-none border-[#A5C6BD] accent-[#2B7A78]" />
                 <span>Não exige CBO</span>
               </label>
-              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none block">
+              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none">
                 <input id="filterNoServico" type="checkbox" class="rounded-none border-[#A5C6BD] accent-[#2B7A78]" />
                 <span>Não exige serviço</span>
               </label>
-              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none block">
+              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none">
                 <input id="filterNoHabilitacao" type="checkbox" class="rounded-none border-[#A5C6BD] accent-[#2B7A78]" />
                 <span>Não exige habilitação</span>
+              </label>
+              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none">
+                <input id="filterNoCid" type="checkbox" class="rounded-none border-[#A5C6BD] accent-[#2B7A78]" />
+                <span>Não exige CID</span>
               </label>
             </div>
             <button id="clearFiltersBtn" type="button" class="w-full px-3 py-1.5 text-xs font-medium rounded-none border border-[#A5C6BD] bg-[#E3F0EC] text-[#1E3231] hover:bg-[#D5E9E3] transition">
@@ -416,6 +421,7 @@
       servico: [],
       habilitacao: [],
       complemento: [],
+      cid: [],
       regra: [],
       atributoComp: []
     };
@@ -595,7 +601,7 @@
         const regraRows = await parseTable('tb_regra_condicionada');
         const atribCompRows = await parseTable('tb_atributo_complementar');
 
-        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Habilitação, Atributos)...';
+        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Habilitação, CID, Atributos)...';
         const rlOcup = await parseTable('rl_procedimento_ocupacao');
         const rlServ = await parseTable('rl_procedimento_servico');
         const rlHab = await parseTable('rl_procedimento_habilitacao');
@@ -671,7 +677,6 @@
             ...r,
             desc: descMap[r.CO_PROCEDIMENTO] || '',
             dtInclusao: '',
-            atoNormativo: '',
             cbos: [],
             servicos: [],
             registros: [],
@@ -839,12 +844,14 @@
       const noCbo = document.getElementById('filterNoCbo').checked;
       const noServico = document.getElementById('filterNoServico').checked;
       const noHabilitacao = document.getElementById('filterNoHabilitacao').checked;
+      const noCid = document.getElementById('filterNoCid').checked;
 
       const regQ = normalizeSearch(document.getElementById('filterRegistroInput').value.trim());
       const cboQ = noCbo ? '' : normalizeSearch(document.getElementById('filterCbo').value.trim());
       const servQ = noServico ? '' : normalizeSearch(document.getElementById('filterServico').value.trim());
       const habQ = noHabilitacao ? '' : normalizeSearch(document.getElementById('filterHabilitacao').value.trim());
       const compQ = normalizeSearch(document.getElementById('filterComplemento').value.trim());
+      const cidQ = noCid ? '' : normalizeSearch(document.getElementById('filterCid').value.trim());
       const regraQ = normalizeSearch(document.getElementById('filterRegraInput').value.trim());
       const atribCompQ = normalizeSearch(document.getElementById('filterAtributoCompInput').value.trim());
 
@@ -853,17 +860,19 @@
       const selServ = noServico ? [] : multiSelected.servico.map(x => x.key);
       const selHab = noHabilitacao ? [] : multiSelected.habilitacao.map(x => x.key);
       const selComp = multiSelected.complemento.map(x => x.key);
+      const selCid = noCid ? [] : multiSelected.cid.map(x => x.key);
       const selRegra = multiSelected.regra.map(x => x.key);
       const selAtribComp = multiSelected.atributoComp.map(x => x.key);
 
       // Active filter count badge
       const activeCount = [
-        grupo, subgrupo, forma, noCbo, noServico, noHabilitacao,
+        grupo, subgrupo, forma, noCbo, noServico, noHabilitacao, noCid,
         selReg.length > 0 || regQ,
         selCbo.length > 0 || cboQ,
         selServ.length > 0 || servQ,
         selHab.length > 0 || habQ,
         selComp.length > 0 || compQ,
+        selCid.length > 0 || cidQ,
         selRegra.length > 0 || regraQ,
         selAtribComp.length > 0 || atribCompQ
       ].filter(Boolean).length;
@@ -890,6 +899,7 @@
         if (noCbo && (p.excluded || p.cbos.length > 0)) return false;
         if (noServico && (p.excluded || p.servicos.length > 0)) return false;
         if (noHabilitacao && (p.excluded || p.habilitacoes.length > 0)) return false;
+        if (noCid && (p.excluded || p.cids.length > 0)) return false;
 
         if (selCbo.length > 0) {
           if (!selCbo.some(c => p.cbos.includes(c))) return false;
@@ -922,6 +932,13 @@
         } else if (compQ) {
           const matchComp = p.incrementos.some(pi => pi.code.toLowerCase().includes(compQ) || normalizeSearch(state.habilitacoes[pi.code] || '').includes(compQ));
           if (!matchComp) return false;
+        }
+
+        if (selCid.length > 0) {
+          if (!selCid.some(c => p.cids.includes(c))) return false;
+        } else if (cidQ) {
+          const matchCid = p.cids.some(c => normalizeSearch(c).includes(cidQ) || normalizeSearch(state.cids[c] || '').includes(cidQ));
+          if (!matchCid) return false;
         }
 
         if (selRegra.length > 0) {
@@ -1108,7 +1125,7 @@
         { label: 'Financiamento', value: proc.CO_FINANCIAMENTO ? `${proc.CO_FINANCIAMENTO} - ${state.financiamento[proc.CO_FINANCIAMENTO] || ''}` : '—' },
         { label: 'Rubrica', value: proc.CO_RUBRICA ? `${proc.CO_RUBRICA} - ${state.rubricas[proc.CO_RUBRICA] || ''}` : 'Não se aplica' },
         { label: 'Competência Vigente', value: proc.DT_COMPETENCIA ? `${proc.DT_COMPETENCIA.slice(0, 4)}/${proc.DT_COMPETENCIA.slice(4)}` : '—' },
-        { label: 'Competência de Inclusão', value: proc.dtInclusao ? proc.dtInclusao : 'Não informada' },
+        { label: 'Competência de Inclusão', value: proc.dtInclusao ? proc.dtInclusao : 'Não informada' }
       ];
 
       document.getElementById('detAttributesGrid').innerHTML = attrs.map(a => `
@@ -1331,6 +1348,9 @@
           : Object.keys(state.habilitacoes);
         return keys.sort().map(k => ({ key: k, label: `${k} - ${state.habilitacoes[k] || ''}` }));
       }
+      if (type === 'cid') {
+        return Object.keys(state.cids).sort().map(k => ({ key: k, label: `${k} - ${state.cids[k]}` }));
+      }
       if (type === 'regra') {
         return Object.keys(state.regrasCond).sort().map(k => ({ key: k, label: `${k} - ${state.regrasCond[k]}` }));
       }
@@ -1411,6 +1431,7 @@
     setupMultiSelect('servico', 'filterServico', 'dropdownServico', 'chipsServico');
     setupMultiSelect('habilitacao', 'filterHabilitacao', 'dropdownHabilitacao', 'chipsHabilitacao');
     setupMultiSelect('complemento', 'filterComplemento', 'dropdownComplemento', 'chipsComplemento');
+    setupMultiSelect('cid', 'filterCid', 'dropdownCid', 'chipsCid');
     setupMultiSelect('regra', 'filterRegraInput', 'dropdownRegra', 'chipsRegra');
     setupMultiSelect('atributoComp', 'filterAtributoCompInput', 'dropdownAtributoComp', 'chipsAtributoComp');
 
@@ -1443,6 +1464,11 @@
       applyFilters();
     });
 
+    document.getElementById('filterNoCid').addEventListener('change', (e) => {
+      toggleGrayDisabled(e.target.checked, 'filterCid', 'wrapCid', 'dropdownCid');
+      applyFilters();
+    });
+
     document.getElementById('toggleFiltersBtn').addEventListener('click', () => {
       document.getElementById('advancedFilters').classList.toggle('hidden');
     });
@@ -1457,6 +1483,7 @@
       multiSelected.servico = [];
       multiSelected.habilitacao = [];
       multiSelected.complemento = [];
+      multiSelected.cid = [];
       multiSelected.regra = [];
       multiSelected.atributoComp = [];
       renderMultiChips('registro', 'chipsRegistro');
@@ -1464,17 +1491,21 @@
       renderMultiChips('servico', 'chipsServico');
       renderMultiChips('habilitacao', 'chipsHabilitacao');
       renderMultiChips('complemento', 'chipsComplemento');
+      renderMultiChips('cid', 'chipsCid');
       renderMultiChips('regra', 'chipsRegra');
       renderMultiChips('atributoComp', 'chipsAtributoComp');
       document.getElementById('filterRegistroInput').value = '';
+      document.getElementById('filterCid').value = '';
       document.getElementById('filterRegraInput').value = '';
       document.getElementById('filterAtributoCompInput').value = '';
       document.getElementById('filterNoCbo').checked = false;
       document.getElementById('filterNoServico').checked = false;
       document.getElementById('filterNoHabilitacao').checked = false;
+      document.getElementById('filterNoCid').checked = false;
       toggleGrayDisabled(false, 'filterCbo', 'wrapCbo', 'dropdownCbo');
       toggleGrayDisabled(false, 'filterServico', 'wrapServico', 'dropdownServico');
       toggleGrayDisabled(false, 'filterHabilitacao', 'wrapHabilitacao', 'dropdownHabilitacao');
+      toggleGrayDisabled(false, 'filterCid', 'wrapCid', 'dropdownCid');
       applyFilters();
     });
 
@@ -1543,7 +1574,7 @@
         showToast('Nenhum procedimento para exportar.');
         return;
       }
-      const headers = ['CO_PROCEDIMENTO', 'NO_PROCEDIMENTO', 'STATUS', 'COMPLEXIDADE', 'INSTRUMENTO_REGISTRO', 'VL_SA', 'VL_SH', 'VL_SP', 'QTD_CBOS', 'QTD_SERVICOS', 'QTD_HABILITACOES', 'COMPETENCIA_INCLUSAO', 'ATO_NORMATIVO'];
+      const headers = ['CO_PROCEDIMENTO', 'NO_PROCEDIMENTO', 'STATUS', 'COMPLEXIDADE', 'INSTRUMENTO_REGISTRO', 'VL_SA', 'VL_SH', 'VL_SP', 'QTD_CBOS', 'QTD_SERVICOS', 'QTD_HABILITACOES', 'COMPETENCIA_INCLUSAO'];
       const rows = filteredProcedures.map(p => {
         const regList = p.registros.map(r => `${r} - ${state.registros[r] || ''}`).join(' | ');
         return [
@@ -1558,8 +1589,7 @@
           p.cbos.length,
           p.servicos.length,
           p.habilitacoes.length,
-          `"${(p.dtInclusao ? formatComp(p.dtInclusao) : '').replace(/"/g, '""')}"`,
-          `"${(p.atoNormativo || '').replace(/"/g, '""')}"`
+          `"${(p.dtInclusao ? formatComp(p.dtInclusao) : '').replace(/"/g, '""')}"`
         ].join(';');
       });
       const csv = '\uFEFF' + [headers.join(';'), ...rows].join('\n');
@@ -1618,16 +1648,14 @@
 
           let idxCode = header.findIndex(h => (h.includes('procedimento') && h.includes('cod')) || h === 'co_procedimento' || h === 'codigo');
           let idxComp = header.findIndex(h => h.includes('competencia') || h.includes('inclusao') || h === 'dt_inclusao');
-          let idxAto = header.findIndex(h => h.includes('ato') || h.includes('normativo') || h.includes('portaria'));
 
           let startIdx = 1;
           const firstCols = parseCsvLine(first, sep);
           if (idxCode === -1 && /^\d{10}$/.test((firstCols[0] || '').replace(/[.\-]/g, ''))) {
-            idxCode = 0; idxComp = 1; idxAto = 2; startIdx = 0;
+            idxCode = 0; idxComp = 1; startIdx = 0;
           } else {
             if (idxCode === -1) idxCode = 0;
             if (idxComp === -1) idxComp = 1;
-            if (idxAto === -1) idxAto = 2;
           }
 
           const incMap = {};
@@ -1636,19 +1664,16 @@
             const code = (cols[idxCode] || '').replace(/[.\-\s]/g, '');
             if (!code) continue;
             const compVal = (cols[idxComp] || '').trim();
-            const atoVal = cols.slice(idxAto).join(', ').trim();
             if (!incMap[code]) {
-              incMap[code] = { comps: [], atos: [] };
+              incMap[code] = { comps: [] };
             }
             if (compVal && !incMap[code].comps.includes(compVal)) incMap[code].comps.push(compVal);
-            if (atoVal && !incMap[code].atos.includes(atoVal)) incMap[code].atos.push(atoVal);
           }
 
           let matched = 0;
           state.procedures.forEach(p => {
             if (!p.excluded && incMap[p.CO_PROCEDIMENTO]) {
               p.dtInclusao = incMap[p.CO_PROCEDIMENTO].comps.map(formatComp).join(' | ');
-              p.atoNormativo = incMap[p.CO_PROCEDIMENTO].atos.join(' | ');
               matched++;
             }
           });
@@ -1715,7 +1740,6 @@
               VL_SP: '0',
               desc: '',
               dtInclusao: '',
-              atoNormativo: '',
               cbos: [],
               servicos: [],
               registros: [],
