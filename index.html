@@ -1102,8 +1102,6 @@
         { label: 'Financiamento', value: proc.CO_FINANCIAMENTO ? `${proc.CO_FINANCIAMENTO} - ${state.financiamento[proc.CO_FINANCIAMENTO] || ''}` : '—' },
         { label: 'Rubrica', value: proc.CO_RUBRICA ? `${proc.CO_RUBRICA} - ${state.rubricas[proc.CO_RUBRICA] || ''}` : 'Não se aplica' },
         { label: 'Competência Vigente', value: proc.DT_COMPETENCIA ? `${proc.DT_COMPETENCIA.slice(0, 4)}/${proc.DT_COMPETENCIA.slice(4)}` : '—' },
-        { label: 'Competência de Inclusão', value: proc.dtInclusao ? proc.dtInclusao : 'Não informada' },
-        { label: 'Ato Normativo de Inclusão', value: proc.atoNormativo || 'Não informado', span2: true }
       ];
 
       document.getElementById('detAttributesGrid').innerHTML = attrs.map(a => `
@@ -1613,8 +1611,6 @@
 
           let idxCode = header.findIndex(h => (h.includes('procedimento') && h.includes('cod')) || h === 'co_procedimento' || h === 'codigo');
           let idxComp = header.findIndex(h => h.includes('competencia') || h.includes('inclusao') || h === 'dt_inclusao');
-          let idxAto = header.findIndex(h => h.includes('ato') || h.includes('normativo') || h.includes('portaria'));
-
           let startIdx = 1;
           const firstCols = parseCsvLine(first, sep);
           if (idxCode === -1 && /^\d{10}$/.test((firstCols[0] || '').replace(/[.\-]/g, ''))) {
