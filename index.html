@@ -417,10 +417,13 @@
       'N': 'Não se aplica'
     };
 
+    // Tipos oficiais de compatibilidade do SIGTAP (TP_COMPATIBILIDADE)
     const COMPAT_MAP = {
       '1': 'Compatível',
       '2': 'Incompatível / Excludente',
-      '3': 'Concomitante'
+      '3': 'Concomitante',
+      '4': 'Compatível Sequencial',
+      '5': 'Obrigatório'
     };
 
     // Abreviações oficiais dos Instrumentos de Registro para exibição compacta nos cards prévios
@@ -1355,14 +1358,15 @@
         ? '<p class="text-xs text-slate-400">Nenhuma compatibilidade registrada.</p>'
         : proc.compativeis.slice(0, 200).map(c => {
             const target = state.procedures.find(p => p.CO_PROCEDIMENTO === c.co_compat);
+            const badgeBg = c.tp === '5' ? 'bg-[#F9F2D8]' : (c.tp === '2' ? 'bg-[#F6E1E1]' : 'bg-[#E6ECF8]');
             return `
               <div class="px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <span class="font-mono font-bold text-[#4A65B5]">${formatCode(c.co_compat)}</span>
                   <span class="text-[#222834] font-medium ml-1">${escapeHtml(target ? target.NO_PROCEDIMENTO : '')}</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full border border-[#222834] bg-[#E6ECF8] text-[#222834] text-[11px] font-bold">
-                  ${escapeHtml(COMPAT_MAP[c.tp] || c.tp)} (Qtd: ${formatNumericAttr(c.qt)})
+                <span class="px-2 py-0.5 rounded-full border border-[#222834] ${badgeBg} text-[#222834] text-[11px] font-bold">
+                  ${escapeHtml(COMPAT_MAP[c.tp] || `Tipo ${c.tp}`)} (Qtd: ${formatNumericAttr(c.qt)})
                 </span>
               </div>
             `;
