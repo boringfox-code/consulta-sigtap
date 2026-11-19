@@ -11,17 +11,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --azul: #2E52E6;
-      --azul-claro: #DCE4FF;
-      --azul-fundo: #E8EEFF;
-      --verde: #7ED957;
-      --verde-claro: #D8F7C8;
-      --amarelo: #F5CF2E;
-      --amarelo-claro: #FDF3C4;
-      --vermelho: #E03434;
-      --vermelho-claro: #FAD6D6;
+      --azul: #4A65B5;
+      --azul-claro: #E6ECF8;
+      --azul-fundo: #F1F4FA;
+      --verde: #88C48B;
+      --verde-claro: #E5F3E6;
+      --amarelo: #E6CB70;
+      --amarelo-claro: #F9F2D8;
+      --vermelho: #C75858;
+      --vermelho-claro: #F6E1E1;
       --cinza-texto: #2D3139;
-      --preto: #111111;
+      --preto: #222834;
       --branco: #FFFFFF;
       --offwhite: #FAFAFA;
     }
@@ -54,31 +54,30 @@
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #475569; }
   </style>
 </head>
-<body class="bg-[#E8EEFF] text-[#111111] min-h-screen flex flex-col">
+<body class="bg-[#F1F4FA] text-[#222834] min-h-screen flex flex-col">
 
   <!-- Top Bar -->
-  <header class="bg-white border-b-2 border-[#111111] sticky top-0 z-30">
+  <header class="bg-white border-b-2 border-[#222834] sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
-        <div class="w-10 h-10 rounded-xl bg-[#2E52E6] border-2 border-[#111111] text-white flex items-center justify-center shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-[#4A65B5] border-2 border-[#222834] text-white flex items-center justify-center shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
         <div class="min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-base sm:text-lg font-bold text-[#111111] truncate">Explorador SIGTAP</h1>
-            <span id="competenciaBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#111111] bg-[#FDF3C4] text-[#111111]">
+            <h1 class="text-base sm:text-lg font-bold text-[#222834] truncate">Explorador SIGTAP</h1>
+            <span id="competenciaBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#222834] bg-[#F9F2D8] text-[#222834]">
               Aguardando base SIGTAP
             </span>
           </div>
-          <p class="text-xs text-[#2D3139] truncate">Em desenvolvimento.</p>
-          <p class="text-xs text-[#2D3139] truncate">Esta ferramenta tem caráter auxiliar e não substitui, em hipótese alguma, os portais oficiais (<a href="http://sigtap.datasus.gov.br/" target="_blank" rel="noopener noreferrer" class="underline text-[#7C3F2C] hover:text-[#5C2D1F]">sigtap.datasus.gov.br</a>) nem as normativas vigentes.</p>
+          <p class="text-xs text-[#2D3139] truncate">Pesquisa por código, nome, descrição e atributos estruturais</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2 flex-wrap">
-        <button id="exportCsvBtn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#D8F7C8] border-2 border-[#111111] hover:bg-[#7ED957] text-[#111111] transition">
+        <button id="exportCsvBtn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#E5F3E6] border-2 border-[#222834] hover:bg-[#88C48B] text-[#222834] transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
@@ -89,9 +88,9 @@
   </header>
 
   <!-- Loading Banner -->
-  <div id="loadingBanner" class="hidden bg-[#DCE4FF] border-b-2 border-[#111111] px-4 py-2.5">
-    <div class="max-w-7xl mx-auto flex items-center gap-3 text-xs sm:text-sm font-medium text-[#111111]">
-      <svg class="w-4 h-4 animate-spin shrink-0 text-[#2E52E6]" fill="none" viewBox="0 0 24 24">
+  <div id="loadingBanner" class="hidden bg-[#E6ECF8] border-b-2 border-[#222834] px-4 py-2.5">
+    <div class="max-w-7xl mx-auto flex items-center gap-3 text-xs sm:text-sm font-medium text-[#222834]">
+      <svg class="w-4 h-4 animate-spin shrink-0 text-[#4A65B5]" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
       </svg>
@@ -107,7 +106,7 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
         <!-- Main Search Input -->
         <div class="md:col-span-7 relative">
-          <label for="searchInput" class="block text-xs font-bold text-[#111111] mb-1 truncate">
+          <label for="searchInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">
             Pesquisa geral (código, nome ou descrição)
           </label>
           <div class="relative">
@@ -125,7 +124,7 @@
 
         <!-- Search Scope -->
         <div class="md:col-span-3">
-          <label for="searchScope" class="block text-xs font-bold text-[#111111] mb-1 truncate">Buscar em</label>
+          <label for="searchScope" class="block text-xs font-bold text-[#222834] mb-1 truncate">Buscar em</label>
           <select id="searchScope" class="field-box w-full h-10 px-3 text-sm">
             <option value="all">Código, Nome e Descrição</option>
             <option value="code">Somente Código</option>
@@ -136,36 +135,36 @@
 
         <!-- Toggle Advanced Filters -->
         <div class="md:col-span-2">
-          <button id="toggleFiltersBtn" type="button" class="w-full h-10 px-3 text-sm font-bold rounded-[10px] border-[1.5px] border-[#111111] bg-[#DCE4FF] hover:bg-[#2E52E6] hover:text-white text-[#111111] transition flex items-center justify-center gap-1.5">
+          <button id="toggleFiltersBtn" type="button" class="w-full h-10 px-3 text-sm font-bold rounded-[10px] border-[1.5px] border-[#222834] bg-[#E6ECF8] hover:bg-[#4A65B5] hover:text-white text-[#222834] transition flex items-center justify-center gap-1.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
             <span>Filtros</span>
-            <span id="activeFiltersCount" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-[#F5CF2E] border border-[#111111] text-[#111111]">0</span>
+            <span id="activeFiltersCount" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-[#E6CB70] border border-[#222834] text-[#222834]">0</span>
           </button>
         </div>
       </div>
 
       <!-- Advanced Attribute Filters -->
-      <div id="advancedFilters" class="pt-3 border-t-2 border-[#111111]/15 space-y-3">
+      <div id="advancedFilters" class="pt-3 border-t-2 border-[#222834]/15 space-y-3">
         <!-- Linha 1: Grupo, Subgrupo, Forma de Organização -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-start">
           <div class="min-w-0">
-            <label for="filterGrupo" class="block text-xs font-bold text-[#111111] mb-1 truncate">Grupo</label>
+            <label for="filterGrupo" class="block text-xs font-bold text-[#222834] mb-1 truncate">Grupo</label>
             <select id="filterGrupo" class="field-box w-full h-9 px-2.5 text-xs">
               <option value="">Todos os grupos</option>
             </select>
           </div>
 
           <div class="min-w-0">
-            <label for="filterSubgrupo" class="block text-xs font-bold text-[#111111] mb-1 truncate">Subgrupo</label>
+            <label for="filterSubgrupo" class="block text-xs font-bold text-[#222834] mb-1 truncate">Subgrupo</label>
             <select id="filterSubgrupo" class="field-box w-full h-9 px-2.5 text-xs">
               <option value="">Todos os subgrupos</option>
             </select>
           </div>
 
           <div class="min-w-0">
-            <label for="filterForma" class="block text-xs font-bold text-[#111111] mb-1 truncate">Forma de Organização</label>
+            <label for="filterForma" class="block text-xs font-bold text-[#222834] mb-1 truncate">Forma de Organização</label>
             <select id="filterForma" class="field-box w-full h-9 px-2.5 text-xs">
               <option value="">Todas as formas</option>
             </select>
@@ -176,47 +175,47 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
           <div>
             <div id="wrapCbo" class="relative transition-opacity">
-              <label for="filterCbo" class="block text-xs font-bold text-[#111111] mb-1 truncate">CBO exigido</label>
+              <label for="filterCbo" class="block text-xs font-bold text-[#222834] mb-1 truncate">CBO exigido</label>
               <input id="filterCbo" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed" />
-              <div id="dropdownCbo" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#111111] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+              <div id="dropdownCbo" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
               <div id="chipsCbo" class="flex flex-wrap gap-1 mt-1.5"></div>
             </div>
             <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none mt-1.5">
-              <input id="filterNoCbo" type="checkbox" class="rounded border-[#111111] text-[#2E52E6] focus:ring-[#2E52E6]" />
+              <input id="filterNoCbo" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
               <span>Não exige CBO</span>
             </label>
           </div>
 
           <div>
             <div id="wrapServico" class="relative transition-opacity">
-              <label for="filterServico" class="block text-xs font-bold text-[#111111] mb-1 truncate">Serviço / Classificação</label>
+              <label for="filterServico" class="block text-xs font-bold text-[#222834] mb-1 truncate">Serviço / Classificação</label>
               <input id="filterServico" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed" />
-              <div id="dropdownServico" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#111111] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+              <div id="dropdownServico" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
               <div id="chipsServico" class="flex flex-wrap gap-1 mt-1.5"></div>
             </div>
             <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none mt-1.5">
-              <input id="filterNoServico" type="checkbox" class="rounded border-[#111111] text-[#2E52E6] focus:ring-[#2E52E6]" />
+              <input id="filterNoServico" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
               <span>Não exige serviço</span>
             </label>
           </div>
 
           <div>
             <div id="wrapHabilitacao" class="relative transition-opacity">
-              <label for="filterHabilitacao" class="block text-xs font-bold text-[#111111] mb-1 truncate">Habilitação Obrigatória</label>
+              <label for="filterHabilitacao" class="block text-xs font-bold text-[#222834] mb-1 truncate">Habilitação Obrigatória</label>
               <input id="filterHabilitacao" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed" />
-              <div id="dropdownHabilitacao" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#111111] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+              <div id="dropdownHabilitacao" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
               <div id="chipsHabilitacao" class="flex flex-wrap gap-1 mt-1.5"></div>
             </div>
             <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none mt-1.5">
-              <input id="filterNoHabilitacao" type="checkbox" class="rounded border-[#111111] text-[#2E52E6] focus:ring-[#2E52E6]" />
+              <input id="filterNoHabilitacao" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
               <span>Não exige habilitação</span>
             </label>
           </div>
 
           <div class="relative">
-            <label for="filterRegistroInput" class="block text-xs font-bold text-[#111111] mb-1 truncate">Instrumento de Registro</label>
+            <label for="filterRegistroInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">Instrumento de Registro</label>
             <input id="filterRegistroInput" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
-            <div id="dropdownRegistro" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#111111] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="dropdownRegistro" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
             <div id="chipsRegistro" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
         </div>
@@ -224,29 +223,29 @@
         <!-- Linha 3: Habilitação de Complemento, Regra Condicionada, Atributos Complementares, Limpar -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
           <div id="wrapComplemento" class="relative transition-opacity">
-            <label for="filterComplemento" class="block text-xs font-bold text-[#111111] mb-1 truncate">Habilitação de Complemento</label>
+            <label for="filterComplemento" class="block text-xs font-bold text-[#222834] mb-1 truncate">Habilitação de Complemento</label>
             <input id="filterComplemento" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
-            <div id="dropdownComplemento" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#111111] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="dropdownComplemento" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
             <div id="chipsComplemento" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
 
           <div class="relative">
-            <label for="filterRegraInput" class="block text-xs font-bold text-[#111111] mb-1 truncate">Regra Condicionada</label>
+            <label for="filterRegraInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">Regra Condicionada</label>
             <input id="filterRegraInput" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
-            <div id="dropdownRegra" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#111111] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="dropdownRegra" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
             <div id="chipsRegra" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
 
           <div id="wrapAtributo" class="relative transition-opacity">
-            <label for="filterAtributoInput" class="block text-xs font-bold text-[#111111] mb-1 truncate">Atributos Complementares</label>
+            <label for="filterAtributoInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">Atributos Complementares</label>
             <input id="filterAtributoInput" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
-            <div id="dropdownAtributo" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#111111] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="dropdownAtributo" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
             <div id="chipsAtributo" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
 
           <div>
             <span class="block text-xs font-bold text-transparent select-none mb-1" aria-hidden="true">Ação</span>
-            <button id="clearFiltersBtn" type="button" class="w-full h-9 px-3 text-xs font-bold rounded-[10px] border-[1.5px] border-[#111111] bg-[#FDF3C4] hover:bg-[#F5CF2E] text-[#111111] transition">
+            <button id="clearFiltersBtn" type="button" class="w-full h-9 px-3 text-xs font-bold rounded-[10px] border-[1.5px] border-[#222834] bg-[#F9F2D8] hover:bg-[#E6CB70] text-[#222834] transition">
               Limpar todos os filtros
             </button>
           </div>
@@ -259,16 +258,16 @@
 
       <!-- Left: Procedure List -->
       <div class="lg:col-span-5 card-frame flex flex-col overflow-hidden max-h-[70vh] lg:max-h-[calc(100vh-270px)]">
-        <div class="px-4 py-2.5 border-b-2 border-[#111111] bg-[#DCE4FF] flex items-center justify-between gap-2">
-          <span id="resultsSummary" class="text-xs font-bold text-[#111111]">0 procedimentos</span>
-          <div class="flex items-center gap-1.5 text-xs text-[#111111]">
-            <button id="prevPageBtn" type="button" class="px-2.5 py-1 rounded-lg border-[1.5px] border-[#111111] bg-white hover:bg-[#F5CF2E] font-bold disabled:opacity-40">Anterior</button>
+        <div class="px-4 py-2.5 border-b-2 border-[#222834] bg-[#E6ECF8] flex items-center justify-between gap-2">
+          <span id="resultsSummary" class="text-xs font-bold text-[#222834]">0 procedimentos</span>
+          <div class="flex items-center gap-1.5 text-xs text-[#222834]">
+            <button id="prevPageBtn" type="button" class="px-2.5 py-1 rounded-lg border-[1.5px] border-[#222834] bg-white hover:bg-[#E6CB70] font-bold disabled:opacity-40">Anterior</button>
             <span id="pageIndicator" class="px-1 font-bold">1 / 1</span>
-            <button id="nextPageBtn" type="button" class="px-2.5 py-1 rounded-lg border-[1.5px] border-[#111111] bg-white hover:bg-[#F5CF2E] font-bold disabled:opacity-40">Próxima</button>
+            <button id="nextPageBtn" type="button" class="px-2.5 py-1 rounded-lg border-[1.5px] border-[#222834] bg-white hover:bg-[#E6CB70] font-bold disabled:opacity-40">Próxima</button>
           </div>
         </div>
 
-        <div id="procedureList" class="divide-y-2 divide-[#111111]/10 overflow-y-auto custom-scroll flex-1">
+        <div id="procedureList" class="divide-y-2 divide-[#222834]/10 overflow-y-auto custom-scroll flex-1">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -276,35 +275,35 @@
       <!-- Right: Procedure Details -->
       <div id="detailPanel" class="lg:col-span-7 card-frame flex flex-col overflow-hidden max-h-[80vh] lg:max-h-[calc(100vh-270px)]">
         <div id="detailEmpty" class="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#2D3139]">
-          <svg class="w-12 h-12 mb-3 text-[#2E52E6]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <svg class="w-12 h-12 mb-3 text-[#4A65B5]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
-          <p class="text-sm font-bold text-[#111111]">Selecione um procedimento na lista</p>
+          <p class="text-sm font-bold text-[#222834]">Selecione um procedimento na lista</p>
           <p class="text-xs text-[#2D3139] mt-1">Os atributos completos, descrição e vínculos aparecerão aqui.</p>
         </div>
 
         <div id="detailContent" class="hidden flex-1 flex flex-col overflow-hidden">
           <!-- Detail Header -->
-          <div class="p-4 border-b-2 border-[#111111] bg-[#FAFAFA]">
+          <div class="p-4 border-b-2 border-[#222834] bg-[#FAFAFA]">
             <div class="flex flex-wrap items-start justify-between gap-2">
               <div class="space-y-1.5 min-w-0 flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span id="detCode" class="font-mono text-sm font-bold px-2.5 py-0.5 rounded-lg border-[1.5px] border-[#111111] bg-[#2E52E6] text-white"></span>
-                  <button id="copyCodeBtn" type="button" class="text-xs font-bold px-2.5 py-0.5 rounded-lg border-[1.5px] border-[#111111] bg-white hover:bg-[#FDF3C4] text-[#111111] transition">
+                  <span id="detCode" class="font-mono text-sm font-bold px-2.5 py-0.5 rounded-lg border-[1.5px] border-[#222834] bg-[#4A65B5] text-white"></span>
+                  <button id="copyCodeBtn" type="button" class="text-xs font-bold px-2.5 py-0.5 rounded-lg border-[1.5px] border-[#222834] bg-white hover:bg-[#F9F2D8] text-[#222834] transition">
                     Copiar código
                   </button>
-                  <span id="detComplexidadeBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#111111] bg-[#DCE4FF] text-[#111111]"></span>
-                  <span id="detInclusaoBadge" class="hidden text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#111111] bg-[#D8F7C8] text-[#111111]"></span>
+                  <span id="detComplexidadeBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#E6ECF8] text-[#222834]"></span>
+                  <span id="detInclusaoBadge" class="hidden text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#E5F3E6] text-[#222834]"></span>
                 </div>
-                <h2 id="detName" class="text-base sm:text-lg font-bold text-[#111111] leading-snug"></h2>
+                <h2 id="detName" class="text-base sm:text-lg font-bold text-[#222834] leading-snug"></h2>
               </div>
             </div>
           </div>
 
           <!-- Excluded Notice -->
-          <div id="detExcludedNotice" class="hidden p-5 m-4 rounded-xl bg-[#FAD6D6] border-2 border-[#111111] text-[#111111] space-y-2">
-            <div class="flex items-center gap-2 font-bold text-sm text-[#111111]">
-              <svg class="w-5 h-5 shrink-0 text-[#E03434]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <div id="detExcludedNotice" class="hidden p-5 m-4 rounded-xl bg-[#F6E1E1] border-2 border-[#222834] text-[#222834] space-y-2">
+            <div class="flex items-center gap-2 font-bold text-sm text-[#222834]">
+              <svg class="w-5 h-5 shrink-0 text-[#C75858]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <span>Procedimento excluído. Favor consultar portal oficial do sigtap para mais informações</span>
@@ -313,14 +312,14 @@
           </div>
 
           <!-- Detail Tabs -->
-          <div id="detTabsBar" class="border-b-2 border-[#111111]/15 bg-white px-4 flex gap-4 overflow-x-auto text-xs font-bold">
-            <button data-tab="atributos" class="detail-tab py-2.5 border-b-2 border-[#2E52E6] text-[#2E52E6] whitespace-nowrap">Atributos e Descrição</button>
-            <button data-tab="cbos" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">CBOs (<span id="countCbos">0</span>)</button>
-            <button data-tab="servicos" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Serviço/Classif. (<span id="countServicos">0</span>)</button>
-            <button data-tab="registros" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Instr. de Registo (<span id="countRegistros">0</span>)</button>
-            <button data-tab="habilitacoes" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Habilitações (<span id="countHabilitacoes">0</span>)</button>
-            <button data-tab="cids" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">CIDs (<span id="countCids">0</span>)</button>
-            <button data-tab="compat" class="detail-tab py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">Compatib./Regras (<span id="countCompat">0</span>)</button>
+          <div id="detTabsBar" class="border-b-2 border-[#222834]/15 bg-white px-4 flex gap-2 overflow-x-auto text-xs font-bold">
+            <button data-tab="atributos" class="detail-tab px-2 py-2.5 border-b-2 border-[#4A65B5] text-[#4A65B5] whitespace-nowrap cursor-pointer">Atributos e Descrição</button>
+            <button data-tab="cbos" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">CBOs</button>
+            <button data-tab="servicos" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Serviço/Classif.</button>
+            <button data-tab="registros" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Registros</button>
+            <button data-tab="habilitacoes" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Habilitações</button>
+            <button data-tab="cids" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">CIDs</button>
+            <button data-tab="compat" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Compatib./Regras</button>
           </div>
 
           <!-- Tab Bodies -->
@@ -329,7 +328,7 @@
             <div id="tab-atributos" class="tab-pane space-y-4">
               <div>
                 <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Descrição do Procedimento</h3>
-                <p id="detDesc" class="text-sm text-[#2D3139] bg-[#FAFAFA] border-[1.5px] border-[#111111] rounded-xl p-3 leading-relaxed"></p>
+                <p id="detDesc" class="text-sm text-[#2D3139] bg-[#FAFAFA] border-[1.5px] border-[#222834] rounded-xl p-3 leading-relaxed"></p>
               </div>
 
               <div>
@@ -793,12 +792,12 @@
       const badge = document.getElementById('competenciaBadge');
       if (!state.loaded) {
         badge.textContent = 'Aguardando base SIGTAP';
-        badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#111111] bg-[#FDF3C4] text-[#111111]';
+        badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#222834] bg-[#F9F2D8] text-[#222834]';
         return;
       }
       const comp = state.competencia ? `${state.competencia.slice(0, 4)}/${state.competencia.slice(4)}` : 'S/ Comp.';
       badge.textContent = `Competência ${comp} (${state.procedures.length.toLocaleString('pt-BR')} proc.)`;
-      badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#111111] bg-[#D8F7C8] text-[#111111]';
+      badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#222834] bg-[#E5F3E6] text-[#222834]';
     }
 
     function populateSubgrupoSelect() {
@@ -1038,13 +1037,13 @@
             <button
               type="button"
               data-code="${escapeHtml(p.CO_PROCEDIMENTO)}"
-              class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-[#FAD6D6] border-l-4 border-[#E03434]' : 'bg-[#FAD6D6]/50 hover:bg-[#FAD6D6]/80 border-l-4 border-[#E03434]/60'}"
+              class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-[#F6E1E1] border-l-4 border-[#C75858]' : 'bg-[#F6E1E1]/50 hover:bg-[#F6E1E1]/80 border-l-4 border-[#C75858]/60'}"
             >
               <div class="flex items-center justify-between gap-2 mb-1">
-                <span class="font-mono text-xs font-bold text-[#111111]">${formatCode(p.CO_PROCEDIMENTO)}</span>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border border-[#111111] bg-[#E03434] text-white">Excluído</span>
+                <span class="font-mono text-xs font-bold text-[#222834]">${formatCode(p.CO_PROCEDIMENTO)}</span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border border-[#222834] bg-[#C75858] text-white">Excluído</span>
               </div>
-              <div class="text-sm font-bold text-[#111111] line-clamp-2 leading-snug">
+              <div class="text-sm font-bold text-[#222834] line-clamp-2 leading-snug">
                 ${escapeHtml(p.NO_PROCEDIMENTO)}
               </div>
               <div class="mt-1.5 text-[11px] font-semibold text-[#2D3139]">
@@ -1068,21 +1067,21 @@
           <button
             type="button"
             data-code="${escapeHtml(p.CO_PROCEDIMENTO)}"
-            class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-[#DCE4FF] border-l-4 border-[#2E52E6]' : 'bg-white hover:bg-[#E8EEFF]/60 border-l-4 border-transparent'}"
+            class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-[#E6ECF8] border-l-4 border-[#4A65B5]' : 'bg-white hover:bg-[#F1F4FA]/60 border-l-4 border-transparent'}"
           >
             <div class="flex items-center justify-between gap-2 mb-1">
-              <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-md border border-[#111111] bg-[#2E52E6] text-white">${formatCode(p.CO_PROCEDIMENTO)}</span>
+              <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-md border border-[#222834] bg-[#4A65B5] text-white">${formatCode(p.CO_PROCEDIMENTO)}</span>
               ${regItems.length > 0 ? `
                 <div class="flex flex-wrap justify-end gap-1">
-                  ${regItems.map(item => `<span title="${escapeHtml(item.full)}" class="inline-flex items-center px-2 py-0.5 rounded-full border border-[#111111] bg-[#D8F7C8] text-[10px] font-bold text-[#111111]">${escapeHtml(item.short)}</span>`).join('')}
+                  ${regItems.map(item => `<span title="${escapeHtml(item.full)}" class="inline-flex items-center px-2 py-0.5 rounded-full border border-[#222834] bg-[#E5F3E6] text-[10px] font-bold text-[#222834]">${escapeHtml(item.short)}</span>`).join('')}
                 </div>
               ` : ''}
             </div>
-            <div class="text-sm font-bold text-[#111111] line-clamp-2 leading-snug">
+            <div class="text-sm font-bold text-[#222834] line-clamp-2 leading-snug">
               ${escapeHtml(p.NO_PROCEDIMENTO)}
             </div>
             <div class="mt-2">
-              <div class="inline-flex items-center gap-1.5 max-w-full px-2 py-0.5 rounded-md border border-[#111111] bg-[#FDF3C4] text-[11px] font-bold text-[#111111]">
+              <div class="inline-flex items-center gap-1.5 max-w-full px-2 py-0.5 rounded-md border border-[#222834] bg-[#F9F2D8] text-[11px] font-bold text-[#222834]">
                 <span class="shrink-0 uppercase text-[10px] text-[#2D3139]">Forma Org.:</span>
                 <span class="truncate">${escapeHtml(foLabel)}</span>
               </div>
@@ -1124,7 +1123,7 @@
 
       if (proc.excluded) {
         compBadge.textContent = 'Excluído';
-        compBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#111111] bg-[#E03434] text-white';
+        compBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#C75858] text-white';
         incBadge.classList.add('hidden');
         incBadge.textContent = '';
         const compExcl = formatCompetenciaStr(proc.DT_EXCLUSAO) || 'Não informada';
@@ -1138,7 +1137,7 @@
       exclNotice.classList.add('hidden');
       tabsBar.classList.remove('hidden');
       tabBodies.classList.remove('hidden');
-      compBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#111111] bg-[#DCE4FF] text-[#111111]';
+      compBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#E6ECF8] text-[#222834]';
       compBadge.textContent =
         COMPLEXIDADE_MAP[proc.TP_COMPLEXIDADE] || `Complexidade ${proc.TP_COMPLEXIDADE}`;
 
@@ -1171,9 +1170,9 @@
       ];
 
       document.getElementById('detAttributesGrid').innerHTML = attrs.map(a => `
-        <div class="bg-[#FAFAFA] border-[1.5px] border-[#111111] rounded-xl p-2.5">
+        <div class="bg-[#FAFAFA] border-[1.5px] border-[#222834] rounded-xl p-2.5">
           <div class="text-[11px] font-bold text-[#2D3139]">${escapeHtml(a.label)}</div>
-          <div class="text-xs sm:text-sm font-bold text-[#111111] mt-0.5 break-words">${escapeHtml(a.value)}</div>
+          <div class="text-xs sm:text-sm font-bold text-[#222834] mt-0.5 break-words">${escapeHtml(a.value)}</div>
         </div>
       `).join('');
 
@@ -1182,19 +1181,40 @@
         atribListEl.innerHTML = '<span class="text-xs text-slate-400">Nenhum atributo complementar vinculado.</span>';
       } else {
         atribListEl.innerHTML = proc.atributos.map(ac => `
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#DCE4FF] border border-[#111111] text-xs font-bold text-[#111111]">
-            <span class="font-mono text-[#2E52E6]">${escapeHtml(ac)}</span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E6ECF8] border border-[#222834] text-xs font-bold text-[#222834]">
+            <span class="font-mono text-[#4A65B5]">${escapeHtml(ac)}</span>
             <span>${escapeHtml(state.atributosComp[ac] || 'Atributo complementar')}</span>
           </span>
         `).join('');
       }
 
-      document.getElementById('countCbos').textContent = String(proc.cbos.length);
-      document.getElementById('countServicos').textContent = String(proc.servicos.length);
-      document.getElementById('countRegistros').textContent = String(proc.registros.length);
-      document.getElementById('countHabilitacoes').textContent = String(proc.habilitacoes.length + (proc.incrementos ? proc.incrementos.length : 0));
-      document.getElementById('countCids').textContent = String(proc.cids.length);
-      document.getElementById('countCompat').textContent = String(proc.regras.length + proc.compativeis.length);
+      // Atualiza a disponibilidade das abas: opções vazias (0) ficam cinzas e não clicáveis
+      const tabCounts = {
+        atributos: 1,
+        cbos: proc.cbos.length,
+        servicos: proc.servicos.length,
+        registros: proc.registros.length,
+        habilitacoes: proc.habilitacoes.length + (proc.incrementos ? proc.incrementos.length : 0),
+        cids: proc.cids.length,
+        compat: proc.regras.length + proc.compativeis.length
+      };
+      let activeTabName = 'atributos';
+      document.querySelectorAll('.detail-tab').forEach(btn => {
+        const t = btn.dataset.tab;
+        const isEmpty = (tabCounts[t] || 0) === 0;
+        const isCurrentActive = btn.classList.contains('border-[#4A65B5]');
+        btn.disabled = isEmpty;
+        btn.setAttribute('aria-disabled', isEmpty ? 'true' : 'false');
+        btn.title = isEmpty ? 'Nenhum registro vinculado neste procedimento' : '';
+        btn.classList.toggle('cursor-not-allowed', isEmpty);
+        btn.classList.toggle('cursor-pointer', !isEmpty);
+        btn.classList.toggle('text-slate-400', isEmpty);
+        btn.classList.toggle('bg-slate-100/70', isEmpty);
+        btn.classList.toggle('opacity-60', isEmpty);
+        btn.classList.toggle('hover:text-[#4A65B5]', !isEmpty);
+        if (isCurrentActive && !isEmpty) activeTabName = t;
+      });
+      activateDetailTab(activeTabName);
 
       document.getElementById('innerCboSearch').value = '';
       document.getElementById('innerCidSearch').value = '';
@@ -1218,9 +1238,9 @@
         return;
       }
       el.innerHTML = items.slice(0, 300).map(c => `
-        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#111111] text-xs">
-          <span class="font-mono font-bold text-[#2E52E6] shrink-0">${escapeHtml(c)}</span>
-          <span class="text-[#111111] font-medium">${escapeHtml(state.ocupacoes[c] || 'Ocupação (tb_ocupacao não carregada)')}</span>
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs">
+          <span class="font-mono font-bold text-[#4A65B5] shrink-0">${escapeHtml(c)}</span>
+          <span class="text-[#222834] font-medium">${escapeHtml(state.ocupacoes[c] || 'Ocupação (tb_ocupacao não carregada)')}</span>
         </div>
       `).join('') + (items.length > 300 ? `<p class="text-xs text-slate-400 pt-1">Mostrando 300 de ${items.length} CBOs. Use o filtro acima para refinar.</p>` : '');
     }
@@ -1235,9 +1255,9 @@
         const servName = state.servicos[s.serv] || 'Serviço';
         const className = state.servicoClassif[s.serv + s.classif] || 'Classificação';
         return `
-          <div class="px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#111111] text-xs space-y-0.5">
-            <div class="font-bold text-[#111111]">
-              <span class="font-mono text-[#2E52E6]">${escapeHtml(s.serv)}</span> — ${escapeHtml(servName)}
+          <div class="px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs space-y-0.5">
+            <div class="font-bold text-[#222834]">
+              <span class="font-mono text-[#4A65B5]">${escapeHtml(s.serv)}</span> — ${escapeHtml(servName)}
             </div>
             <div class="text-[#2D3139]">
               Classificação <span class="font-mono font-bold">${escapeHtml(s.classif)}</span> — ${escapeHtml(className)}
@@ -1254,9 +1274,9 @@
         return;
       }
       el.innerHTML = proc.registros.map(r => `
-        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#D8F7C8]/60 border-[1.5px] border-[#111111] text-xs">
-          <span class="font-mono font-bold text-[#111111]">${escapeHtml(r)}</span>
-          <span class="text-[#111111] font-bold">${escapeHtml(state.registros[r] || 'Instrumento de Registro')}</span>
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#E5F3E6]/60 border-[1.5px] border-[#222834] text-xs">
+          <span class="font-mono font-bold text-[#222834]">${escapeHtml(r)}</span>
+          <span class="text-[#222834] font-bold">${escapeHtml(state.registros[r] || 'Instrumento de Registro')}</span>
         </div>
       `).join('');
     }
@@ -1267,12 +1287,12 @@
         el.innerHTML = '<p class="text-xs text-slate-400">Não exige habilitação obrigatória.</p>';
       } else {
         el.innerHTML = proc.habilitacoes.map(h => `
-          <div class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#111111] text-xs">
+          <div class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
-              <span class="font-mono font-bold text-[#2E52E6] shrink-0">${escapeHtml(h.code)}</span>
-              <span class="text-[#111111] font-medium">${escapeHtml(state.habilitacoes[h.code] || 'Habilitação')}</span>
+              <span class="font-mono font-bold text-[#4A65B5] shrink-0">${escapeHtml(h.code)}</span>
+              <span class="text-[#222834] font-medium">${escapeHtml(state.habilitacoes[h.code] || 'Habilitação')}</span>
             </div>
-            ${h.grupo && h.grupo !== '0000' ? `<span class="shrink-0 px-2 py-0.5 rounded-full border border-[#111111] bg-[#DCE4FF] text-[#111111] text-[11px] font-bold">Grupo ${escapeHtml(h.grupo)}</span>` : ''}
+            ${h.grupo && h.grupo !== '0000' ? `<span class="shrink-0 px-2 py-0.5 rounded-full border border-[#222834] bg-[#E6ECF8] text-[#222834] text-[11px] font-bold">Grupo ${escapeHtml(h.grupo)}</span>` : ''}
           </div>
         `).join('');
       }
@@ -1288,12 +1308,12 @@
             inc.sp && parseInt(inc.sp, 10) > 0 ? `SP: ${parseInt(inc.sp, 10)}%` : ''
           ].filter(Boolean).join(' • ');
           return `
-            <div class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl bg-[#FDF3C4] border-[1.5px] border-[#111111] text-xs">
+            <div class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl bg-[#F9F2D8] border-[1.5px] border-[#222834] text-xs">
               <div class="flex items-center gap-2.5 min-w-0">
-                <span class="font-mono font-bold text-[#111111] shrink-0">${escapeHtml(inc.code)}</span>
-                <span class="text-[#111111] font-medium">${escapeHtml(state.habilitacoes[inc.code] || 'Habilitação de complemento')}</span>
+                <span class="font-mono font-bold text-[#222834] shrink-0">${escapeHtml(inc.code)}</span>
+                <span class="text-[#222834] font-medium">${escapeHtml(state.habilitacoes[inc.code] || 'Habilitação de complemento')}</span>
               </div>
-              ${pcts ? `<span class="shrink-0 px-2 py-0.5 rounded-full border border-[#111111] bg-[#F5CF2E] text-[#111111] text-[11px] font-bold">${escapeHtml(pcts)}</span>` : ''}
+              ${pcts ? `<span class="shrink-0 px-2 py-0.5 rounded-full border border-[#222834] bg-[#E6CB70] text-[#222834] text-[11px] font-bold">${escapeHtml(pcts)}</span>` : ''}
             </div>
           `;
         }).join('');
@@ -1312,9 +1332,9 @@
         return;
       }
       el.innerHTML = items.slice(0, 300).map(c => `
-        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#111111] text-xs">
-          <span class="font-mono font-bold text-[#2E52E6] shrink-0">${escapeHtml(c)}</span>
-          <span class="text-[#111111] font-medium">${escapeHtml(state.cids[c] || 'CID-10 (tb_cid não carregada)')}</span>
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs">
+          <span class="font-mono font-bold text-[#4A65B5] shrink-0">${escapeHtml(c)}</span>
+          <span class="text-[#222834] font-medium">${escapeHtml(state.cids[c] || 'CID-10 (tb_cid não carregada)')}</span>
         </div>
       `).join('');
     }
@@ -1324,9 +1344,9 @@
       regrasEl.innerHTML = proc.regras.length === 0
         ? '<p class="text-xs text-slate-400">Nenhuma regra condicionada.</p>'
         : proc.regras.map(r => `
-            <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#FDF3C4] border-[1.5px] border-[#111111] text-xs">
-              <span class="font-mono font-bold text-[#111111]">${escapeHtml(r)}</span>
-              <span class="text-[#111111] font-medium">${escapeHtml(state.regrasCond[r] || 'Regra condicionada')}</span>
+            <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#F9F2D8] border-[1.5px] border-[#222834] text-xs">
+              <span class="font-mono font-bold text-[#222834]">${escapeHtml(r)}</span>
+              <span class="text-[#222834] font-medium">${escapeHtml(state.regrasCond[r] || 'Regra condicionada')}</span>
             </div>
           `).join('');
 
@@ -1336,12 +1356,12 @@
         : proc.compativeis.slice(0, 200).map(c => {
             const target = state.procedures.find(p => p.CO_PROCEDIMENTO === c.co_compat);
             return `
-              <div class="px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#111111] text-xs flex flex-wrap items-center justify-between gap-2">
+              <div class="px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span class="font-mono font-bold text-[#2E52E6]">${formatCode(c.co_compat)}</span>
-                  <span class="text-[#111111] font-medium ml-1">${escapeHtml(target ? target.NO_PROCEDIMENTO : '')}</span>
+                  <span class="font-mono font-bold text-[#4A65B5]">${formatCode(c.co_compat)}</span>
+                  <span class="text-[#222834] font-medium ml-1">${escapeHtml(target ? target.NO_PROCEDIMENTO : '')}</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full border border-[#111111] bg-[#DCE4FF] text-[#111111] text-[11px] font-bold">
+                <span class="px-2 py-0.5 rounded-full border border-[#222834] bg-[#E6ECF8] text-[#222834] text-[11px] font-bold">
                   ${escapeHtml(COMPAT_MAP[c.tp] || c.tp)} (Qtd: ${formatNumericAttr(c.qt)})
                 </span>
               </div>
@@ -1403,9 +1423,9 @@
       const container = document.getElementById(chipsId);
       const list = multiSelected[type];
       container.innerHTML = list.map(item => `
-        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[#111111] text-[11px] font-bold bg-[#DCE4FF] text-[#111111] max-w-full">
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[#222834] text-[11px] font-bold bg-[#E6ECF8] text-[#222834] max-w-full">
           <span class="truncate max-w-[180px]" title="${escapeHtml(item.label)}">${escapeHtml(item.label)}</span>
-          <button type="button" data-remove-type="${type}" data-remove-key="${escapeHtml(item.key)}" class="hover:text-[#E03434] font-bold leading-none">&times;</button>
+          <button type="button" data-remove-type="${type}" data-remove-key="${escapeHtml(item.key)}" class="hover:text-[#C75858] font-bold leading-none">&times;</button>
         </span>
       `).join('');
     }
@@ -1432,7 +1452,7 @@
           return;
         }
         dropdown.innerHTML = matches.map(m => `
-          <button type="button" data-pick-key="${escapeHtml(m.key)}" data-pick-label="${escapeHtml(m.label)}" class="w-full text-left px-2.5 py-1.5 hover:bg-[#DCE4FF] text-[#111111] font-medium border-b border-slate-200 last:border-0 truncate">
+          <button type="button" data-pick-key="${escapeHtml(m.key)}" data-pick-label="${escapeHtml(m.label)}" class="w-full text-left px-2.5 py-1.5 hover:bg-[#E6ECF8] text-[#222834] font-medium border-b border-slate-200 last:border-0 truncate">
             ${escapeHtml(m.label)}
           </button>
         `).join('');
@@ -1555,19 +1575,26 @@
       if (btn && btn.dataset.code) selectProcedure(btn.dataset.code);
     });
 
+    // Alterna a aba ativa do painel de detalhes, ignorando abas vazias/desabilitadas
+    function activateDetailTab(target) {
+      document.querySelectorAll('.detail-tab').forEach(b => {
+        const active = b.dataset.tab === target && !b.disabled;
+        b.classList.toggle('border-[#4A65B5]', active);
+        b.classList.toggle('text-[#4A65B5]', active);
+        b.classList.toggle('border-transparent', !active);
+        if (!b.disabled) {
+          b.classList.toggle('text-slate-600', !active);
+        }
+      });
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.toggle('hidden', pane.id !== `tab-${target}`);
+      });
+    }
+
     document.querySelectorAll('.detail-tab').forEach(btn => {
       btn.addEventListener('click', () => {
-        const target = btn.dataset.tab;
-        document.querySelectorAll('.detail-tab').forEach(b => {
-          const active = b.dataset.tab === target;
-          b.classList.toggle('border-[#2E52E6]', active);
-          b.classList.toggle('text-[#2E52E6]', active);
-          b.classList.toggle('border-transparent', !active);
-          b.classList.toggle('text-slate-500', !active);
-        });
-        document.querySelectorAll('.tab-pane').forEach(pane => {
-          pane.classList.toggle('hidden', pane.id !== `tab-${target}`);
-        });
+        if (btn.disabled) return;
+        activateDetailTab(btn.dataset.tab);
       });
     });
 
