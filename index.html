@@ -214,11 +214,11 @@
             </label>
           </div>
 
-          <div class="relative">
-            <label for="filterRegistroInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">Instrumento de Registro</label>
-            <input id="filterRegistroInput" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
-            <div id="dropdownRegistro" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
-            <div id="chipsRegistro" class="flex flex-wrap gap-1 mt-1.5"></div>
+          <div class="min-w-0">
+            <label for="filterRegistro" class="block text-xs font-bold text-[#222834] mb-1 truncate">Instrumento de Registro</label>
+            <select id="filterRegistro" class="field-box w-full h-9 px-2.5 text-xs">
+              <option value="">Todos os instrumentos</option>
+            </select>
           </div>
         </div>
 
@@ -480,7 +480,6 @@
 
     let state = createEmptyState();
     const multiSelected = {
-      registro: [],
       cbo: [],
       servico: [],
       habilitacao: [],
@@ -867,9 +866,16 @@
         grpSel.appendChild(opt);
       });
 
+      const regSel = document.getElementById('filterRegistro');
+      regSel.innerHTML = '<option value="">Todos os instrumentos</option>';
+      Object.keys(state.registros).sort().forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = `${k} - ${state.registros[k]}`;
+        regSel.appendChild(opt);
+      });
+
       populateSubgrupoSelect();
-
-
     }
 
     // Aplica todos os filtros ativos (busca geral, hierarquia e seleções múltiplas) e atualiza a lista
@@ -886,15 +892,13 @@
       const noServico = document.getElementById('filterNoServico').checked;
       const noHabilitacao = document.getElementById('filterNoHabilitacao').checked;
 
-      const regQ = normalizeSearch(document.getElementById('filterRegistroInput').value.trim());
+      const registro = document.getElementById('filterRegistro').value;
       const cboQ = noCbo ? '' : normalizeSearch(document.getElementById('filterCbo').value.trim());
       const servQ = noServico ? '' : normalizeSearch(document.getElementById('filterServico').value.trim());
       const habQ = noHabilitacao ? '' : normalizeSearch(document.getElementById('filterHabilitacao').value.trim());
       const compQ = normalizeSearch(document.getElementById('filterComplemento').value.trim());
       const regraQ = normalizeSearch(document.getElementById('filterRegraInput').value.trim());
       const atribQ = normalizeSearch(document.getElementById('filterAtributoInput').value.trim());
-
-      const selReg = multiSelected.registro.map(x => x.key);
       const selCbo = noCbo ? [] : multiSelected.cbo.map(x => x.key);
       const selServ = noServico ? [] : multiSelected.servico.map(x => x.key);
       const selHab = noHabilitacao ? [] : multiSelected.habilitacao.map(x => x.key);
@@ -904,8 +908,7 @@
 
       // Active filter count badge
       const activeCount = [
-        grupo, subgrupo, forma, noCbo, noServico, noHabilitacao,
-        selReg.length > 0 || regQ,
+        grupo, subgrupo, forma, registro, noCbo, noServico, noHabilitacao,
         selCbo.length > 0 || cboQ,
         selServ.length > 0 || servQ,
         selHab.length > 0 || habQ,
@@ -926,12 +929,7 @@
         if (subgrupo && !p.CO_PROCEDIMENTO.startsWith(subgrupo)) return false;
         if (forma && !p.CO_PROCEDIMENTO.startsWith(forma)) return false;
 
-        if (selReg.length > 0) {
-          if (!selReg.some(r => p.registros.includes(r))) return false;
-        } else if (regQ) {
-          const matchReg = p.registros.some(r => r.toLowerCase().includes(regQ) || normalizeSearch(state.registros[r] || '').includes(regQ));
-          if (!matchReg) return false;
-        }
+        if (registro && !p.registros.includes(registro)) return false;
 
         if (noCbo && (p.excluded || p.cbos.length > 0)) return false;
         if (noServico && (p.excluded || p.servicos.length > 0)) return false;
@@ -1419,11 +1417,9 @@
       applyFilters();
     });
     document.getElementById('filterForma').addEventListener('change', applyFilters);
+    document.getElementById('filterRegistro').addEventListener('change', applyFilters);
 
     function getMultiOptions(type) {
-      if (type === 'registro') {
-        return Object.keys(state.registros).sort().map(k => ({ key: k, label: `${k} - ${state.registros[k]}` }));
-      }
       if (type === 'cbo') {
         return Object.keys(state.ocupacoes).sort().map(k => ({ key: k, label: `${k} - ${state.ocupacoes[k]}` }));
       }
@@ -1528,7 +1524,6 @@
       });
     }
 
-    setupMultiSelect('registro', 'filterRegistroInput', 'dropdownRegistro', 'chipsRegistro');
     setupMultiSelect('cbo', 'filterCbo', 'dropdownCbo', 'chipsCbo');
     setupMultiSelect('servico', 'filterServico', 'dropdownServico', 'chipsServico');
     setupMultiSelect('habilitacao', 'filterHabilitacao', 'dropdownHabilitacao', 'chipsHabilitacao');
@@ -1574,21 +1569,19 @@
       document.getElementById('searchScope').value = 'all';
       document.getElementById('filterGrupo').value = '';
       populateSubgrupoSelect();
-      multiSelected.registro = [];
+      document.getElementById('filterRegistro').value = '';
       multiSelected.cbo = [];
       multiSelected.servico = [];
       multiSelected.habilitacao = [];
       multiSelected.complemento = [];
       multiSelected.regra = [];
       multiSelected.atributo = [];
-      renderMultiChips('registro', 'chipsRegistro');
       renderMultiChips('cbo', 'chipsCbo');
       renderMultiChips('servico', 'chipsServico');
       renderMultiChips('habilitacao', 'chipsHabilitacao');
       renderMultiChips('complemento', 'chipsComplemento');
       renderMultiChips('regra', 'chipsRegra');
       renderMultiChips('atributo', 'chipsAtributo');
-      document.getElementById('filterRegistroInput').value = '';
       document.getElementById('filterRegraInput').value = '';
       document.getElementById('filterAtributoInput').value = '';
       document.getElementById('filterNoCbo').checked = false;
