@@ -10,40 +10,76 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #F2F7F5; color: #1E3231; }
-    .font-vintage { font-family: Georgia, 'Times New Roman', serif; }
+    :root {
+      --azul: #4A65B5;
+      --azul-claro: #E6ECF8;
+      --azul-fundo: #F1F4FA;
+      --verde: #88C48B;
+      --verde-claro: #E5F3E6;
+      --amarelo: #E6CB70;
+      --amarelo-claro: #F9F2D8;
+      --vermelho: #C75858;
+      --vermelho-claro: #F6E1E1;
+      --cinza-texto: #2D3139;
+      --preto: #222834;
+      --branco: #FFFFFF;
+      --offwhite: #FAFAFA;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--azul-fundo);
+      color: var(--preto);
+    }
+    .card-frame {
+      background: var(--branco);
+      border: 2px solid var(--preto);
+      border-radius: 16px;
+      box-shadow: 0 4px 0 rgba(17, 17, 17, 0.08);
+    }
+    .field-box {
+      background: var(--offwhite);
+      border: 1.5px solid var(--preto);
+      border-radius: 10px;
+      color: var(--preto);
+    }
+    .field-box:focus {
+      outline: none;
+      border-color: var(--azul);
+      box-shadow: 0 0 0 2px var(--azul-claro);
+      background: var(--branco);
+    }
     .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
     .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #B7D1CA; }
-    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #8FB8AE; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #475569; }
   </style>
 </head>
-<body class="bg-[#F2F7F5] text-[#1E3231] min-h-screen flex flex-col">
+<body class="bg-[#F1F4FA] text-[#222834] min-h-screen flex flex-col">
 
   <!-- Top Bar -->
-  <header class="bg-[#E3F0EC] border-b border-[#BDD6CE] sticky top-0 z-30">
+  <header class="bg-white border-b-2 border-[#222834] sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-start gap-3 min-w-0 flex-1">
-        <div class="w-9 h-9 rounded-none bg-[#2B7A78] text-white flex items-center justify-center shrink-0 border border-[#1F5E5C]">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-[#4A65B5] border-2 border-[#222834] text-white flex items-center justify-center shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
         <div class="min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="font-vintage text-lg sm:text-xl font-bold text-[#172A29] tracking-tight truncate">Explorador SIGTAP</h1>
-            <span id="competenciaBadge" class="inline-flex items-center px-2 py-0.5 rounded-none text-xs font-medium bg-[#FAFDFC] border border-[#B7D1CA] text-[#3B5956]">
+            <h1 class="text-base sm:text-lg font-bold text-[#222834] truncate">Explorador SIGTAP</h1>
+            <span id="competenciaBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#222834] bg-[#F9F2D8] text-[#222834]">
               Aguardando base SIGTAP
             </span>
           </div>
-          <p class="text-[11px] sm:text-xs text-[#3B5956] mt-0.5 leading-snug">
-            Esta ferramenta tem caráter auxiliar e não substitui, em hipótese alguma, os portais oficiais (como o <a href="http://sigtap.datasus.gov.br/" target="_blank" rel="noopener noreferrer" class="underline text-[#1D5B59] hover:text-[#123D3B]">sigtap.datasus.gov.br</a>) nem as normativas vigentes.
-          </p>
+          <p class="text-xs text-[#2D3139] truncate">Em desenvolvimento.</p>
+          <p class="text-xs text-[#2D3139] truncate">Esta ferramenta tem caráter auxiliar e não substitui, em hipótese alguma, os portais oficiais (<a href="http://sigtap.datasus.gov.br/" target="_blank" rel="noopener noreferrer" class="underline text-[#1D5B59] hover:text-[#123D3B]">sigtap.datasus.gov.br</a>) nem as normativas vigentes.</p>
+          <p class="text-xs text-[#2D3139] truncate">Pesquisa por código, nome, descrição e atributos estruturais</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 shrink-0">
-        <button id="exportCsvBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none text-xs font-medium bg-[#FAFDFC] border border-[#A5C6BD] hover:bg-[#D5E9E3] text-[#1E3231] transition">
+      <div class="flex items-center gap-2 flex-wrap">
+        <button id="exportCsvBtn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#E5F3E6] border-2 border-[#222834] hover:bg-[#88C48B] text-[#222834] transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
@@ -54,9 +90,9 @@
   </header>
 
   <!-- Loading Banner -->
-  <div id="loadingBanner" class="hidden bg-[#DCEFF0] border-b border-[#A9D1D4] px-4 py-2.5">
-    <div class="max-w-7xl mx-auto flex items-center gap-3 text-xs sm:text-sm text-[#1D5B59]">
-      <svg class="w-4 h-4 animate-spin shrink-0 text-[#2B7A78]" fill="none" viewBox="0 0 24 24">
+  <div id="loadingBanner" class="hidden bg-[#E6ECF8] border-b-2 border-[#222834] px-4 py-2.5">
+    <div class="max-w-7xl mx-auto flex items-center gap-3 text-xs sm:text-sm font-medium text-[#222834]">
+      <svg class="w-4 h-4 animate-spin shrink-0 text-[#4A65B5]" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
       </svg>
@@ -68,30 +104,30 @@
   <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-4 flex-1 flex flex-col gap-4">
 
     <!-- Search & Filters Card -->
-    <section class="bg-[#FAFDFC] rounded-none border border-[#C8DDD6] p-4 space-y-3">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+    <section class="card-frame p-4 space-y-3">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
         <!-- Main Search Input -->
         <div class="md:col-span-7 relative">
-          <label for="searchInput" class="block text-xs font-medium text-[#3B5956] mb-1">
-            Pesquisa principal (código, nome ou descrição)
+          <label for="searchInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">
+            Pesquisa geral (código, nome ou descrição)
           </label>
           <div class="relative">
-            <svg class="w-4 h-4 text-[#6B8E89] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-[#2D3139] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               id="searchInput"
               type="text"
               placeholder="Ex.: 0301040192, 03.01.04.019-2, tuberculose, escuta inicial..."
-              class="w-full pl-9 pr-3 py-2 text-sm bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C] focus:border-[#3A8E8C]"
+              class="field-box w-full h-10 pl-9 pr-3 text-sm"
             />
           </div>
         </div>
 
         <!-- Search Scope -->
         <div class="md:col-span-3">
-          <label for="searchScope" class="block text-xs font-medium text-[#3B5956] mb-1">Buscar em</label>
-          <select id="searchScope" class="w-full px-3 py-2 text-sm border border-[#B7D1CA] rounded-none bg-white focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]">
+          <label for="searchScope" class="block text-xs font-bold text-[#222834] mb-1 truncate">Buscar em</label>
+          <select id="searchScope" class="field-box w-full h-10 px-3 text-sm">
             <option value="all">Código, Nome e Descrição</option>
             <option value="code">Somente Código</option>
             <option value="name">Somente Nome</option>
@@ -100,119 +136,131 @@
         </div>
 
         <!-- Toggle Advanced Filters -->
-        <div class="md:col-span-2 flex items-end gap-2">
-          <button id="toggleFiltersBtn" type="button" class="w-full px-3 py-2 text-sm font-medium rounded-none border border-[#A5C6BD] bg-[#E3F0EC] hover:bg-[#D5E9E3] text-[#1E3231] transition flex items-center justify-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <div class="md:col-span-2">
+          <button id="toggleFiltersBtn" type="button" class="w-full h-10 px-3 text-sm font-bold rounded-[10px] border-[1.5px] border-[#222834] bg-[#E6ECF8] hover:bg-[#4A65B5] hover:text-white text-[#222834] transition flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
             <span>Filtros</span>
-            <span id="activeFiltersCount" class="hidden px-1.5 py-0.5 text-[10px] rounded-none bg-[#2B7A78] text-white">0</span>
+            <span id="activeFiltersCount" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-[#E6CB70] border border-[#222834] text-[#222834]">0</span>
           </button>
         </div>
       </div>
 
       <!-- Advanced Attribute Filters -->
-      <div id="advancedFilters" class="pt-3 border-t border-[#DCEAE5] space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
-          <div>
-            <label for="filterGrupo" class="block text-xs font-medium text-[#3B5956] mb-1">Grupo</label>
-            <select id="filterGrupo" class="w-full px-2.5 py-1.5 text-xs border border-[#B7D1CA] rounded-none bg-white focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]">
+      <div id="advancedFilters" class="pt-3 border-t-2 border-[#222834]/15 space-y-3">
+        <!-- Linha 1: Grupo, Subgrupo, Forma de Organização -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-start">
+          <div class="min-w-0">
+            <label for="filterGrupo" class="block text-xs font-bold text-[#222834] mb-1 truncate">Grupo</label>
+            <select id="filterGrupo" class="field-box w-full h-9 px-2.5 text-xs">
               <option value="">Todos os grupos</option>
             </select>
           </div>
 
-          <div>
-            <label for="filterSubgrupo" class="block text-xs font-medium text-[#3B5956] mb-1">Subgrupo</label>
-            <select id="filterSubgrupo" class="w-full px-2.5 py-1.5 text-xs border border-[#B7D1CA] rounded-none bg-white focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]">
+          <div class="min-w-0">
+            <label for="filterSubgrupo" class="block text-xs font-bold text-[#222834] mb-1 truncate">Subgrupo</label>
+            <select id="filterSubgrupo" class="field-box w-full h-9 px-2.5 text-xs">
               <option value="">Todos os subgrupos</option>
             </select>
           </div>
 
-          <div>
-            <label for="filterForma" class="block text-xs font-medium text-[#3B5956] mb-1">Forma de Organização</label>
-            <select id="filterForma" class="w-full px-2.5 py-1.5 text-xs border border-[#B7D1CA] rounded-none bg-white focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]">
+          <div class="min-w-0">
+            <label for="filterForma" class="block text-xs font-bold text-[#222834] mb-1 truncate">Forma de Organização</label>
+            <select id="filterForma" class="field-box w-full h-9 px-2.5 text-xs">
               <option value="">Todas as formas</option>
             </select>
           </div>
+        </div>
 
-          <div class="relative">
-            <label for="filterRegistroInput" class="block text-xs font-medium text-[#3B5956] mb-1">Instrumento de Registro (múltiplo)</label>
-            <input id="filterRegistroInput" type="text" placeholder="Buscar e selecionar..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
-            <div id="dropdownRegistro" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
-            <div id="chipsRegistro" class="flex flex-wrap gap-1 mt-1.5"></div>
+        <!-- Linha 2: CBO, Serviço, Habilitação Obrigatória, CID -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
+          <div>
+            <div id="wrapCbo" class="relative">
+              <label for="filterCbo" class="block text-xs font-bold text-[#222834] mb-1 truncate">CBO exigido</label>
+              <input id="filterCbo" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
+              <div id="dropdownCbo" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+              <div id="chipsCbo" class="flex flex-wrap gap-1 mt-1.5"></div>
+            </div>
+            <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none mt-1.5">
+              <input id="filterNoCbo" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
+              <span>Não exige CBO</span>
+            </label>
           </div>
 
-          <div class="relative">
-            <label for="filterRegraInput" class="block text-xs font-medium text-[#3B5956] mb-1">Regra Condicionada (múltiplo)</label>
-            <input id="filterRegraInput" type="text" placeholder="Ex.: código ou descrição..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
-            <div id="dropdownRegra" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
-            <div id="chipsRegra" class="flex flex-wrap gap-1 mt-1.5"></div>
+          <div>
+            <div id="wrapServico" class="relative">
+              <label for="filterServico" class="block text-xs font-bold text-[#222834] mb-1 truncate">Serviço / Classificação</label>
+              <input id="filterServico" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
+              <div id="dropdownServico" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+              <div id="chipsServico" class="flex flex-wrap gap-1 mt-1.5"></div>
+            </div>
+            <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none mt-1.5">
+              <input id="filterNoServico" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
+              <span>Não exige serviço</span>
+            </label>
           </div>
 
-          <div class="relative">
-            <label for="filterAtributoCompInput" class="block text-xs font-medium text-[#3B5956] mb-1">Atributos Complementares (múltiplo)</label>
-            <input id="filterAtributoCompInput" type="text" placeholder="Ex.: código ou atributo..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
-            <div id="dropdownAtributoComp" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
-            <div id="chipsAtributoComp" class="flex flex-wrap gap-1 mt-1.5"></div>
+          <div>
+            <div id="wrapHabilitacao" class="relative">
+              <label for="filterHabilitacao" class="block text-xs font-bold text-[#222834] mb-1 truncate">Habilitação Obrigatória</label>
+              <input id="filterHabilitacao" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
+              <div id="dropdownHabilitacao" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+              <div id="chipsHabilitacao" class="flex flex-wrap gap-1 mt-1.5"></div>
+            </div>
+            <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none mt-1.5">
+              <input id="filterNoHabilitacao" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
+              <span>Não exige habilitação</span>
+            </label>
+          </div>
+
+          <div>
+            <div id="wrapCid" class="relative">
+              <label for="filterCid" class="block text-xs font-bold text-[#222834] mb-1 truncate">CID</label>
+              <input id="filterCid" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
+              <div id="dropdownCid" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+              <div id="chipsCid" class="flex flex-wrap gap-1 mt-1.5"></div>
+            </div>
+            <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none mt-1.5">
+              <input id="filterNoCid" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
+              <span>Não exige CID</span>
+            </label>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-start">
-          <div id="wrapCbo" class="relative">
-            <label for="filterCbo" class="block text-xs font-medium text-[#3B5956] mb-1">CBO exigido (múltiplo)</label>
-            <input id="filterCbo" type="text" placeholder="Ex.: 515105 ou Agente..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
-            <div id="dropdownCbo" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
-            <div id="chipsCbo" class="flex flex-wrap gap-1 mt-1.5"></div>
-          </div>
-
-          <div id="wrapServico" class="relative">
-            <label for="filterServico" class="block text-xs font-medium text-[#3B5956] mb-1">Serviço / Classificação (múltiplo)</label>
-            <input id="filterServico" type="text" placeholder="Ex.: 135 ou Reabilitação..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
-            <div id="dropdownServico" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
-            <div id="chipsServico" class="flex flex-wrap gap-1 mt-1.5"></div>
-          </div>
-
-          <div id="wrapHabilitacao" class="relative">
-            <label for="filterHabilitacao" class="block text-xs font-medium text-[#3B5956] mb-1">Habilitação Obrigatória (múltiplo)</label>
-            <input id="filterHabilitacao" type="text" placeholder="Ex.: código ou nome..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
-            <div id="dropdownHabilitacao" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
-            <div id="chipsHabilitacao" class="flex flex-wrap gap-1 mt-1.5"></div>
+        <!-- Linha 3: Instrumento de Registro, Habilitação de Complemento, Regra Condicionada, Atributos Complementares, Limpar -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-start">
+          <div class="relative">
+            <label for="filterRegistroInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">Instrumento de Registro</label>
+            <input id="filterRegistroInput" type="text" placeholder="Clique para selecionar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
+            <div id="dropdownRegistro" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="chipsRegistro" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
 
           <div id="wrapComplemento" class="relative">
-            <label for="filterComplemento" class="block text-xs font-medium text-[#3B5956] mb-1">Habilitação de Complemento (múltiplo)</label>
-            <input id="filterComplemento" type="text" placeholder="Não obrigatória / incremento..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
-            <div id="dropdownComplemento" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <label for="filterComplemento" class="block text-xs font-bold text-[#222834] mb-1 truncate">Habilitação de Complemento</label>
+            <input id="filterComplemento" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
+            <div id="dropdownComplemento" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
             <div id="chipsComplemento" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
 
-          <div id="wrapCid" class="relative">
-            <label for="filterCid" class="block text-xs font-medium text-[#3B5956] mb-1">CID (múltiplo)</label>
-            <input id="filterCid" type="text" placeholder="Ex.: A15 ou Tuberculose..." autocomplete="off" class="w-full px-2.5 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
-            <div id="dropdownCid" class="hidden absolute z-20 left-0 right-0 mt-1 bg-[#FAFDFC] border border-[#A5C6BD] rounded-none shadow-md max-h-44 overflow-y-auto custom-scroll text-xs"></div>
-            <div id="chipsCid" class="flex flex-wrap gap-1 mt-1.5"></div>
+          <div class="relative">
+            <label for="filterRegraInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">Regra Condicionada</label>
+            <input id="filterRegraInput" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
+            <div id="dropdownRegra" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="chipsRegra" class="flex flex-wrap gap-1 mt-1.5"></div>
           </div>
 
-          <div class="flex flex-col justify-between gap-2 pt-1">
-            <div class="grid grid-cols-2 lg:grid-cols-1 gap-1">
-              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none">
-                <input id="filterNoCbo" type="checkbox" class="rounded-none border-[#A5C6BD] accent-[#2B7A78]" />
-                <span>Não exige CBO</span>
-              </label>
-              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none">
-                <input id="filterNoServico" type="checkbox" class="rounded-none border-[#A5C6BD] accent-[#2B7A78]" />
-                <span>Não exige serviço</span>
-              </label>
-              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none">
-                <input id="filterNoHabilitacao" type="checkbox" class="rounded-none border-[#A5C6BD] accent-[#2B7A78]" />
-                <span>Não exige habilitação</span>
-              </label>
-              <label class="inline-flex items-center gap-2 text-xs text-[#1E3231] cursor-pointer select-none">
-                <input id="filterNoCid" type="checkbox" class="rounded-none border-[#A5C6BD] accent-[#2B7A78]" />
-                <span>Não exige CID</span>
-              </label>
-            </div>
-            <button id="clearFiltersBtn" type="button" class="w-full px-3 py-1.5 text-xs font-medium rounded-none border border-[#A5C6BD] bg-[#E3F0EC] text-[#1E3231] hover:bg-[#D5E9E3] transition">
+          <div id="wrapAtributo" class="relative">
+            <label for="filterAtributoInput" class="block text-xs font-bold text-[#222834] mb-1 truncate">Atributos Complementares</label>
+            <input id="filterAtributoInput" type="text" placeholder="Comece a digitar..." autocomplete="off" class="field-box w-full h-9 px-2.5 text-xs" />
+            <div id="dropdownAtributo" class="hidden absolute z-20 left-0 right-0 mt-1 bg-white border-2 border-[#222834] rounded-xl shadow-lg max-h-44 overflow-y-auto custom-scroll text-xs"></div>
+            <div id="chipsAtributo" class="flex flex-wrap gap-1 mt-1.5"></div>
+          </div>
+
+          <div>
+            <span class="block text-xs font-bold text-transparent select-none mb-1" aria-hidden="true">Ação</span>
+            <button id="clearFiltersBtn" type="button" class="w-full h-9 px-3 text-xs font-bold rounded-[10px] border-[1.5px] border-[#222834] bg-[#F9F2D8] hover:bg-[#E6CB70] text-[#222834] transition">
               Limpar todos os filtros
             </button>
           </div>
@@ -224,88 +272,100 @@
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-0">
 
       <!-- Left: Procedure List -->
-      <div class="lg:col-span-5 bg-[#FAFDFC] rounded-none border border-[#C8DDD6] flex flex-col overflow-hidden max-h-[70vh] lg:max-h-[calc(100vh-290px)]">
-        <div class="px-4 py-2.5 border-b border-[#C8DDD6] bg-[#E3F0EC] flex items-center justify-between gap-2">
-          <span id="resultsSummary" class="text-xs font-semibold text-[#3B5956]">0 procedimentos</span>
-          <div class="flex items-center gap-1.5 text-xs text-[#3B5956]">
-            <button id="prevPageBtn" type="button" class="px-2 py-1 rounded-none border border-[#A5C6BD] bg-[#FAFDFC] hover:bg-[#D5E9E3] disabled:opacity-40">Anterior</button>
-            <span id="pageIndicator" class="px-1 font-medium">1 / 1</span>
-            <button id="nextPageBtn" type="button" class="px-2 py-1 rounded-none border border-[#A5C6BD] bg-[#FAFDFC] hover:bg-[#D5E9E3] disabled:opacity-40">Próxima</button>
+      <div class="lg:col-span-5 card-frame flex flex-col overflow-hidden max-h-[70vh] lg:max-h-[calc(100vh-270px)]">
+        <div class="px-4 py-2.5 border-b-2 border-[#222834] bg-[#E6ECF8] flex items-center justify-between gap-2">
+          <span id="resultsSummary" class="text-xs font-bold text-[#222834]">0 procedimentos</span>
+          <div class="flex items-center gap-1.5 text-xs text-[#222834]">
+            <button id="prevPageBtn" type="button" class="px-2.5 py-1 rounded-lg border-[1.5px] border-[#222834] bg-white hover:bg-[#E6CB70] font-bold disabled:opacity-40">Anterior</button>
+            <span id="pageIndicator" class="px-1 font-bold">1 / 1</span>
+            <button id="nextPageBtn" type="button" class="px-2.5 py-1 rounded-lg border-[1.5px] border-[#222834] bg-white hover:bg-[#E6CB70] font-bold disabled:opacity-40">Próxima</button>
           </div>
         </div>
 
-        <div id="procedureList" class="divide-y divide-[#DCEAE5] overflow-y-auto custom-scroll flex-1">
+        <div id="procedureList" class="divide-y-2 divide-[#222834]/10 overflow-y-auto custom-scroll flex-1">
           <!-- Populated by JS -->
         </div>
       </div>
 
       <!-- Right: Procedure Details -->
-      <div id="detailPanel" class="lg:col-span-7 bg-[#FAFDFC] rounded-none border border-[#C8DDD6] flex flex-col overflow-hidden max-h-[80vh] lg:max-h-[calc(100vh-290px)]">
-        <div id="detailEmpty" class="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#6B8E89]">
-          <svg class="w-12 h-12 mb-3 text-[#B7D1CA]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <div id="detailPanel" class="lg:col-span-7 card-frame flex flex-col overflow-hidden max-h-[80vh] lg:max-h-[calc(100vh-270px)]">
+        <div id="detailEmpty" class="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#2D3139]">
+          <svg class="w-12 h-12 mb-3 text-[#4A65B5]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
-          <p class="text-sm font-medium text-[#3B5956]">Selecione um procedimento na lista</p>
-          <p class="text-xs text-[#6B8E89] mt-1">Os atributos completos, descrição e vínculos aparecerão aqui.</p>
+          <p class="text-sm font-bold text-[#222834]">Selecione um procedimento na lista</p>
+          <p class="text-xs text-[#2D3139] mt-1">Os atributos completos, descrição e vínculos aparecerão aqui.</p>
         </div>
 
         <div id="detailContent" class="hidden flex-1 flex flex-col overflow-hidden">
           <!-- Detail Header -->
-          <div class="p-4 border-b border-[#C8DDD6] bg-[#E3F0EC]/70">
+          <div class="p-4 border-b-2 border-[#222834] bg-[#FAFAFA]">
             <div class="flex flex-wrap items-start justify-between gap-2">
-              <div class="space-y-1 min-w-0 flex-1">
+              <div class="space-y-1.5 min-w-0 flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span id="detCode" class="font-mono text-sm font-bold px-2.5 py-0.5 rounded-none bg-[#DCEFF0] border border-[#9CC5C9] text-[#1D5B59]"></span>
-                  <button id="copyCodeBtn" type="button" class="text-xs px-2 py-0.5 rounded-none border border-[#A5C6BD] bg-[#FAFDFC] hover:bg-[#D5E9E3] text-[#3B5956] transition">
+                  <span id="detCode" class="font-mono text-sm font-bold px-2.5 py-0.5 rounded-lg border-[1.5px] border-[#222834] bg-[#4A65B5] text-white"></span>
+                  <button id="copyCodeBtn" type="button" class="text-xs font-bold px-2.5 py-0.5 rounded-lg border-[1.5px] border-[#222834] bg-white hover:bg-[#F9F2D8] text-[#222834] transition">
                     Copiar código
                   </button>
-                  <span id="detComplexidadeBadge" class="text-xs font-medium px-2 py-0.5 rounded-none bg-[#E6F1FA] text-[#1E567D] border border-[#B6D4EA]"></span>
+                  <span id="detComplexidadeBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#E6ECF8] text-[#222834]"></span>
+                  <span id="detInclusaoBadge" class="hidden text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#E5F3E6] text-[#222834]"></span>
                 </div>
-                <h2 id="detName" class="font-vintage text-base sm:text-lg font-bold text-[#172A29] leading-snug"></h2>
+                <h2 id="detName" class="text-base sm:text-lg font-bold text-[#222834] leading-snug"></h2>
               </div>
             </div>
           </div>
 
-          <!-- Excluded Notice (red reserved exclusively for excluded procedures) -->
-          <div id="detExcludedNotice" class="hidden p-6 m-4 rounded-none bg-[#FDECEC] border border-[#E5A9A9] text-[#8B2626] space-y-2">
-            <div class="flex items-center gap-2 font-semibold text-sm text-[#8B2626]">
-              <svg class="w-5 h-5 shrink-0 text-[#B83232]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <!-- Excluded Notice -->
+          <div id="detExcludedNotice" class="hidden p-5 m-4 rounded-xl bg-[#F6E1E1] border-2 border-[#222834] text-[#222834] space-y-2">
+            <div class="flex items-center gap-2 font-bold text-sm text-[#222834]">
+              <svg class="w-5 h-5 shrink-0 text-[#C75858]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <span>Procedimento excluído. Favor consultar portal oficial do sigtap para mais informações</span>
             </div>
-            <p id="detExcludedComp" class="text-xs text-[#9E3535]"></p>
+            <p id="detExcludedComp" class="text-xs font-semibold text-[#2D3139]"></p>
           </div>
 
           <!-- Detail Tabs -->
-          <div id="detTabsBar" class="border-b border-[#C8DDD6] bg-[#FAFDFC] px-4 flex gap-4 overflow-x-auto text-xs font-medium">
-            <button data-tab="atributos" class="detail-tab py-2.5 border-b-2 border-[#2B7A78] text-[#1D5B59] whitespace-nowrap">Atributos e Descrição</button>
-            <button data-tab="cbos" class="detail-tab py-2.5 border-b-2 border-transparent text-[#3B5956] hover:text-[#172A29] whitespace-nowrap">CBOs (<span id="countCbos">0</span>)</button>
-            <button data-tab="servicos" class="detail-tab py-2.5 border-b-2 border-transparent text-[#3B5956] hover:text-[#172A29] whitespace-nowrap">Serviço/Classif. (<span id="countServicos">0</span>)</button>
-            <button data-tab="registros" class="detail-tab py-2.5 border-b-2 border-transparent text-[#3B5956] hover:text-[#172A29] whitespace-nowrap">Registros (<span id="countRegistros">0</span>)</button>
-            <button data-tab="habilitacoes" class="detail-tab py-2.5 border-b-2 border-transparent text-[#3B5956] hover:text-[#172A29] whitespace-nowrap">Habilitações (<span id="countHabilitacoes">0</span>)</button>
-            <button data-tab="cids" class="detail-tab py-2.5 border-b-2 border-transparent text-[#3B5956] hover:text-[#172A29] whitespace-nowrap">CIDs (<span id="countCids">0</span>)</button>
-            <button data-tab="compat" class="detail-tab py-2.5 border-b-2 border-transparent text-[#3B5956] hover:text-[#172A29] whitespace-nowrap">Compatib./Regras (<span id="countCompat">0</span>)</button>
+          <div id="detTabsBar" class="border-b-2 border-[#222834]/15 bg-white px-4 flex gap-2 overflow-x-auto text-xs font-bold">
+            <button data-tab="descricao" class="detail-tab px-2 py-2.5 border-b-2 border-[#4A65B5] text-[#4A65B5] whitespace-nowrap cursor-pointer">Descrição</button>
+            <button data-tab="atributos" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Atributos</button>
+            <button data-tab="cbos" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">CBO</button>
+            <button data-tab="servicos" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Serviço/Classif.</button>
+            <button data-tab="registros" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Instr. de Registro</button>
+            <button data-tab="habilitacoes" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Hab.</button>
+            <button data-tab="cids" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">CID</button>
+            <button data-tab="compat" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Compatib./Regras</button>
           </div>
 
           <!-- Tab Bodies -->
           <div id="detTabBodies" class="p-4 overflow-y-auto custom-scroll flex-1 space-y-4">
-            <!-- Tab: Atributos -->
-            <div id="tab-atributos" class="tab-pane space-y-4">
+            <!-- Tab: Descrição e Localização na Tabela -->
+            <div id="tab-descricao" class="tab-pane space-y-4">
               <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-[#3B5956] mb-1.5">Descrição do Procedimento</h3>
-                <p id="detDesc" class="text-sm text-[#1E3231] bg-[#F2F7F5] border border-[#C8DDD6] rounded-none p-3 leading-relaxed"></p>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Localização na Tabela</h3>
+                <div id="detLocationCard" class="bg-[#FAFAFA] border-[1.5px] border-[#222834] rounded-xl p-3 space-y-1.5 text-xs sm:text-sm">
+                  <!-- Populated by JS -->
+                </div>
               </div>
 
               <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-[#3B5956] mb-2">Atributos Gerais</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Descrição do Procedimento</h3>
+                <p id="detDesc" class="text-sm text-[#2D3139] bg-[#FAFAFA] border-[1.5px] border-[#222834] rounded-xl p-3 leading-relaxed"></p>
+              </div>
+            </div>
+
+            <!-- Tab: Atributos -->
+            <div id="tab-atributos" class="tab-pane hidden space-y-4">
+              <div>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Atributos Gerais</h3>
                 <div id="detAttributesGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                   <!-- Populated by JS -->
                 </div>
               </div>
 
               <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-[#3B5956] mb-2">Atributos Complementares</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Atributos Complementares</h3>
                 <div id="detAtributosCompList" class="flex flex-wrap gap-1.5">
                   <!-- Populated by JS -->
                 </div>
@@ -314,7 +374,7 @@
 
             <!-- Tab: CBOs -->
             <div id="tab-cbos" class="tab-pane hidden space-y-3">
-              <input id="innerCboSearch" type="text" placeholder="Filtrar CBOs deste procedimento..." class="w-full px-3 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
+              <input id="innerCboSearch" type="text" placeholder="Filtrar CBOs deste procedimento..." class="field-box w-full h-9 px-3 text-xs" />
               <div id="detCbosList" class="space-y-1.5"></div>
             </div>
 
@@ -331,29 +391,29 @@
             <!-- Tab: Habilitações -->
             <div id="tab-habilitacoes" class="tab-pane hidden space-y-4">
               <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-[#3B5956] mb-1.5">Habilitações Obrigatórias</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Habilitações Obrigatórias</h3>
                 <div id="detHabilitacoesList" class="space-y-1.5"></div>
               </div>
               <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-[#3B5956] mb-1.5">Habilitações de Complemento / Incremento (Não Obrigatórias)</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Habilitações de Complemento / Incremento (Não Obrigatórias)</h3>
                 <div id="detComplementosList" class="space-y-1.5"></div>
               </div>
             </div>
 
             <!-- Tab: CIDs -->
             <div id="tab-cids" class="tab-pane hidden space-y-3">
-              <input id="innerCidSearch" type="text" placeholder="Filtrar CIDs deste procedimento..." class="w-full px-3 py-1.5 text-xs bg-white border border-[#B7D1CA] rounded-none focus:outline-none focus:ring-1 focus:ring-[#3A8E8C]" />
+              <input id="innerCidSearch" type="text" placeholder="Filtrar CIDs deste procedimento..." class="field-box w-full h-9 px-3 text-xs" />
               <div id="detCidsList" class="space-y-1.5"></div>
             </div>
 
             <!-- Tab: Compatibilidades / Regras -->
             <div id="tab-compat" class="tab-pane hidden space-y-4">
               <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-[#3B5956] mb-1.5">Regras Condicionadas</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Regras Condicionadas</h3>
                 <div id="detRegrasList" class="space-y-1.5"></div>
               </div>
               <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-[#3B5956] mb-1.5">Procedimentos Compatíveis / Excludentes</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Procedimentos Compatíveis / Excludentes</h3>
                 <div id="detCompatList" class="space-y-1.5"></div>
               </div>
             </div>
@@ -365,7 +425,7 @@
   </main>
 
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-4 right-4 z-50 hidden px-4 py-2.5 rounded-none bg-[#172A29] text-[#FAFDFC] border border-[#3B5956] text-xs font-medium shadow-lg transition-opacity"></div>
+  <div id="toast" class="fixed bottom-4 right-4 z-50 hidden px-4 py-2.5 rounded-lg bg-slate-900 text-white text-xs font-medium shadow-lg transition-opacity"></div>
 
   <script>
     // --- Reference Dictionaries ---
@@ -383,16 +443,32 @@
       'N': 'Não se aplica'
     };
 
+    // Tipos oficiais de compatibilidade do SIGTAP (TP_COMPATIBILIDADE)
     const COMPAT_MAP = {
       '1': 'Compatível',
       '2': 'Incompatível / Excludente',
-      '3': 'Concomitante'
+      '3': 'Concomitante',
+      '4': 'Compatível Sequencial',
+      '5': 'Obrigatório'
     };
 
-    // --- Empty Initial State (read-only viewer) ---
+    // Abreviações oficiais dos Instrumentos de Registro para exibição compacta nos cards prévios
+    const REGISTRO_SHORT_MAP = {
+      '01': 'BPA-C',
+      '02': 'BPA-I',
+      '03': 'AIH',
+      '04': 'AIH (Esp.)',
+      '05': 'AIH (Sec.)',
+      '06': 'APAC',
+      '07': 'APAC (Sec.)',
+      '08': 'RAAS-AD',
+      '09': 'RAAS-PSI',
+      '10': 'e-SUS APS'
+    };
+
+    // --- Estado Inicial da Aplicação (carregado via dados/sigtap_atual.zip) ---
     function createEmptyState() {
       return {
-        isDemo: false,
         loaded: false,
         competencia: '',
         grupos: {},
@@ -410,6 +486,7 @@
         habComplementoSet: {},
         regrasCond: {},
         atributosComp: {},
+        inclusoesMap: {},
         procedures: []
       };
     }
@@ -423,31 +500,48 @@
       complemento: [],
       cid: [],
       regra: [],
-      atributoComp: []
+      atributo: []
     };
     let filteredProcedures = [];
     let selectedCode = null;
     let currentPage = 1;
     const PAGE_SIZE = 50;
 
-    // --- Helpers ---
+    // --- Funções Utilitárias de Formatação e Normalização ---
+    // Aplica a máscara padrão SIGTAP (XX.XX.XX.XXX-X) a códigos de 10 dígitos
     function formatCode(code) {
       if (!code || code.length !== 10) return code || '';
       return `${code.slice(0, 2)}.${code.slice(2, 4)}.${code.slice(4, 6)}.${code.slice(6, 9)}-${code.slice(9)}`;
     }
 
-    function formatComp(raw) {
-      if (!raw) return 'Não informada';
-      const trimmed = raw.trim();
-      if (/^\d{2}\/\d{4}$/.test(trimmed) || /^\d{4}\/\d{2}$/.test(trimmed)) return trimmed;
-      const clean = trimmed.replace(/[^0-9]/g, '');
-      if (clean.length === 6) {
-        if (clean.startsWith('19') || clean.startsWith('20')) {
-          return `${clean.slice(0, 4)}/${clean.slice(4)}`;
-        }
-        return `${clean.slice(0, 2)}/${clean.slice(2)}`;
+    // Padroniza strings de competência (AAAAMM, AAAA/MM ou MM/AAAA) para MM/AAAA
+    function formatCompetenciaStr(raw) {
+      const s = (raw || '').toString().trim();
+      if (!s) return '';
+      if (/^\d{2}\/\d{4}$/.test(s)) return s;
+      if (/^\d{4}\/\d{2}$/.test(s)) return `${s.slice(5, 7)}/${s.slice(0, 4)}`;
+      if (/^\d{6}$/.test(s)) {
+        const yFirst = parseInt(s.slice(0, 4), 10);
+        if (yFirst >= 1990 && yFirst <= 2100) return `${s.slice(4, 6)}/${s.slice(0, 4)}`;
+        return `${s.slice(0, 2)}/${s.slice(2, 6)}`;
       }
-      return trimmed;
+      return s;
+    }
+
+    // Converte o instrumento de registro para a sigla abreviada exibida nos cards da lista
+    function formatRegistroShort(code, fullName) {
+      const cleanCode = (code || '').trim().padStart(2, '0');
+      if (REGISTRO_SHORT_MAP[cleanCode]) return REGISTRO_SHORT_MAP[cleanCode];
+      const norm = normalizeSearch(fullName || '');
+      if (norm.includes('bpa') && norm.includes('consolidado')) return 'BPA-C';
+      if (norm.includes('bpa') && norm.includes('individualizado')) return 'BPA-I';
+      if (norm.includes('aih') && norm.includes('principal')) return 'AIH';
+      if (norm.includes('aih') && norm.includes('secundario')) return 'AIH (Sec.)';
+      if (norm.includes('aih') && norm.includes('especial')) return 'AIH (Esp.)';
+      if (norm.includes('apac') && norm.includes('principal')) return 'APAC';
+      if (norm.includes('apac') && norm.includes('secundario')) return 'APAC (Sec.)';
+      if (norm.includes('e-sus')) return 'e-SUS APS';
+      return fullName || code;
     }
 
     function normalizeSearch(str) {
@@ -464,15 +558,13 @@
       return (n / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
+    // Formata idade mínima/máxima do SIGTAP em meses (< 12) ou apenas em anos inteiros (>= 12)
     function formatAgeMonths(raw) {
       const n = parseInt(raw, 10);
       if (isNaN(n) || n === 9999) return 'Não se aplica';
-      if (n === 0) return '0 meses';
+      if (n < 12) return `${n} ${n === 1 ? 'mês' : 'meses'}`;
       const years = Math.floor(n / 12);
-      const months = n % 12;
-      if (years > 0 && months > 0) return `${years}a ${months}m (${n}m)`;
-      if (years > 0) return `${years} anos (${n}m)`;
-      return `${months} meses`;
+      return `${years} ${years === 1 ? 'ano' : 'anos'}`;
     }
 
     function formatNumericAttr(raw) {
@@ -495,32 +587,7 @@
       }[c]));
     }
 
-    // Quote-aware CSV/TSV line splitter
-    function parseCsvLine(line, sep) {
-      const result = [];
-      let cur = '';
-      let inQuotes = false;
-      for (let i = 0; i < line.length; i++) {
-        const ch = line[i];
-        if (ch === '"') {
-          if (inQuotes && line[i + 1] === '"') {
-            cur += '"';
-            i++;
-          } else {
-            inQuotes = !inQuotes;
-          }
-        } else if (ch === sep && !inQuotes) {
-          result.push(cur.trim());
-          cur = '';
-        } else {
-          cur += ch;
-        }
-      }
-      result.push(cur.trim());
-      return result;
-    }
-
-    // --- Fixed-width SIGTAP Parser (using *_layout.txt) ---
+    // --- Leitor de Arquivos Posicionais do SIGTAP (baseado nos arquivos *_layout.txt) ---
     function parseLayoutCsv(text) {
       const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
       if (lines.length < 2) return [];
@@ -599,9 +666,10 @@
         const cidRows = await parseTable('tb_cid');
         const habRows = await parseTable('tb_habilitacao');
         const regraRows = await parseTable('tb_regra_condicionada');
-        const atribCompRows = await parseTable('tb_atributo_complementar');
+        let detRows = await parseTable('tb_detalhe');
+        if (detRows.length === 0) detRows = await parseTable('tb_atributo_complementar');
 
-        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Habilitação, CID, Atributos)...';
+        loadingText.textContent = 'Indexando vínculos (CBO, Serviço, Habilitação, CID, Registro)...';
         const rlOcup = await parseTable('rl_procedimento_ocupacao');
         const rlServ = await parseTable('rl_procedimento_servico');
         const rlHab = await parseTable('rl_procedimento_habilitacao');
@@ -609,30 +677,14 @@
         const rlReg = await parseTable('rl_procedimento_registro');
         const rlCid = await parseTable('rl_procedimento_cid');
         const rlRegra = await parseTable('rl_procedimento_regra_cond');
-        const rlAtribComp = await parseTable('rl_procedimento_atributo');
+        let rlDet = await parseTable('rl_procedimento_detalhe');
+        if (rlDet.length === 0) rlDet = await parseTable('rl_procedimento_atributo');
         const rlCompat = await parseTable('rl_procedimento_compativel');
 
-        const newState = {
-          isDemo: false,
-          loaded: true,
-          competencia: procRows[0]?.DT_COMPETENCIA || '',
-          grupos: {},
-          subgrupos: {},
-          formas: {},
-          financiamento: {},
-          rubricas: {},
-          registros: {},
-          ocupacoes: {},
-          servicos: {},
-          servicoClassif: {},
-          cids: {},
-          habilitacoes: {},
-          habObrigatoriasSet: {},
-          habComplementoSet: {},
-          regrasCond: {},
-          atributosComp: {},
-          procedures: []
-        };
+        // Reaproveita a estrutura padrão de estado evitando duplicação de campos
+        const newState = createEmptyState();
+        newState.loaded = true;
+        newState.competencia = procRows[0]?.DT_COMPETENCIA || '';
 
         grupoRows.forEach(r => { if (r.CO_GRUPO) newState.grupos[r.CO_GRUPO] = r.NO_GRUPO; });
         subgrupoRows.forEach(r => {
@@ -662,9 +714,9 @@
           if (code) newState.habilitacoes[code] = name;
         });
         regraRows.forEach(r => { if (r.CO_REGRA_CONDICIONADA) newState.regrasCond[r.CO_REGRA_CONDICIONADA] = r.NO_REGRA_CONDICIONADA; });
-        atribCompRows.forEach(r => {
-          const code = r.CO_ATRIBUTO_COMPLEMENTAR || Object.values(r)[0];
-          const name = r.NO_ATRIBUTO_COMPLEMENTAR || Object.values(r)[1] || '';
+        detRows.forEach(r => {
+          const code = r.CO_DETALHE || r.CO_ATRIBUTO || Object.values(r)[0];
+          const name = r.NO_DETALHE || r.NO_ATRIBUTO || Object.values(r)[1] || '';
           if (code) newState.atributosComp[code] = name;
         });
 
@@ -676,7 +728,6 @@
           const p = {
             ...r,
             desc: descMap[r.CO_PROCEDIMENTO] || '',
-            dtInclusao: '',
             cbos: [],
             servicos: [],
             registros: [],
@@ -684,7 +735,8 @@
             habilitacoes: [],
             incrementos: [],
             regras: [],
-            atributosComp: [],
+            atributos: [],
+            DT_INCLUSAO: '',
             compativeis: []
           };
           procMap[r.CO_PROCEDIMENTO] = p;
@@ -733,10 +785,10 @@
           const p = procMap[r.CO_PROCEDIMENTO];
           if (p && r.CO_REGRA_CONDICIONADA) p.regras.push(r.CO_REGRA_CONDICIONADA);
         });
-        rlAtribComp.forEach(r => {
+        rlDet.forEach(r => {
           const p = procMap[r.CO_PROCEDIMENTO];
-          const atr = r.CO_ATRIBUTO_COMPLEMENTAR || Object.values(r)[1];
-          if (p && atr) p.atributosComp.push(atr);
+          const code = r.CO_DETALHE || r.CO_ATRIBUTO || Object.values(r)[1];
+          if (p && code && !p.atributos.includes(code)) p.atributos.push(code);
         });
         rlCompat.forEach(r => {
           const p = procMap[r.CO_PROCEDIMENTO_PRINCIPAL];
@@ -763,17 +815,17 @@
       }
     }
 
-    // --- UI Population & Filtering ---
+    // --- Atualização de Cabeçalho, Selects Hierárquicos e Filtragem ---
     function updateCompetenciaBadge() {
       const badge = document.getElementById('competenciaBadge');
       if (!state.loaded) {
         badge.textContent = 'Aguardando base SIGTAP';
-        badge.className = 'inline-flex items-center px-2 py-0.5 rounded-none text-xs font-medium bg-[#FAFDFC] border border-[#B7D1CA] text-[#3B5956]';
+        badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#222834] bg-[#F9F2D8] text-[#222834]';
         return;
       }
       const comp = state.competencia ? `${state.competencia.slice(0, 4)}/${state.competencia.slice(4)}` : 'S/ Comp.';
       badge.textContent = `Competência ${comp} (${state.procedures.length.toLocaleString('pt-BR')} proc.)`;
-      badge.className = 'inline-flex items-center px-2 py-0.5 rounded-none text-xs font-medium bg-[#DCEFF0] border border-[#9CC5C9] text-[#1D5B59]';
+      badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#222834] bg-[#E5F3E6] text-[#222834]';
     }
 
     function populateSubgrupoSelect() {
@@ -832,6 +884,7 @@
       populateSubgrupoSelect();
     }
 
+    // Aplica todos os filtros ativos (busca geral, hierarquia e seleções múltiplas) e atualiza a lista
     function applyFilters() {
       const rawQuery = document.getElementById('searchInput').value.trim();
       const query = normalizeSearch(rawQuery);
@@ -853,7 +906,7 @@
       const compQ = normalizeSearch(document.getElementById('filterComplemento').value.trim());
       const cidQ = normalizeSearch(document.getElementById('filterCid').value.trim());
       const regraQ = normalizeSearch(document.getElementById('filterRegraInput').value.trim());
-      const atribCompQ = normalizeSearch(document.getElementById('filterAtributoCompInput').value.trim());
+      const atribQ = normalizeSearch(document.getElementById('filterAtributoInput').value.trim());
 
       const selReg = multiSelected.registro.map(x => x.key);
       const selCbo = multiSelected.cbo.map(x => x.key);
@@ -862,7 +915,7 @@
       const selComp = multiSelected.complemento.map(x => x.key);
       const selCid = multiSelected.cid.map(x => x.key);
       const selRegra = multiSelected.regra.map(x => x.key);
-      const selAtribComp = multiSelected.atributoComp.map(x => x.key);
+      const selAtrib = multiSelected.atributo.map(x => x.key);
 
       // Active filter count badge
       const activeCount = [
@@ -874,7 +927,7 @@
         selComp.length > 0 || compQ,
         selCid.length > 0 || cidQ,
         selRegra.length > 0 || regraQ,
-        selAtribComp.length > 0 || atribCompQ
+        selAtrib.length > 0 || atribQ
       ].filter(Boolean).length;
       const countBadge = document.getElementById('activeFiltersCount');
       if (activeCount > 0) {
@@ -896,7 +949,7 @@
           if (!matchReg) return false;
         }
 
-        // CBO: "Não exige" OR selecionados
+        // CBO: "Não exige CBO" OU selecionados/digitados
         const hasCboSpecific = selCbo.length > 0 || Boolean(cboQ);
         if (noCbo || hasCboSpecific) {
           const matchesNoCbo = noCbo && !p.excluded && p.cbos.length === 0;
@@ -909,7 +962,7 @@
           if (!matchesNoCbo && !matchesCboSpecific) return false;
         }
 
-        // Serviço/Classificação: "Não exige" OR selecionados
+        // Serviço/Classificação: "Não exige serviço" OU selecionados/digitados
         const hasServSpecific = selServ.length > 0 || Boolean(servQ);
         if (noServico || hasServSpecific) {
           const matchesNoServ = noServico && !p.excluded && p.servicos.length === 0;
@@ -926,7 +979,7 @@
           if (!matchesNoServ && !matchesServSpecific) return false;
         }
 
-        // Habilitação Obrigatória: "Não exige" OR selecionadas
+        // Habilitação Obrigatória: "Não exige habilitação" OU selecionadas/digitadas
         const hasHabSpecific = selHab.length > 0 || Boolean(habQ);
         if (noHabilitacao || hasHabSpecific) {
           const matchesNoHab = noHabilitacao && !p.excluded && p.habilitacoes.length === 0;
@@ -939,14 +992,7 @@
           if (!matchesNoHab && !matchesHabSpecific) return false;
         }
 
-        if (selComp.length > 0) {
-          if (!selComp.some(h => p.incrementos.some(pi => pi.code === h))) return false;
-        } else if (compQ) {
-          const matchComp = p.incrementos.some(pi => pi.code.toLowerCase().includes(compQ) || normalizeSearch(state.habilitacoes[pi.code] || '').includes(compQ));
-          if (!matchComp) return false;
-        }
-
-        // CID: "Não exige" OR selecionados
+        // CID: "Não exige CID" OU selecionados/digitados
         const hasCidSpecific = selCid.length > 0 || Boolean(cidQ);
         if (noCid || hasCidSpecific) {
           const matchesNoCid = noCid && !p.excluded && p.cids.length === 0;
@@ -959,6 +1005,13 @@
           if (!matchesNoCid && !matchesCidSpecific) return false;
         }
 
+        if (selComp.length > 0) {
+          if (!selComp.some(h => p.incrementos.some(pi => pi.code === h))) return false;
+        } else if (compQ) {
+          const matchComp = p.incrementos.some(pi => pi.code.toLowerCase().includes(compQ) || normalizeSearch(state.habilitacoes[pi.code] || '').includes(compQ));
+          if (!matchComp) return false;
+        }
+
         if (selRegra.length > 0) {
           if (!selRegra.some(rc => p.regras.includes(rc))) return false;
         } else if (regraQ) {
@@ -966,14 +1019,13 @@
           if (!matchRegra) return false;
         }
 
-        if (selAtribComp.length > 0) {
-          if (!selAtribComp.some(ac => p.atributosComp.includes(ac))) return false;
-        } else if (atribCompQ) {
-          const matchAtrib = p.atributosComp.some(ac => ac.toLowerCase().includes(atribCompQ) || normalizeSearch(state.atributosComp[ac] || '').includes(atribCompQ));
+        if (selAtrib.length > 0) {
+          if (!selAtrib.some(ac => (p.atributos || []).includes(ac))) return false;
+        } else if (atribQ) {
+          const matchAtrib = (p.atributos || []).some(ac => ac.toLowerCase().includes(atribQ) || normalizeSearch(state.atributosComp[ac] || '').includes(atribQ));
           if (!matchAtrib) return false;
         }
 
-        // Main search restricted strictly to Code, Name, and Description
         if (query) {
           const codeMatch = codeQuery && p.CO_PROCEDIMENTO.toLowerCase().includes(codeQuery);
           const nameMatch = normalizeSearch(p.NO_PROCEDIMENTO).includes(query);
@@ -981,7 +1033,7 @@
           if (scope === 'code') return codeMatch;
           if (scope === 'name') return nameMatch;
           if (scope === 'desc') return descMatch;
-          return codeMatch || nameMatch || descMatch;
+          return Boolean(codeMatch || nameMatch || descMatch);
         }
 
         return true;
@@ -1012,16 +1064,16 @@
 
       if (!state.loaded) {
         listEl.innerHTML = `
-          <div class="p-8 text-center text-sm text-[#3B5956] space-y-1">
-            <p class="font-medium text-[#172A29]">Nenhuma base SIGTAP carregada.</p>
-            <p class="text-xs text-[#6B8E89]">Publique o pacote oficial em <span class="font-mono">dados/sigtap_atual.zip</span> no repositório para iniciar as consultas.</p>
+          <div class="p-8 text-center text-sm text-slate-500 space-y-1">
+            <p class="font-medium text-slate-600">Nenhuma base SIGTAP carregada.</p>
+            <p class="text-xs text-slate-400">Publique o pacote oficial em <span class="font-mono">dados/sigtap_atual.zip</span> no repositório para iniciar as consultas.</p>
           </div>`;
         return;
       }
 
       if (total === 0) {
         listEl.innerHTML = `
-          <div class="p-8 text-center text-sm text-[#6B8E89]">
+          <div class="p-8 text-center text-sm text-slate-400">
             Nenhum procedimento encontrado para os filtros informados.
           </div>`;
         return;
@@ -1030,50 +1082,63 @@
       const start = (currentPage - 1) * PAGE_SIZE;
       const slice = filteredProcedures.slice(start, start + PAGE_SIZE);
 
+      // Renderiza os cards de visualização prévia da página atual
       listEl.innerHTML = slice.map(p => {
         const active = p.CO_PROCEDIMENTO === selectedCode;
+
+        // Card diferenciado em vermelho apenas para procedimentos excluídos (exibe competência de exclusão)
         if (p.excluded) {
-          const compExcl = formatComp(p.DT_EXCLUSAO);
+          const compExcl = formatCompetenciaStr(p.DT_EXCLUSAO) || 'Não informada';
           return `
             <button
               type="button"
               data-code="${escapeHtml(p.CO_PROCEDIMENTO)}"
-              class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-[#FADADA] border-l-4 border-[#B83232]' : 'bg-[#FDECEC] hover:bg-[#FADADA] border-l-4 border-[#E5A9A9]'}"
+              class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-[#F6E1E1] border-l-4 border-[#C75858]' : 'bg-[#F6E1E1]/50 hover:bg-[#F6E1E1]/80 border-l-4 border-[#C75858]/60'}"
             >
               <div class="flex items-center justify-between gap-2 mb-1">
-                <span class="font-mono text-xs font-semibold text-[#8B2626]">${formatCode(p.CO_PROCEDIMENTO)}</span>
-                <span class="text-[11px] font-medium px-2 py-0.5 rounded-none bg-[#F7CACA] text-[#7A1E1E] border border-[#E5A9A9]">Excluído</span>
+                <span class="font-mono text-xs font-bold text-[#222834]">${formatCode(p.CO_PROCEDIMENTO)}</span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border border-[#222834] bg-[#C75858] text-white">Excluído</span>
               </div>
-              <div class="text-sm font-medium text-[#5C1919] line-clamp-2 leading-snug">
+              <div class="text-sm font-bold text-[#222834] line-clamp-2 leading-snug">
                 ${escapeHtml(p.NO_PROCEDIMENTO)}
               </div>
-              <div class="mt-1.5 text-[11px] font-medium text-[#9E3535]">
+              <div class="mt-1.5 text-[11px] font-semibold text-[#2D3139]">
                 Excluído na competência: ${escapeHtml(compExcl)}
               </div>
             </button>
           `;
         }
+
+        // Card de procedimento ativo: código, instrumentos abreviados, nome e Forma de Organização (sem código) em destaque
+        const foKey = p.CO_PROCEDIMENTO.slice(0, 6);
+        const foLabel = state.formas[foKey] || 'Não informada';
+        const regItems = p.registros.map(r => ({
+          short: formatRegistroShort(r, state.registros[r]),
+          full: state.registros[r] || r
+        }));
+
         return `
           <button
             type="button"
             data-code="${escapeHtml(p.CO_PROCEDIMENTO)}"
-            class="proc-item w-full text-left px-4 py-3 transition hover:bg-[#E8F4F2] ${active ? 'bg-[#DCEFF0] border-l-4 border-[#2B7A78]' : 'border-l-4 border-transparent'}"
+            class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-[#E6ECF8] border-l-4 border-[#4A65B5]' : 'bg-white hover:bg-[#F1F4FA]/60 border-l-4 border-transparent'}"
           >
             <div class="flex items-center justify-between gap-2 mb-1">
-              <span class="font-mono text-xs font-semibold text-[#1D5B59]">${formatCode(p.CO_PROCEDIMENTO)}</span>
-              <span class="text-[11px] px-2 py-0.5 rounded-none bg-[#E6F1FA] text-[#1E567D] border border-[#B6D4EA]">
-                ${escapeHtml(COMPLEXIDADE_MAP[p.TP_COMPLEXIDADE] || p.TP_COMPLEXIDADE)}
-              </span>
+              <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-md border border-[#222834] bg-[#4A65B5] text-white">${formatCode(p.CO_PROCEDIMENTO)}</span>
+              ${regItems.length > 0 ? `
+                <div class="flex flex-wrap justify-end gap-1">
+                  ${regItems.map(item => `<span title="${escapeHtml(item.full)}" class="inline-flex items-center px-2 py-0.5 rounded-full border border-[#222834] bg-[#E5F3E6] text-[10px] font-bold text-[#222834]">${escapeHtml(item.short)}</span>`).join('')}
+                </div>
+              ` : ''}
             </div>
-            <div class="text-sm font-medium text-[#172A29] line-clamp-2 leading-snug">
+            <div class="text-sm font-bold text-[#222834] line-clamp-2 leading-snug">
               ${escapeHtml(p.NO_PROCEDIMENTO)}
             </div>
-            <div class="mt-1.5 flex flex-wrap gap-2 text-[11px] text-[#3B5956]">
-              <span>CBOs: ${p.cbos.length}</span>
-              <span>•</span>
-              <span>Serv.: ${p.servicos.length}</span>
-              <span>•</span>
-              <span>SA: ${formatCurrencyCents(p.VL_SA)}</span>
+            <div class="mt-2">
+              <div class="inline-flex items-center gap-1.5 max-w-full px-2 py-0.5 rounded-md border border-[#222834] bg-[#F9F2D8] text-[11px] font-bold text-[#222834]">
+                <span class="shrink-0 text-[11px] text-[#2D3139]">Form. Org.:</span>
+                <span class="truncate">${escapeHtml(foLabel)}</span>
+              </div>
             </div>
           </button>
         `;
@@ -1086,6 +1151,7 @@
       renderDetail();
     }
 
+    // Renderiza o painel lateral direito com todos os atributos, descrição e abas do procedimento selecionado
     function renderDetail() {
       const emptyEl = document.getElementById('detailEmpty');
       const contentEl = document.getElementById('detailContent');
@@ -1107,28 +1173,63 @@
       const tabsBar = document.getElementById('detTabsBar');
       const tabBodies = document.getElementById('detTabBodies');
       const compBadge = document.getElementById('detComplexidadeBadge');
-      const detCodeEl = document.getElementById('detCode');
+      const incBadge = document.getElementById('detInclusaoBadge');
 
       if (proc.excluded) {
-        detCodeEl.className = 'font-mono text-sm font-bold px-2.5 py-0.5 rounded-none bg-[#FDECEC] border border-[#E5A9A9] text-[#8B2626]';
         compBadge.textContent = 'Excluído';
-        compBadge.className = 'text-xs font-medium px-2 py-0.5 rounded-none bg-[#FDECEC] text-[#8B2626] border border-[#E5A9A9]';
-        document.getElementById('detExcludedComp').textContent = `Competência de exclusão: ${formatComp(proc.DT_EXCLUSAO)}`;
+        compBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#C75858] text-white';
+        incBadge.classList.add('hidden');
+        incBadge.textContent = '';
+        const compExcl = formatCompetenciaStr(proc.DT_EXCLUSAO) || 'Não informada';
+        document.getElementById('detExcludedComp').textContent = `Competência de exclusão: ${compExcl}`;
         exclNotice.classList.remove('hidden');
         tabsBar.classList.add('hidden');
         tabBodies.classList.add('hidden');
         return;
       }
 
-      detCodeEl.className = 'font-mono text-sm font-bold px-2.5 py-0.5 rounded-none bg-[#DCEFF0] border border-[#9CC5C9] text-[#1D5B59]';
       exclNotice.classList.add('hidden');
       tabsBar.classList.remove('hidden');
       tabBodies.classList.remove('hidden');
-      compBadge.className = 'text-xs font-medium px-2 py-0.5 rounded-none bg-[#E6F1FA] text-[#1E567D] border border-[#B6D4EA]';
+      compBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#E6ECF8] text-[#222834]';
       compBadge.textContent =
         COMPLEXIDADE_MAP[proc.TP_COMPLEXIDADE] || `Complexidade ${proc.TP_COMPLEXIDADE}`;
+
+      const compInc = formatCompetenciaStr(proc.DT_INCLUSAO);
+      if (compInc) {
+        incBadge.textContent = `Incluído em: ${compInc}`;
+        incBadge.classList.remove('hidden');
+      } else {
+        incBadge.textContent = '';
+        incBadge.classList.add('hidden');
+      }
+
+      // Localização hierárquica do procedimento na tabela (Grupo, Sub-Grupo e Forma de Organização)
+      const grpCode = proc.CO_PROCEDIMENTO.slice(0, 2);
+      const subCode = proc.CO_PROCEDIMENTO.slice(2, 4);
+      const foCode = proc.CO_PROCEDIMENTO.slice(4, 6);
+      const grpName = state.grupos[grpCode] || '—';
+      const subName = state.subgrupos[grpCode + subCode] || '—';
+      const foName = state.formas[grpCode + subCode + foCode] || '—';
+      document.getElementById('detLocationCard').innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-[165px_1fr] gap-0.5 sm:gap-2">
+          <span class="font-bold text-[#2D3139]">Grupo:</span>
+          <span class="font-semibold text-[#222834]">${escapeHtml(grpCode)} - ${escapeHtml(grpName)}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[165px_1fr] gap-0.5 sm:gap-2">
+          <span class="font-bold text-[#2D3139]">Sub-Grupo:</span>
+          <span class="font-semibold text-[#222834]">${escapeHtml(subCode)} - ${escapeHtml(subName)}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[165px_1fr] gap-0.5 sm:gap-2">
+          <span class="font-bold text-[#2D3139]">Forma de Organização:</span>
+          <span class="font-semibold text-[#222834]">${escapeHtml(foCode)} - ${escapeHtml(foName)}</span>
+        </div>
+      `;
+
+      // Remove barras verticais finais ("||") presentes em alguns registros originais do tb_descricao.txt do DATASUS
+      const cleanDesc = (proc.desc || '').replace(/\|+\s*$/g, '').trim();
       document.getElementById('detDesc').textContent =
-        proc.desc || 'Descrição não informada nesta base (verifique tb_descricao.txt).';
+        cleanDesc || 'Descrição não informada nesta base (verifique tb_descricao.txt).';
 
       const attrs = [
         { label: 'Sexo Permitido', value: SEXO_MAP[proc.TP_SEXO] || proc.TP_SEXO || '—' },
@@ -1141,36 +1242,58 @@
         { label: 'Valor Hospitalar (SH)', value: formatCurrencyCents(proc.VL_SH) },
         { label: 'Valor Profissional (SP)', value: formatCurrencyCents(proc.VL_SP) },
         { label: 'Financiamento', value: proc.CO_FINANCIAMENTO ? `${proc.CO_FINANCIAMENTO} - ${state.financiamento[proc.CO_FINANCIAMENTO] || ''}` : '—' },
-        { label: 'Rubrica', value: proc.CO_RUBRICA ? `${proc.CO_RUBRICA} - ${state.rubricas[proc.CO_RUBRICA] || ''}` : 'Não se aplica' },
-        { label: 'Competência Vigente', value: proc.DT_COMPETENCIA ? `${proc.DT_COMPETENCIA.slice(0, 4)}/${proc.DT_COMPETENCIA.slice(4)}` : '—' },
-        { label: 'Competência de Inclusão', value: proc.dtInclusao ? proc.dtInclusao : 'Não informada' }
+        { label: 'Subtipo de Financiamento', value: proc.CO_RUBRICA ? `${proc.CO_RUBRICA} - ${state.rubricas[proc.CO_RUBRICA] || ''}` : 'Não se aplica' },
+        { label: 'Competência', value: proc.DT_COMPETENCIA ? `${proc.DT_COMPETENCIA.slice(0, 4)}/${proc.DT_COMPETENCIA.slice(4)}` : '—' },
+        ...(compInc ? [{ label: 'Competência de Inclusão', value: compInc }] : [])
       ];
 
       document.getElementById('detAttributesGrid').innerHTML = attrs.map(a => `
-        <div class="${a.span2 ? 'col-span-2' : ''} bg-[#F2F7F5] border border-[#C8DDD6] rounded-none p-2.5">
-          <div class="text-[11px] font-medium text-[#3B5956]">${escapeHtml(a.label)}</div>
-          <div class="text-xs sm:text-sm font-semibold text-[#172A29] mt-0.5 break-words">${escapeHtml(a.value)}</div>
+        <div class="bg-[#FAFAFA] border-[1.5px] border-[#222834] rounded-xl p-2.5">
+          <div class="text-[11px] font-bold text-[#2D3139]">${escapeHtml(a.label)}</div>
+          <div class="text-xs sm:text-sm font-bold text-[#222834] mt-0.5 break-words">${escapeHtml(a.value)}</div>
         </div>
       `).join('');
 
-      const atribCompEl = document.getElementById('detAtributosCompList');
-      if (!proc.atributosComp || proc.atributosComp.length === 0) {
-        atribCompEl.innerHTML = '<p class="text-xs text-[#6B8E89]">Nenhum atributo complementar vinculado.</p>';
+      const atribListEl = document.getElementById('detAtributosCompList');
+      if (!proc.atributos || proc.atributos.length === 0) {
+        atribListEl.innerHTML = '<span class="text-xs text-slate-400">Nenhum atributo complementar vinculado.</span>';
       } else {
-        atribCompEl.innerHTML = proc.atributosComp.map(ac => `
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-[#E6F1FA] border border-[#B6D4EA] text-xs text-[#1E567D]">
-            <span class="font-mono font-semibold">${escapeHtml(ac)}</span>
+        atribListEl.innerHTML = proc.atributos.map(ac => `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E6ECF8] border border-[#222834] text-xs font-bold text-[#222834]">
+            <span class="font-mono text-[#4A65B5]">${escapeHtml(ac)}</span>
             <span>${escapeHtml(state.atributosComp[ac] || 'Atributo complementar')}</span>
           </span>
         `).join('');
       }
 
-      document.getElementById('countCbos').textContent = String(proc.cbos.length);
-      document.getElementById('countServicos').textContent = String(proc.servicos.length);
-      document.getElementById('countRegistros').textContent = String(proc.registros.length);
-      document.getElementById('countHabilitacoes').textContent = String(proc.habilitacoes.length + (proc.incrementos ? proc.incrementos.length : 0));
-      document.getElementById('countCids').textContent = String(proc.cids.length);
-      document.getElementById('countCompat').textContent = String(proc.regras.length + proc.compativeis.length);
+      // Atualiza a disponibilidade das abas: opções vazias (0) ficam cinzas e não clicáveis
+      const tabCounts = {
+        descricao: 1,
+        atributos: 1,
+        cbos: proc.cbos.length,
+        servicos: proc.servicos.length,
+        registros: proc.registros.length,
+        habilitacoes: proc.habilitacoes.length + (proc.incrementos ? proc.incrementos.length : 0),
+        cids: proc.cids.length,
+        compat: proc.regras.length + proc.compativeis.length
+      };
+      let activeTabName = 'descricao';
+      document.querySelectorAll('.detail-tab').forEach(btn => {
+        const t = btn.dataset.tab;
+        const isEmpty = (tabCounts[t] || 0) === 0;
+        const isCurrentActive = btn.classList.contains('border-[#4A65B5]');
+        btn.disabled = isEmpty;
+        btn.setAttribute('aria-disabled', isEmpty ? 'true' : 'false');
+        btn.title = isEmpty ? 'Nenhum registro vinculado neste procedimento' : '';
+        btn.classList.toggle('cursor-not-allowed', isEmpty);
+        btn.classList.toggle('cursor-pointer', !isEmpty);
+        btn.classList.toggle('text-slate-400', isEmpty);
+        btn.classList.toggle('bg-slate-100/70', isEmpty);
+        btn.classList.toggle('opacity-60', isEmpty);
+        btn.classList.toggle('hover:text-[#4A65B5]', !isEmpty);
+        if (isCurrentActive && !isEmpty) activeTabName = t;
+      });
+      activateDetailTab(activeTabName);
 
       document.getElementById('innerCboSearch').value = '';
       document.getElementById('innerCidSearch').value = '';
@@ -1190,33 +1313,33 @@
       });
       const el = document.getElementById('detCbosList');
       if (items.length === 0) {
-        el.innerHTML = '<p class="text-xs text-[#6B8E89]">Nenhum CBO vinculado ou correspondente ao filtro.</p>';
+        el.innerHTML = '<p class="text-xs text-slate-400">Nenhum CBO vinculado ou correspondente ao filtro.</p>';
         return;
       }
       el.innerHTML = items.slice(0, 300).map(c => `
-        <div class="flex items-center gap-2.5 px-3 py-2 rounded-none bg-[#F2F7F5] border border-[#C8DDD6] text-xs">
-          <span class="font-mono font-semibold text-[#1D5B59] shrink-0">${escapeHtml(c)}</span>
-          <span class="text-[#172A29]">${escapeHtml(state.ocupacoes[c] || 'Ocupação (tb_ocupacao não carregada)')}</span>
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs">
+          <span class="font-mono font-bold text-[#4A65B5] shrink-0">${escapeHtml(c)}</span>
+          <span class="text-[#222834] font-medium">${escapeHtml(state.ocupacoes[c] || 'Ocupação (tb_ocupacao não carregada)')}</span>
         </div>
-      `).join('') + (items.length > 300 ? `<p class="text-xs text-[#6B8E89] pt-1">Mostrando 300 de ${items.length} CBOs. Use o filtro acima para refinar.</p>` : '');
+      `).join('') + (items.length > 300 ? `<p class="text-xs text-slate-400 pt-1">Mostrando 300 de ${items.length} CBOs. Use o filtro acima para refinar.</p>` : '');
     }
 
     function renderDetailServicos(proc) {
       const el = document.getElementById('detServicosList');
       if (proc.servicos.length === 0) {
-        el.innerHTML = '<p class="text-xs text-[#6B8E89]">Não exige Serviço/Classificação específico.</p>';
+        el.innerHTML = '<p class="text-xs text-slate-400">Não exige Serviço/Classificação específico.</p>';
         return;
       }
       el.innerHTML = proc.servicos.map(s => {
         const servName = state.servicos[s.serv] || 'Serviço';
         const className = state.servicoClassif[s.serv + s.classif] || 'Classificação';
         return `
-          <div class="px-3 py-2 rounded-none bg-[#F2F7F5] border border-[#C8DDD6] text-xs space-y-0.5">
-            <div class="font-semibold text-[#172A29]">
-              <span class="font-mono text-[#1D5B59]">${escapeHtml(s.serv)}</span> — ${escapeHtml(servName)}
+          <div class="px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs space-y-0.5">
+            <div class="font-bold text-[#222834]">
+              <span class="font-mono text-[#4A65B5]">${escapeHtml(s.serv)}</span> — ${escapeHtml(servName)}
             </div>
-            <div class="text-[#3B5956]">
-              Classificação <span class="font-mono font-medium">${escapeHtml(s.classif)}</span> — ${escapeHtml(className)}
+            <div class="text-[#2D3139]">
+              Classificação <span class="font-mono font-bold">${escapeHtml(s.classif)}</span> — ${escapeHtml(className)}
             </div>
           </div>
         `;
@@ -1226,13 +1349,13 @@
     function renderDetailRegistros(proc) {
       const el = document.getElementById('detRegistrosList');
       if (proc.registros.length === 0) {
-        el.innerHTML = '<p class="text-xs text-[#6B8E89]">Nenhum instrumento de registro vinculado.</p>';
+        el.innerHTML = '<p class="text-xs text-slate-400">Nenhum instrumento de registro vinculado.</p>';
         return;
       }
       el.innerHTML = proc.registros.map(r => `
-        <div class="flex items-center gap-2.5 px-3 py-2 rounded-none bg-[#F2F7F5] border border-[#C8DDD6] text-xs">
-          <span class="font-mono font-semibold text-[#1D5B59]">${escapeHtml(r)}</span>
-          <span class="text-[#172A29]">${escapeHtml(state.registros[r] || 'Instrumento de Registro')}</span>
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#E5F3E6]/60 border-[1.5px] border-[#222834] text-xs">
+          <span class="font-mono font-bold text-[#222834]">${escapeHtml(r)}</span>
+          <span class="text-[#222834] font-bold">${escapeHtml(state.registros[r] || 'Instrumento de Registro')}</span>
         </div>
       `).join('');
     }
@@ -1240,22 +1363,22 @@
     function renderDetailHabilitacoes(proc) {
       const el = document.getElementById('detHabilitacoesList');
       if (!proc.habilitacoes || proc.habilitacoes.length === 0) {
-        el.innerHTML = '<p class="text-xs text-[#6B8E89]">Não exige habilitação obrigatória.</p>';
+        el.innerHTML = '<p class="text-xs text-slate-400">Não exige habilitação obrigatória.</p>';
       } else {
         el.innerHTML = proc.habilitacoes.map(h => `
-          <div class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-none bg-[#F2F7F5] border border-[#C8DDD6] text-xs">
+          <div class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
-              <span class="font-mono font-semibold text-[#1D5B59] shrink-0">${escapeHtml(h.code)}</span>
-              <span class="text-[#172A29]">${escapeHtml(state.habilitacoes[h.code] || 'Habilitação')}</span>
+              <span class="font-mono font-bold text-[#4A65B5] shrink-0">${escapeHtml(h.code)}</span>
+              <span class="text-[#222834] font-medium">${escapeHtml(state.habilitacoes[h.code] || 'Habilitação')}</span>
             </div>
-            ${h.grupo && h.grupo !== '0000' ? `<span class="shrink-0 px-2 py-0.5 rounded-none bg-[#E3F0EC] border border-[#B7D1CA] text-[#3B5956] text-[11px]">Grupo ${escapeHtml(h.grupo)}</span>` : ''}
+            ${h.grupo && h.grupo !== '0000' ? `<span class="shrink-0 px-2 py-0.5 rounded-full border border-[#222834] bg-[#E6ECF8] text-[#222834] text-[11px] font-bold">Grupo ${escapeHtml(h.grupo)}</span>` : ''}
           </div>
         `).join('');
       }
 
       const compEl = document.getElementById('detComplementosList');
       if (!proc.incrementos || proc.incrementos.length === 0) {
-        compEl.innerHTML = '<p class="text-xs text-[#6B8E89]">Nenhuma habilitação de complemento / incremento.</p>';
+        compEl.innerHTML = '<p class="text-xs text-slate-400">Nenhuma habilitação de complemento / incremento.</p>';
       } else {
         compEl.innerHTML = proc.incrementos.map(inc => {
           const pcts = [
@@ -1264,12 +1387,12 @@
             inc.sp && parseInt(inc.sp, 10) > 0 ? `SP: ${parseInt(inc.sp, 10)}%` : ''
           ].filter(Boolean).join(' • ');
           return `
-            <div class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-none bg-[#E6F1FA] border border-[#B6D4EA] text-xs">
+            <div class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl bg-[#F9F2D8] border-[1.5px] border-[#222834] text-xs">
               <div class="flex items-center gap-2.5 min-w-0">
-                <span class="font-mono font-semibold text-[#1E567D] shrink-0">${escapeHtml(inc.code)}</span>
-                <span class="text-[#172A29]">${escapeHtml(state.habilitacoes[inc.code] || 'Habilitação de complemento')}</span>
+                <span class="font-mono font-bold text-[#222834] shrink-0">${escapeHtml(inc.code)}</span>
+                <span class="text-[#222834] font-medium">${escapeHtml(state.habilitacoes[inc.code] || 'Habilitação de complemento')}</span>
               </div>
-              ${pcts ? `<span class="shrink-0 px-2 py-0.5 rounded-none bg-[#D3E7F7] border border-[#B6D4EA] text-[#1E567D] text-[11px] font-medium">${escapeHtml(pcts)}</span>` : ''}
+              ${pcts ? `<span class="shrink-0 px-2 py-0.5 rounded-full border border-[#222834] bg-[#E6CB70] text-[#222834] text-[11px] font-bold">${escapeHtml(pcts)}</span>` : ''}
             </div>
           `;
         }).join('');
@@ -1284,13 +1407,13 @@
       });
       const el = document.getElementById('detCidsList');
       if (items.length === 0) {
-        el.innerHTML = '<p class="text-xs text-[#6B8E89]">Nenhum CID vinculado ou correspondente ao filtro.</p>';
+        el.innerHTML = '<p class="text-xs text-slate-400">Nenhum CID vinculado ou correspondente ao filtro.</p>';
         return;
       }
       el.innerHTML = items.slice(0, 300).map(c => `
-        <div class="flex items-center gap-2.5 px-3 py-2 rounded-none bg-[#F2F7F5] border border-[#C8DDD6] text-xs">
-          <span class="font-mono font-semibold text-[#1D5B59] shrink-0">${escapeHtml(c)}</span>
-          <span class="text-[#172A29]">${escapeHtml(state.cids[c] || 'CID-10 (tb_cid não carregada)')}</span>
+        <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs">
+          <span class="font-mono font-bold text-[#4A65B5] shrink-0">${escapeHtml(c)}</span>
+          <span class="text-[#222834] font-medium">${escapeHtml(state.cids[c] || 'CID-10 (tb_cid não carregada)')}</span>
         </div>
       `).join('');
     }
@@ -1298,27 +1421,28 @@
     function renderDetailCompat(proc) {
       const regrasEl = document.getElementById('detRegrasList');
       regrasEl.innerHTML = proc.regras.length === 0
-        ? '<p class="text-xs text-[#6B8E89]">Nenhuma regra condicionada.</p>'
+        ? '<p class="text-xs text-slate-400">Nenhuma regra condicionada.</p>'
         : proc.regras.map(r => `
-            <div class="flex items-center gap-2.5 px-3 py-2 rounded-none bg-[#E6F1FA] border border-[#B6D4EA] text-xs">
-              <span class="font-mono font-semibold text-[#1E567D]">${escapeHtml(r)}</span>
-              <span class="text-[#172A29]">${escapeHtml(state.regrasCond[r] || 'Regra condicionada')}</span>
+            <div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#F9F2D8] border-[1.5px] border-[#222834] text-xs">
+              <span class="font-mono font-bold text-[#222834]">${escapeHtml(r)}</span>
+              <span class="text-[#222834] font-medium">${escapeHtml(state.regrasCond[r] || 'Regra condicionada')}</span>
             </div>
           `).join('');
 
       const compatEl = document.getElementById('detCompatList');
       compatEl.innerHTML = proc.compativeis.length === 0
-        ? '<p class="text-xs text-[#6B8E89]">Nenhuma compatibilidade registrada.</p>'
+        ? '<p class="text-xs text-slate-400">Nenhuma compatibilidade registrada.</p>'
         : proc.compativeis.slice(0, 200).map(c => {
             const target = state.procedures.find(p => p.CO_PROCEDIMENTO === c.co_compat);
+            const badgeBg = c.tp === '5' ? 'bg-[#F9F2D8]' : (c.tp === '2' ? 'bg-[#F6E1E1]' : 'bg-[#E6ECF8]');
             return `
-              <div class="px-3 py-2 rounded-none bg-[#F2F7F5] border border-[#C8DDD6] text-xs flex flex-wrap items-center justify-between gap-2">
+              <div class="px-3 py-2 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span class="font-mono font-semibold text-[#1D5B59]">${formatCode(c.co_compat)}</span>
-                  <span class="text-[#172A29] ml-1">${escapeHtml(target ? target.NO_PROCEDIMENTO : '')}</span>
+                  <span class="font-mono font-bold text-[#4A65B5]">${formatCode(c.co_compat)}</span>
+                  <span class="text-[#222834] font-medium ml-1">${escapeHtml(target ? target.NO_PROCEDIMENTO : '')}</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-none bg-[#E3F0EC] border border-[#B7D1CA] text-[#3B5956] text-[11px]">
-                  ${escapeHtml(COMPAT_MAP[c.tp] || c.tp)} (Qtd: ${formatNumericAttr(c.qt)})
+                <span class="px-2 py-0.5 rounded-full border border-[#222834] ${badgeBg} text-[#222834] text-[11px] font-bold">
+                  ${escapeHtml(COMPAT_MAP[c.tp] || `Tipo ${c.tp}`)} (Qtd: ${formatNumericAttr(c.qt)})
                 </span>
               </div>
             `;
@@ -1372,7 +1496,7 @@
       if (type === 'regra') {
         return Object.keys(state.regrasCond).sort().map(k => ({ key: k, label: `${k} - ${state.regrasCond[k]}` }));
       }
-      if (type === 'atributoComp') {
+      if (type === 'atributo') {
         return Object.keys(state.atributosComp).sort().map(k => ({ key: k, label: `${k} - ${state.atributosComp[k]}` }));
       }
       return [];
@@ -1382,20 +1506,25 @@
       const container = document.getElementById(chipsId);
       const list = multiSelected[type];
       container.innerHTML = list.map(item => `
-        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[11px] font-medium bg-[#DCEFF0] border border-[#9CC5C9] text-[#1D5B59] max-w-full">
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[#222834] text-[11px] font-bold bg-[#E6ECF8] text-[#222834] max-w-full">
           <span class="truncate max-w-[180px]" title="${escapeHtml(item.label)}">${escapeHtml(item.label)}</span>
-          <button type="button" data-remove-type="${type}" data-remove-key="${escapeHtml(item.key)}" class="hover:text-[#123D3B] font-bold leading-none">&times;</button>
+          <button type="button" data-remove-type="${type}" data-remove-key="${escapeHtml(item.key)}" class="hover:text-[#C75858] font-bold leading-none">&times;</button>
         </span>
       `).join('');
     }
 
-    function setupMultiSelect(type, inputId, dropdownId, chipsId) {
+    // Configura cada caixa de múltipla seleção (minChars define quantos caracteres exigir antes de abrir a lista)
+    function setupMultiSelect(type, inputId, dropdownId, chipsId, minChars = 2) {
       const input = document.getElementById(inputId);
       const dropdown = document.getElementById(dropdownId);
       const chips = document.getElementById(chipsId);
 
       const showOptions = () => {
         const q = normalizeSearch(input.value.trim());
+        if (q.length < minChars) {
+          dropdown.classList.add('hidden');
+          return;
+        }
         const chosenKeys = new Set(multiSelected[type].map(x => x.key));
         const matches = getMultiOptions(type)
           .filter(o => !chosenKeys.has(o.key) && (!q || normalizeSearch(o.label).includes(q)))
@@ -1405,7 +1534,7 @@
           return;
         }
         dropdown.innerHTML = matches.map(m => `
-          <button type="button" data-pick-key="${escapeHtml(m.key)}" data-pick-label="${escapeHtml(m.label)}" class="w-full text-left px-2.5 py-1.5 hover:bg-[#E3F0EC] text-[#1E3231] border-b border-[#DCEAE5] last:border-0 truncate">
+          <button type="button" data-pick-key="${escapeHtml(m.key)}" data-pick-label="${escapeHtml(m.label)}" class="w-full text-left px-2.5 py-1.5 hover:bg-[#E6ECF8] text-[#222834] font-medium border-b border-slate-200 last:border-0 truncate">
             ${escapeHtml(m.label)}
           </button>
         `).join('');
@@ -1443,14 +1572,14 @@
       });
     }
 
-    setupMultiSelect('registro', 'filterRegistroInput', 'dropdownRegistro', 'chipsRegistro');
+    setupMultiSelect('registro', 'filterRegistroInput', 'dropdownRegistro', 'chipsRegistro', 0);
     setupMultiSelect('cbo', 'filterCbo', 'dropdownCbo', 'chipsCbo');
     setupMultiSelect('servico', 'filterServico', 'dropdownServico', 'chipsServico');
     setupMultiSelect('habilitacao', 'filterHabilitacao', 'dropdownHabilitacao', 'chipsHabilitacao');
     setupMultiSelect('complemento', 'filterComplemento', 'dropdownComplemento', 'chipsComplemento');
     setupMultiSelect('cid', 'filterCid', 'dropdownCid', 'chipsCid');
     setupMultiSelect('regra', 'filterRegraInput', 'dropdownRegra', 'chipsRegra');
-    setupMultiSelect('atributoComp', 'filterAtributoCompInput', 'dropdownAtributoComp', 'chipsAtributoComp');
+    setupMultiSelect('atributo', 'filterAtributoInput', 'dropdownAtributo', 'chipsAtributo');
 
     document.getElementById('filterNoCbo').addEventListener('change', applyFilters);
     document.getElementById('filterNoServico').addEventListener('change', applyFilters);
@@ -1473,7 +1602,7 @@
       multiSelected.complemento = [];
       multiSelected.cid = [];
       multiSelected.regra = [];
-      multiSelected.atributoComp = [];
+      multiSelected.atributo = [];
       renderMultiChips('registro', 'chipsRegistro');
       renderMultiChips('cbo', 'chipsCbo');
       renderMultiChips('servico', 'chipsServico');
@@ -1481,7 +1610,7 @@
       renderMultiChips('complemento', 'chipsComplemento');
       renderMultiChips('cid', 'chipsCid');
       renderMultiChips('regra', 'chipsRegra');
-      renderMultiChips('atributoComp', 'chipsAtributoComp');
+      renderMultiChips('atributo', 'chipsAtributo');
       document.getElementById('filterRegistroInput').value = '';
       document.getElementById('filterCbo').value = '';
       document.getElementById('filterServico').value = '';
@@ -1489,7 +1618,7 @@
       document.getElementById('filterComplemento').value = '';
       document.getElementById('filterCid').value = '';
       document.getElementById('filterRegraInput').value = '';
-      document.getElementById('filterAtributoCompInput').value = '';
+      document.getElementById('filterAtributoInput').value = '';
       document.getElementById('filterNoCbo').checked = false;
       document.getElementById('filterNoServico').checked = false;
       document.getElementById('filterNoHabilitacao').checked = false;
@@ -1510,19 +1639,26 @@
       if (btn && btn.dataset.code) selectProcedure(btn.dataset.code);
     });
 
+    // Alterna a aba ativa do painel de detalhes, ignorando abas vazias/desabilitadas
+    function activateDetailTab(target) {
+      document.querySelectorAll('.detail-tab').forEach(b => {
+        const active = b.dataset.tab === target && !b.disabled;
+        b.classList.toggle('border-[#4A65B5]', active);
+        b.classList.toggle('text-[#4A65B5]', active);
+        b.classList.toggle('border-transparent', !active);
+        if (!b.disabled) {
+          b.classList.toggle('text-slate-600', !active);
+        }
+      });
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.toggle('hidden', pane.id !== `tab-${target}`);
+      });
+    }
+
     document.querySelectorAll('.detail-tab').forEach(btn => {
       btn.addEventListener('click', () => {
-        const target = btn.dataset.tab;
-        document.querySelectorAll('.detail-tab').forEach(b => {
-          const active = b.dataset.tab === target;
-          b.classList.toggle('border-[#2B7A78]', active);
-          b.classList.toggle('text-[#1D5B59]', active);
-          b.classList.toggle('border-transparent', !active);
-          b.classList.toggle('text-[#3B5956]', !active);
-        });
-        document.querySelectorAll('.tab-pane').forEach(pane => {
-          pane.classList.toggle('hidden', pane.id !== `tab-${target}`);
-        });
+        if (btn.disabled) return;
+        activateDetailTab(btn.dataset.tab);
       });
     });
 
@@ -1562,13 +1698,15 @@
         showToast('Nenhum procedimento para exportar.');
         return;
       }
-      const headers = ['CO_PROCEDIMENTO', 'NO_PROCEDIMENTO', 'STATUS', 'COMPLEXIDADE', 'INSTRUMENTO_REGISTRO', 'VL_SA', 'VL_SH', 'VL_SP', 'QTD_CBOS', 'QTD_SERVICOS', 'QTD_HABILITACOES', 'COMPETENCIA_INCLUSAO'];
+      const headers = ['CO_PROCEDIMENTO', 'NO_PROCEDIMENTO', 'STATUS', 'COMPETENCIA_INCLUSAO', 'COMPLEXIDADE', 'INSTRUMENTO_REGISTRO', 'VL_SA', 'VL_SH', 'VL_SP', 'QTD_CBOS', 'QTD_SERVICOS', 'QTD_HABILITACOES'];
       const rows = filteredProcedures.map(p => {
         const regList = p.registros.map(r => `${r} - ${state.registros[r] || ''}`).join(' | ');
+        const compInc = formatCompetenciaStr(p.DT_INCLUSAO);
         return [
           p.CO_PROCEDIMENTO,
           `"${(p.NO_PROCEDIMENTO || '').replace(/"/g, '""')}"`,
-          p.excluded ? `Excluído (${formatComp(p.DT_EXCLUSAO)})` : 'Ativo',
+          p.excluded ? `Excluído (${p.DT_EXCLUSAO || ''})` : 'Ativo',
+          compInc,
           `"${COMPLEXIDADE_MAP[p.TP_COMPLEXIDADE] || p.TP_COMPLEXIDADE || ''}"`,
           `"${regList.replace(/"/g, '""')}"`,
           formatCurrencyCents(p.VL_SA),
@@ -1576,8 +1714,7 @@
           formatCurrencyCents(p.VL_SP),
           p.cbos.length,
           p.servicos.length,
-          p.habilitacoes.length,
-          `"${(p.dtInclusao ? formatComp(p.dtInclusao) : '').replace(/"/g, '""')}"`
+          p.habilitacoes.length
         ].join(';');
       });
       const csv = '\uFEFF' + [headers.join(';'), ...rows].join('\n');
@@ -1608,150 +1745,162 @@
           }
         });
         await loadFromFileMap(fileMap);
-        await tryAutoLoadInclusoes();
+        await tryAutoLoadInclusions();
         await tryAutoLoadExcluded();
       } catch (err) {
         // Permanece aguardando base SIGTAP caso ./dados/sigtap_atual.zip não exista
       }
     }
 
-    async function tryAutoLoadInclusoes() {
-      const candidates = ['./dados/inclusoes.csv', './dados/Inclusoes.csv', './inclusoes.csv', './dados/inclusoes.txt'];
+    // --- Leitura de CSVs Auxiliares (RFC 4180 com suporte a aspas e UTF-8/ISO-8859-1) ---
+    function parseCsvLine(line, sep) {
+      const res = [];
+      let cur = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            cur += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === sep && !inQuotes) {
+          res.push(cur.trim());
+          cur = '';
+        } else {
+          cur += ch;
+        }
+      }
+      res.push(cur.trim());
+      return res;
+    }
+
+    // Busca e decodifica o primeiro arquivo CSV/TXT disponível na lista de caminhos candidatos
+    async function fetchCsvTable(candidates) {
       for (const url of candidates) {
         try {
           const res = await fetch(url, { cache: 'no-store' });
           if (!res.ok) continue;
           const buf = await res.arrayBuffer();
           let text = new TextDecoder('utf-8').decode(buf);
-          if (text.includes('\uFFFD')) {
+          if (text.includes('\ufffd')) {
             text = new TextDecoder('iso-8859-1').decode(buf);
           }
-          text = text.replace(/^\uFEFF/, '');
-          const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-          if (lines.length === 0) return;
-
-          const first = lines[0];
-          const sep = first.includes(';') ? ';' : (first.includes('\t') ? '\t' : ',');
-          const header = parseCsvLine(first, sep).map(h => normalizeSearch(h));
-
-          let idxCode = header.findIndex(h => (h.includes('procedimento') && h.includes('cod')) || h === 'co_procedimento' || h === 'codigo');
-          let idxComp = header.findIndex(h => h.includes('competencia') || h.includes('inclusao') || h === 'dt_inclusao');
-
-          let startIdx = 1;
-          const firstCols = parseCsvLine(first, sep);
-          if (idxCode === -1 && /^\d{10}$/.test((firstCols[0] || '').replace(/[.\-]/g, ''))) {
-            idxCode = 0; idxComp = 1; startIdx = 0;
-          } else {
-            if (idxCode === -1) idxCode = 0;
-            if (idxComp === -1) idxComp = 1;
-          }
-
-          const incMap = {};
-          for (let i = startIdx; i < lines.length; i++) {
-            const cols = parseCsvLine(lines[i], sep);
-            const code = (cols[idxCode] || '').replace(/[.\-\s]/g, '');
-            if (!code) continue;
-            const compVal = (cols[idxComp] || '').trim();
-            if (!incMap[code]) {
-              incMap[code] = { comps: [] };
-            }
-            if (compVal && !incMap[code].comps.includes(compVal)) incMap[code].comps.push(compVal);
-          }
-
-          let matched = 0;
-          state.procedures.forEach(p => {
-            if (!p.excluded && incMap[p.CO_PROCEDIMENTO]) {
-              p.dtInclusao = incMap[p.CO_PROCEDIMENTO].comps.map(formatComp).join(' | ');
-              matched++;
-            }
-          });
-          if (selectedCode) renderDetail();
-          if (matched > 0) {
-            showToast(`Inclusões carregadas (${matched.toLocaleString('pt-BR')} procedimentos).`);
-          }
-          return;
+          const lines = text.replace(/^\uFEFF/, '').split(/\r?\n/).filter(l => l.trim().length > 0);
+          if (lines.length === 0) return null;
+          const sep = lines[0].includes(';') ? ';' : (lines[0].includes('\t') ? '\t' : ',');
+          return { lines, sep };
         } catch (e) {
-          // Ignora se ./dados/inclusoes.csv ainda não existir
+          // Ignora silenciosamente se o arquivo opcional ainda não estiver publicado
         }
+      }
+      return null;
+    }
+
+    // Carrega ./dados/inclusoes.csv e vincula a competência de inclusão aos procedimentos ativos
+    async function tryAutoLoadInclusions() {
+      const table = await fetchCsvTable(['./dados/inclusoes.csv', './dados/inclusoes.txt']);
+      if (!table) return;
+
+      const { lines, sep } = table;
+      const firstCols = parseCsvLine(lines[0], sep);
+      const header = firstCols.map(h => normalizeSearch(h));
+
+      let idxCode = header.findIndex(h => (h.includes('procedimento') && h.includes('cod')) || h === 'co_procedimento' || h === 'codigo');
+      let idxComp = header.findIndex(h => h.includes('inclusao') || h.includes('competencia') || h === 'dt_inclusao');
+
+      let startIdx = 1;
+      if (idxCode === -1 && /^\d{10}$/.test(firstCols[0].replace(/[.\-]/g, ''))) {
+        idxCode = 0; idxComp = 1; startIdx = 0;
+      } else {
+        if (idxCode === -1) idxCode = 0;
+        if (idxComp === -1) idxComp = 1;
+      }
+
+      const incMap = {};
+      for (let i = startIdx; i < lines.length; i++) {
+        const cols = parseCsvLine(lines[i], sep);
+        const code = (cols[idxCode] || '').replace(/[.\-\s]/g, '');
+        const comp = formatCompetenciaStr(cols[idxComp] || '');
+        if (code && comp) incMap[code] = comp;
+      }
+
+      state.inclusoesMap = incMap;
+      let matched = 0;
+      state.procedures.forEach(p => {
+        if (incMap[p.CO_PROCEDIMENTO]) {
+          p.DT_INCLUSAO = incMap[p.CO_PROCEDIMENTO];
+          matched++;
+        }
+      });
+      if (matched > 0) {
+        renderList();
+        renderDetail();
       }
     }
 
+    // Carrega ./dados/excluidos.csv e acrescenta procedimentos revogados ao índice de busca
     async function tryAutoLoadExcluded() {
-      const candidates = ['./dados/excluidos.csv', './dados/Excluidos.csv', './excluidos.csv', './dados/excluidos.txt'];
-      for (const url of candidates) {
-        try {
-          const res = await fetch(url, { cache: 'no-store' });
-          if (!res.ok) continue;
-          const buf = await res.arrayBuffer();
-          let text = new TextDecoder('utf-8').decode(buf);
-          if (text.includes('\uFFFD')) {
-            text = new TextDecoder('iso-8859-1').decode(buf);
-          }
-          text = text.replace(/^\uFEFF/, '');
-          const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-          if (lines.length === 0) return;
+      const table = await fetchCsvTable(['./dados/excluidos.csv', './dados/excluidos.txt']);
+      if (!table) return;
 
-          const first = lines[0];
-          const sep = first.includes(';') ? ';' : (first.includes('\t') ? '\t' : ',');
-          const header = parseCsvLine(first, sep).map(h => normalizeSearch(h));
-          let idxCode = header.findIndex(h => (h.includes('procedimento') && h.includes('cod')) || h === 'co_procedimento' || h === 'codigo');
-          let idxName = header.findIndex(h => h.includes('nome') || h === 'no_procedimento' || h === 'procedimento' || h === 'descricao');
-          let idxComp = header.findIndex(h => h.includes('competencia') || h.includes('exclusao') || h === 'dt_exclusao');
+      const { lines, sep } = table;
+      const firstCols = parseCsvLine(lines[0], sep);
+      const header = firstCols.map(h => normalizeSearch(h));
 
-          let startIdx = 1;
-          const firstCols = parseCsvLine(first, sep);
-          if (idxCode === -1 && /^\d{10}$/.test((firstCols[0] || '').replace(/[.\-]/g, ''))) {
-            idxCode = 0; idxName = 1; idxComp = 2; startIdx = 0;
-          } else {
-            if (idxCode === -1) idxCode = 0;
-            if (idxName === -1) idxName = 1;
-            if (idxComp === -1) idxComp = 2;
-          }
+      let idxCode = header.findIndex(h => (h.includes('procedimento') && h.includes('cod')) || h === 'co_procedimento' || h === 'codigo');
+      let idxName = header.findIndex(h => h.includes('nome') || h === 'no_procedimento' || h === 'procedimento' || h === 'descricao');
+      let idxComp = header.findIndex(h => h.includes('competencia') || h.includes('exclusao') || h === 'dt_exclusao');
 
-          const existing = new Set(state.procedures.map(p => p.CO_PROCEDIMENTO));
-          let added = 0;
-          for (let i = startIdx; i < lines.length; i++) {
-            const cols = parseCsvLine(lines[i], sep);
-            const code = (cols[idxCode] || '').replace(/[.\-\s]/g, '');
-            if (!code) continue;
-            if (existing.has(code)) continue;
-            existing.add(code);
-            state.procedures.push({
-              excluded: true,
-              CO_PROCEDIMENTO: code,
-              NO_PROCEDIMENTO: cols[idxName] || 'Procedimento excluído',
-              DT_EXCLUSAO: (cols[idxComp] || '').replace(/[^0-9/]/g, ''),
-              TP_COMPLEXIDADE: '',
-              TP_SEXO: '',
-              VL_SA: '0',
-              VL_SH: '0',
-              VL_SP: '0',
-              desc: '',
-              dtInclusao: '',
-              cbos: [],
-              servicos: [],
-              registros: [],
-              cids: [],
-              habilitacoes: [],
-              incrementos: [],
-              regras: [],
-              atributosComp: [],
-              compativeis: []
-            });
-            added++;
-          }
-          if (added > 0) {
-            applyFilters();
-            updateCompetenciaBadge();
-          }
-          return;
-        } catch (e) {
-          // Ignora se o arquivo de excluídos ainda não estiver presente
-        }
+      let startIdx = 1;
+      if (idxCode === -1 && /^\d{10}$/.test(firstCols[0].replace(/[.\-]/g, ''))) {
+        idxCode = 0; idxName = 1; idxComp = 2; startIdx = 0;
+      } else {
+        if (idxCode === -1) idxCode = 0;
+        if (idxName === -1) idxName = 1;
+        if (idxComp === -1) idxComp = 2;
+      }
+
+      const existing = new Set(state.procedures.map(p => p.CO_PROCEDIMENTO));
+      let added = 0;
+      for (let i = startIdx; i < lines.length; i++) {
+        const cols = parseCsvLine(lines[i], sep);
+        const code = (cols[idxCode] || '').replace(/[.\-\s]/g, '');
+        if (!code || existing.has(code)) continue;
+        existing.add(code);
+        state.procedures.push({
+          excluded: true,
+          CO_PROCEDIMENTO: code,
+          NO_PROCEDIMENTO: cols[idxName] || 'Procedimento excluído',
+          DT_EXCLUSAO: formatCompetenciaStr(cols[idxComp] || ''),
+          TP_COMPLEXIDADE: '',
+          TP_SEXO: '',
+          VL_SA: '0',
+          VL_SH: '0',
+          VL_SP: '0',
+          desc: '',
+          cbos: [],
+          servicos: [],
+          registros: [],
+          cids: [],
+          habilitacoes: [],
+          incrementos: [],
+          regras: [],
+          atributos: [],
+          DT_INCLUSAO: '',
+          compativeis: []
+        });
+        added++;
+      }
+      if (added > 0) {
+        applyFilters();
+        updateCompetenciaBadge();
       }
     }
 
-    // --- Initial Boot ---
+    // --- Inicialização da Aplicação (carrega automaticamente ./dados/sigtap_atual.zip) ---
     populateFilterSelects();
     applyFilters();
     updateCompetenciaBadge();
