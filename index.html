@@ -1787,7 +1787,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
         '' // Linha em branco separando o cabeçalho de filtros da tabela de resultados
       ];
 
-      const headers = ['Código do procedimento', 'Nome do procedimento', 'Descrição'];
+      const headers = ['Código do procedimento', 'Nome do procedimento', 'Descrição','Instrumento de Registro'];
       const rows = filteredProcedures.map(p => {
         const regList = p.excluded
           ? `Procedimento excluído (${formatCompetenciaStr(p.DT_EXCLUSAO) || 's/ competência'})`
