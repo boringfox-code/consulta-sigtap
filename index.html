@@ -1693,31 +1693,116 @@
       document.body.removeChild(ta);
     }
 
-    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+document.getElementById('exportCsvBtn').addEventListener('click', () => {
       if (filteredProcedures.length === 0) {
         showToast('Nenhum procedimento para exportar.');
         return;
       }
-      const headers = ['CO_PROCEDIMENTO', 'NO_PROCEDIMENTO', 'STATUS', 'COMPETENCIA_INCLUSAO', 'COMPLEXIDADE', 'INSTRUMENTO_REGISTRO', 'VL_SA', 'VL_SH', 'VL_SP', 'QTD_CBOS', 'QTD_SERVICOS', 'QTD_HABILITACOES'];
+
+      const escapeCsv = (val) => `"${String(val ?? '').replace(/"/g, '""')}"`;
+
+      // Coleta os critérios de filtro ativos para o cabeçalho informativo
+      const criterios = [];
+      const compBase = state.competencia
+        ? `${state.competencia.slice(4)}/${state.competencia.slice(0, 4)}`
+        : 'Não informada';
+      criterios.push(['Competência da base SIGTAP', compBase]);
+      criterios.push(['Total de procedimentos encontrados', filteredProcedures.length]);
+
+      const rawQuery = document.getElementById('searchInput').value.trim();
+      const scopeLabels = {
+        all: 'Código, Nome e Descrição',
+        code: 'Somente Código',
+        name: 'Somente Nome',
+        desc: 'Somente Descrição'
+      };
+      if (rawQuery) {
+        const scope = document.getElementById('searchScope').value;
+        criterios.push([`Pesquisa geral (${scopeLabels[scope] || scope})`, rawQuery]);
+      }
+
+      const grupo = document.getElementById('filterGrupo').value;
+      if (grupo) criterios.push(['Grupo', `${grupo} - ${state.grupos[grupo] || ''}`]);
+
+      const subgrupo = document.getElementById('filterSubgrupo').value;
+      if (subgrupo) criterios.push(['Subgrupo', `${subgrupo} - ${state.subgrupos[subgrupo] || ''}`]);
+
+      const forma = document.getElementById('filterForma').value;
+      if (forma) criterios.push(['Forma de Organização', `${forma} - ${state.formas[forma] || ''}`]);
+
+      // Helper para montar descrição de filtros com opção "Não exige..." + seleções/texto
+      const addComboFilter = (label, noExigeChecked, noExigeTexto, selectedList, inputId) => {
+        const partes = [];
+        if (noExigeChecked) partes.push(noExigeTexto);
+        if (selectedList.length > 0) partes.push(...selectedList.map(x => x.label));
+        const typed = document.getElementById(inputId).value.trim();
+        if (typed) partes.push(`Contendo: "${typed}"`);
+        if (partes.length > 0) criterios.push([label, partes.join(' | ')]);
+      };
+
+      addComboFilter(
+        'CBO exigido',
+        document.getElementById('filterNoCbo').checked,
+        'Não exige CBO',
+        multiSelected.cbo,
+        'filterCbo'
+      );
+
+      addComboFilter(
+        'Serviço / Classificação',
+        document.getElementById('filterNoServico').checked,
+        'Não exige serviço',
+        multiSelected.servico,
+        'filterServico'
+      );
+
+      addComboFilter(
+        'Habilitação Obrigatória',
+        document.getElementById('filterNoHabilitacao').checked,
+        'Não exige habilitação',
+        multiSelected.habilitacao,
+        'filterHabilitacao'
+      );
+
+      addComboFilter(
+        'CID',
+        document.getElementById('filterNoCid').checked,
+        'Não exige CID',
+        multiSelected.cid,
+        'filterCid'
+      );
+
+      addComboFilter('Instrumento de Registro', false, '', multiSelected.registro, 'filterRegistroInput');
+      addComboFilter('Habilitação de Complemento', false, '', multiSelected.complemento, 'filterComplemento');
+      addComboFilter('Regra Condicionada', false, '', multiSelected.regra, 'filterRegraInput');
+      addComboFilter('Atributos Complementares', false, '', multiSelected.atributo, 'filterAtributoInput');
+
+      if (criterios.length === 2) {
+        criterios.push(['Filtros aplicados', 'Nenhum filtro restritivo (base completa)']);
+      }
+
+      const filterBlock = [
+        [escapeCsv('CRITÉRIOS DO FILTRO UTILIZADOS'), ''].join(';'),
+        ...criterios.map(([k, v]) => `${escapeCsv(k)};${escapeCsv(v)}`),
+        '' // Linha em branco separando o cabeçalho de filtros da tabela de resultados
+      ];
+
+      const headers = ['Código do procedimento', 'Nome do procedimento', 'Instrumentos de registro'];
       const rows = filteredProcedures.map(p => {
-        const regList = p.registros.map(r => `${r} - ${state.registros[r] || ''}`).join(' | ');
-        const compInc = formatCompetenciaStr(p.DT_INCLUSAO);
+        const regList = p.excluded
+          ? `Procedimento excluído (${formatCompetenciaStr(p.DT_EXCLUSAO) || 's/ competência'})`
+          : (p.registros.length > 0
+              ? p.registros.map(r => `${r} - ${state.registros[r] || ''}`).join(' | ')
+              : 'Nenhum instrumento vinculado');
+
         return [
-          p.CO_PROCEDIMENTO,
-          `"${(p.NO_PROCEDIMENTO || '').replace(/"/g, '""')}"`,
-          p.excluded ? `Excluído (${p.DT_EXCLUSAO || ''})` : 'Ativo',
-          compInc,
-          `"${COMPLEXIDADE_MAP[p.TP_COMPLEXIDADE] || p.TP_COMPLEXIDADE || ''}"`,
-          `"${regList.replace(/"/g, '""')}"`,
-          formatCurrencyCents(p.VL_SA),
-          formatCurrencyCents(p.VL_SH),
-          formatCurrencyCents(p.VL_SP),
-          p.cbos.length,
-          p.servicos.length,
-          p.habilitacoes.length
+          escapeCsv(formatCode(p.CO_PROCEDIMENTO)),
+          escapeCsv(p.NO_PROCEDIMENTO || ''),
+          escapeCsv(regList)
         ].join(';');
       });
-      const csv = '\uFEFF' + [headers.join(';'), ...rows].join('\n');
+
+      const csv = '\uFEFF' + [...filterBlock, headers.map(escapeCsv).join(';'), ...rows].join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1729,6 +1814,7 @@
       URL.revokeObjectURL(url);
       showToast('CSV exportado.');
     });
+    
 
     async function tryAutoLoadZip() {
       if (!window.location.protocol.startsWith('http') || typeof JSZip === 'undefined') return;
