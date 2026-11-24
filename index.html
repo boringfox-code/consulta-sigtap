@@ -1798,7 +1798,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
         return [
           escapeCsv(formatCode(p.CO_PROCEDIMENTO)),
           escapeCsv(p.NO_PROCEDIMENTO || ''),
-          escapeCsv(p.desc).replace(/\|+\s*$/g, '').trim()),
+          escapeCsv(p.desc).replace(/\|+\s*$/g, '').trim(),
           escapeCsv(regList)
         ].join(';');
       });
