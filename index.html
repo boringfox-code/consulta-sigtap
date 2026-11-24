@@ -1787,7 +1787,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
         '' // Linha em branco separando o cabeçalho de filtros da tabela de resultados
       ];
 
-      const headers = ['Código do procedimento', 'Nome do procedimento', 'Instrumentos de registro'];
+      const headers = ['Código do procedimento', 'Nome do procedimento', 'Descrição'];
       const rows = filteredProcedures.map(p => {
         const regList = p.excluded
           ? `Procedimento excluído (${formatCompetenciaStr(p.DT_EXCLUSAO) || 's/ competência'})`
@@ -1798,6 +1798,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
         return [
           escapeCsv(formatCode(p.CO_PROCEDIMENTO)),
           escapeCsv(p.NO_PROCEDIMENTO || ''),
+          escapeCsv(p.desc).replace(/\|+\s*$/g, '').trim()),
           escapeCsv(regList)
         ].join(';');
       });
