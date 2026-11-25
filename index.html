@@ -265,6 +265,19 @@
             </button>
           </div>
         </div>
+
+        <!-- Linha 4: Movimentações na Competência (Incluídos / Alterados) -->
+        <div class="pt-2 border-t border-[#222834]/10 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <span class="text-xs font-bold text-[#222834]">Movimentações na competência:</span>
+          <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none">
+            <input id="filterIncluidosComp" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
+            <span>Incluídos na competência</span>
+          </label>
+          <label class="inline-flex items-center gap-1.5 text-xs font-medium text-[#2D3139] cursor-pointer select-none">
+            <input id="filterAlteradosComp" type="checkbox" class="rounded border-[#222834] text-[#4A65B5] focus:ring-[#4A65B5]" />
+            <span>Alterados na competência</span>
+          </label>
+        </div>
       </div>
     </section>
 
@@ -309,6 +322,7 @@
                   </button>
                   <span id="detComplexidadeBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#E6ECF8] text-[#222834]"></span>
                   <span id="detInclusaoBadge" class="hidden text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#E5F3E6] text-[#222834]"></span>
+                  <span id="detAlteracaoBadge" class="hidden text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#F9F2D8] text-[#222834]"></span>
                 </div>
                 <h2 id="detName" class="text-base sm:text-lg font-bold text-[#222834] leading-snug"></h2>
               </div>
@@ -336,6 +350,7 @@
             <button data-tab="habilitacoes" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Hab.</button>
             <button data-tab="cids" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">CID</button>
             <button data-tab="compat" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Compatib./Regras</button>
+            <button data-tab="alteracoes" class="detail-tab px-2 py-2.5 border-b-2 border-transparent text-slate-600 hover:text-[#4A65B5] whitespace-nowrap cursor-pointer">Alterações</button>
           </div>
 
           <!-- Tab Bodies -->
@@ -417,6 +432,11 @@
                 <div id="detCompatList" class="space-y-1.5"></div>
               </div>
             </div>
+
+            <!-- Tab: Alterações na Competência -->
+            <div id="tab-alteracoes" class="tab-pane hidden space-y-4">
+              <div id="detAlteracoesContent" class="space-y-4"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -487,6 +507,7 @@
         regrasCond: {},
         atributosComp: {},
         inclusoesMap: {},
+        alteracoesMap: {},
         procedures: []
       };
     }
@@ -737,6 +758,7 @@
             regras: [],
             atributos: [],
             DT_INCLUSAO: '',
+            alteracoes: null,
             compativeis: []
           };
           procMap[r.CO_PROCEDIMENTO] = p;
@@ -898,6 +920,8 @@
       const noServico = document.getElementById('filterNoServico').checked;
       const noHabilitacao = document.getElementById('filterNoHabilitacao').checked;
       const noCid = document.getElementById('filterNoCid').checked;
+      const onlyIncluidosComp = document.getElementById('filterIncluidosComp').checked;
+      const onlyAlteradosComp = document.getElementById('filterAlteradosComp').checked;
 
       const regQ = normalizeSearch(document.getElementById('filterRegistroInput').value.trim());
       const cboQ = normalizeSearch(document.getElementById('filterCbo').value.trim());
@@ -917,9 +941,12 @@
       const selRegra = multiSelected.regra.map(x => x.key);
       const selAtrib = multiSelected.atributo.map(x => x.key);
 
+      const compVigenteFmt = formatCompetenciaStr(state.competencia);
+
       // Active filter count badge
       const activeCount = [
         grupo, subgrupo, forma, noCbo, noServico, noHabilitacao, noCid,
+        onlyIncluidosComp, onlyAlteradosComp,
         selReg.length > 0 || regQ,
         selCbo.length > 0 || cboQ,
         selServ.length > 0 || servQ,
@@ -941,6 +968,14 @@
         if (grupo && !p.CO_PROCEDIMENTO.startsWith(grupo)) return false;
         if (subgrupo && !p.CO_PROCEDIMENTO.startsWith(subgrupo)) return false;
         if (forma && !p.CO_PROCEDIMENTO.startsWith(forma)) return false;
+
+        // Movimentações na competência: "Incluídos na competência" OU "Alterados na competência"
+        if (onlyIncluidosComp || onlyAlteradosComp) {
+          const procIncFmt = formatCompetenciaStr(p.DT_INCLUSAO);
+          const isIncluidoNaComp = onlyIncluidosComp && !p.excluded && Boolean(procIncFmt) && (!compVigenteFmt || procIncFmt === compVigenteFmt);
+          const isAlteradoNaComp = onlyAlteradosComp && !p.excluded && Boolean(p.alteracoes) && (!compVigenteFmt || !p.alteracoes.competencia || p.alteracoes.competencia === compVigenteFmt);
+          if (!isIncluidoNaComp && !isAlteradoNaComp) return false;
+        }
 
         if (selReg.length > 0) {
           if (!selReg.some(r => p.registros.includes(r))) return false;
@@ -1124,7 +1159,10 @@
             class="proc-item w-full text-left px-4 py-3 transition ${active ? 'bg-[#E6ECF8] border-l-4 border-[#4A65B5]' : 'bg-white hover:bg-[#F1F4FA]/60 border-l-4 border-transparent'}"
           >
             <div class="flex items-center justify-between gap-2 mb-1">
-              <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-md border border-[#222834] bg-[#4A65B5] text-white">${formatCode(p.CO_PROCEDIMENTO)}</span>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-md border border-[#222834] bg-[#4A65B5] text-white">${formatCode(p.CO_PROCEDIMENTO)}</span>
+                ${p.alteracoes ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full border border-[#222834] bg-[#E6CB70] text-[10px] font-bold text-[#222834]">Alterado</span>` : ''}
+              </div>
               ${regItems.length > 0 ? `
                 <div class="flex flex-wrap justify-end gap-1">
                   ${regItems.map(item => `<span title="${escapeHtml(item.full)}" class="inline-flex items-center px-2 py-0.5 rounded-full border border-[#222834] bg-[#E5F3E6] text-[10px] font-bold text-[#222834]">${escapeHtml(item.short)}</span>`).join('')}
@@ -1174,12 +1212,15 @@
       const tabBodies = document.getElementById('detTabBodies');
       const compBadge = document.getElementById('detComplexidadeBadge');
       const incBadge = document.getElementById('detInclusaoBadge');
+      const altBadge = document.getElementById('detAlteracaoBadge');
 
       if (proc.excluded) {
         compBadge.textContent = 'Excluído';
         compBadge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full border-[1.5px] border-[#222834] bg-[#C75858] text-white';
         incBadge.classList.add('hidden');
         incBadge.textContent = '';
+        altBadge.classList.add('hidden');
+        altBadge.textContent = '';
         const compExcl = formatCompetenciaStr(proc.DT_EXCLUSAO) || 'Não informada';
         document.getElementById('detExcludedComp').textContent = `Competência de exclusão: ${compExcl}`;
         exclNotice.classList.remove('hidden');
@@ -1202,6 +1243,14 @@
       } else {
         incBadge.textContent = '';
         incBadge.classList.add('hidden');
+      }
+
+      if (proc.alteracoes) {
+        altBadge.textContent = `Alterado em: ${proc.alteracoes.competencia || 'competência atual'}`;
+        altBadge.classList.remove('hidden');
+      } else {
+        altBadge.textContent = '';
+        altBadge.classList.add('hidden');
       }
 
       // Localização hierárquica do procedimento na tabela (Grupo, Sub-Grupo e Forma de Organização)
@@ -1275,7 +1324,8 @@
         registros: proc.registros.length,
         habilitacoes: proc.habilitacoes.length + (proc.incrementos ? proc.incrementos.length : 0),
         cids: proc.cids.length,
-        compat: proc.regras.length + proc.compativeis.length
+        compat: proc.regras.length + proc.compativeis.length,
+        alteracoes: proc.alteracoes ? 1 : 0
       };
       let activeTabName = 'descricao';
       document.querySelectorAll('.detail-tab').forEach(btn => {
@@ -1303,6 +1353,83 @@
       renderDetailHabilitacoes(proc);
       renderDetailCids(proc);
       renderDetailCompat(proc);
+      renderDetailAlteracoes(proc);
+    }
+
+    function renderDetailAlteracoes(proc) {
+      const container = document.getElementById('detAlteracoesContent');
+      if (!proc.alteracoes) {
+        container.innerHTML = '<p class="text-xs text-slate-400">Nenhuma alteração registrada para este procedimento.</p>';
+        return;
+      }
+
+      const alt = proc.alteracoes;
+      const atos = (alt.atoNormativo || '').split('|').map(s => s.trim()).filter(Boolean);
+      const campos = (alt.camposAlterados || '').split('|').map(s => s.trim()).filter(Boolean);
+      const detalhes = (alt.detalhesAlteracoes || '').split('|').map(s => s.trim()).filter(Boolean);
+
+      container.innerHTML = `
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Ato Normativo e Competência</h3>
+          <div class="bg-[#F9F2D8] border-[1.5px] border-[#222834] rounded-xl p-3 space-y-2 text-xs">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-bold text-[#2D3139]">Competência da alteração:</span>
+              <span class="px-2 py-0.5 rounded-full border border-[#222834] bg-white font-bold text-[#222834]">${escapeHtml(alt.competencia || 'Não informada')}</span>
+            </div>
+            ${atos.length > 0 ? `
+              <div class="space-y-1">
+                <div class="font-bold text-[#2D3139]">Portaria(s) / Ato(s) Normativo(s):</div>
+                <div class="flex flex-wrap gap-1.5">
+                  ${atos.map(ato => `<span class="inline-flex items-center px-2.5 py-1 rounded-lg border border-[#222834] bg-white font-bold text-[#222834]">${escapeHtml(ato)}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        ${campos.length > 0 ? `
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Campos Alterados</h3>
+            <div class="flex flex-wrap gap-1.5">
+              ${campos.map(c => {
+                const isExclusao = normalizeSearch(c).includes('[exclusao]');
+                const badgeBg = isExclusao ? 'bg-[#F6E1E1]' : 'bg-[#E6ECF8]';
+                return `<span class="inline-flex items-center px-2.5 py-1 rounded-full border border-[#222834] ${badgeBg} text-xs font-bold text-[#222834]">${escapeHtml(c)}</span>`;
+              }).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Detalhamento das Alterações</h3>
+          <div class="space-y-2">
+            ${detalhes.length > 0 ? detalhes.map(item => {
+              const colonIdx = item.indexOf(':');
+              if (colonIdx !== -1) {
+                const titulo = item.slice(0, colonIdx).trim();
+                const conteudo = item.slice(colonIdx + 1).trim();
+                const isExclusao = normalizeSearch(titulo).includes('[exclusao]');
+                const headerBg = isExclusao ? 'bg-[#F6E1E1]' : 'bg-[#E5F3E6]';
+                return `
+                  <div class="bg-[#FAFAFA] border-[1.5px] border-[#222834] rounded-xl overflow-hidden text-xs">
+                    <div class="px-3 py-1.5 ${headerBg} border-b border-[#222834] font-bold text-[#222834]">
+                      ${escapeHtml(titulo)}
+                    </div>
+                    <div class="p-3 text-[#2D3139] leading-relaxed break-words">
+                      ${escapeHtml(conteudo)}
+                    </div>
+                  </div>
+                `;
+              }
+              return `
+                <div class="p-3 rounded-xl bg-[#FAFAFA] border-[1.5px] border-[#222834] text-xs text-[#2D3139] leading-relaxed break-words">
+                  ${escapeHtml(item)}
+                </div>
+              `;
+            }).join('') : '<p class="text-xs text-slate-400">Sem detalhamento adicional.</p>'}
+          </div>
+        </div>
+      `;
     }
 
     function renderDetailCbos(proc) {
@@ -1585,6 +1712,8 @@
     document.getElementById('filterNoServico').addEventListener('change', applyFilters);
     document.getElementById('filterNoHabilitacao').addEventListener('change', applyFilters);
     document.getElementById('filterNoCid').addEventListener('change', applyFilters);
+    document.getElementById('filterIncluidosComp').addEventListener('change', applyFilters);
+    document.getElementById('filterAlteradosComp').addEventListener('change', applyFilters);
 
     document.getElementById('toggleFiltersBtn').addEventListener('click', () => {
       document.getElementById('advancedFilters').classList.toggle('hidden');
@@ -1623,6 +1752,8 @@
       document.getElementById('filterNoServico').checked = false;
       document.getElementById('filterNoHabilitacao').checked = false;
       document.getElementById('filterNoCid').checked = false;
+      document.getElementById('filterIncluidosComp').checked = false;
+      document.getElementById('filterAlteradosComp').checked = false;
       applyFilters();
     });
 
@@ -1693,7 +1824,7 @@
       document.body.removeChild(ta);
     }
 
-document.getElementById('exportCsvBtn').addEventListener('click', () => {
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
       if (filteredProcedures.length === 0) {
         showToast('Nenhum procedimento para exportar.');
         return;
@@ -1730,7 +1861,6 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
       const forma = document.getElementById('filterForma').value;
       if (forma) criterios.push(['Forma de Organização', `${forma} - ${state.formas[forma] || ''}`]);
 
-      // Helper para montar descrição de filtros com opção "Não exige..." + seleções/texto
       const addComboFilter = (label, noExigeChecked, noExigeTexto, selectedList, inputId) => {
         const partes = [];
         if (noExigeChecked) partes.push(noExigeTexto);
@@ -1777,6 +1907,11 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
       addComboFilter('Regra Condicionada', false, '', multiSelected.regra, 'filterRegraInput');
       addComboFilter('Atributos Complementares', false, '', multiSelected.atributo, 'filterAtributoInput');
 
+      const movPartes = [];
+      if (document.getElementById('filterIncluidosComp').checked) movPartes.push('Incluídos na competência');
+      if (document.getElementById('filterAlteradosComp').checked) movPartes.push('Alterados na competência');
+      if (movPartes.length > 0) criterios.push(['Movimentações na competência', movPartes.join(' | ')]);
+
       if (criterios.length === 2) {
         criterios.push(['Filtros aplicados', 'Nenhum filtro restritivo (base completa)']);
       }
@@ -1784,11 +1919,12 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
       const filterBlock = [
         [escapeCsv('CRITÉRIOS DO FILTRO UTILIZADOS'), ''].join(';'),
         ...criterios.map(([k, v]) => `${escapeCsv(k)};${escapeCsv(v)}`),
-        '' // Linha em branco separando o cabeçalho de filtros da tabela de resultados
+        ''
       ];
 
-      const headers = ['Código do procedimento', 'Nome do procedimento', 'Descrição','Instrumento de Registro'];
+      const headers = ['Código do procedimento', 'Nome do procedimento', 'Descrição do procedimento', 'Instrumentos de registro'];
       const rows = filteredProcedures.map(p => {
+        const cleanDesc = (p.desc || '').replace(/\|+\s*$/g, '').trim();
         const regList = p.excluded
           ? `Procedimento excluído (${formatCompetenciaStr(p.DT_EXCLUSAO) || 's/ competência'})`
           : (p.registros.length > 0
@@ -1798,7 +1934,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
         return [
           escapeCsv(formatCode(p.CO_PROCEDIMENTO)),
           escapeCsv(p.NO_PROCEDIMENTO || ''),
-          escapeCsv(p.desc).replace(/\|+\s*$/g, '').trim(),
+          escapeCsv(cleanDesc),
           escapeCsv(regList)
         ].join(';');
       });
@@ -1815,7 +1951,6 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
       URL.revokeObjectURL(url);
       showToast('CSV exportado.');
     });
-    
 
     async function tryAutoLoadZip() {
       if (!window.location.protocol.startsWith('http') || typeof JSZip === 'undefined') return;
@@ -1833,6 +1968,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
         });
         await loadFromFileMap(fileMap);
         await tryAutoLoadInclusions();
+        await tryAutoLoadChanges();
         await tryAutoLoadExcluded();
       } catch (err) {
         // Permanece aguardando base SIGTAP caso ./dados/sigtap_atual.zip não exista
@@ -1923,7 +2059,70 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
         }
       });
       if (matched > 0) {
-        renderList();
+        applyFilters();
+        renderDetail();
+      }
+    }
+
+    // Carrega ./dados/alteracoes.csv e vincula o histórico de alterações da competência aos procedimentos
+    async function tryAutoLoadChanges() {
+      const table = await fetchCsvTable(['./dados/alteracoes.csv', './dados/alteracoes.txt']);
+      if (!table) return;
+
+      const { lines, sep } = table;
+      const firstCols = parseCsvLine(lines[0], sep);
+      const header = firstCols.map(h => normalizeSearch(h));
+
+      let idxCode = header.findIndex(h => (h.includes('procedimento') && h.includes('cod')) || h === 'co_procedimento' || h === 'codigo');
+      let idxComp = header.findIndex(h => h.includes('competencia') || h === 'dt_competencia');
+      let idxAto = header.findIndex(h => h.includes('ato') || h.includes('normativo') || h.includes('portaria'));
+      let idxCampos = header.findIndex(h => h.includes('campos'));
+      let idxDetalhes = header.findIndex(h => h.includes('detalhes'));
+
+      if (idxCode === -1) idxCode = 0;
+      if (idxComp === -1) idxComp = 2;
+      if (idxAto === -1) idxAto = 3;
+      if (idxCampos === -1) idxCampos = 4;
+      if (idxDetalhes === -1) idxDetalhes = 5;
+
+      const altMap = {};
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCsvLine(lines[i], sep);
+        const code = (cols[idxCode] || '').replace(/[.\-\s]/g, '');
+        if (!code) continue;
+
+        const entry = {
+          competencia: formatCompetenciaStr(cols[idxComp] || ''),
+          atoNormativo: (cols[idxAto] || '').trim(),
+          camposAlterados: (cols[idxCampos] || '').trim(),
+          detalhesAlteracoes: (cols[idxDetalhes] || '').trim()
+        };
+
+        if (!altMap[code]) {
+          altMap[code] = entry;
+        } else {
+          if (entry.atoNormativo && !altMap[code].atoNormativo.includes(entry.atoNormativo)) {
+            altMap[code].atoNormativo += ` | ${entry.atoNormativo}`;
+          }
+          if (entry.camposAlterados) {
+            altMap[code].camposAlterados += ` | ${entry.camposAlterados}`;
+          }
+          if (entry.detalhesAlteracoes) {
+            altMap[code].detalhesAlteracoes += ` | ${entry.detalhesAlteracoes}`;
+          }
+        }
+      }
+
+      state.alteracoesMap = altMap;
+      let matched = 0;
+      state.procedures.forEach(p => {
+        if (altMap[p.CO_PROCEDIMENTO]) {
+          p.alteracoes = altMap[p.CO_PROCEDIMENTO];
+          matched++;
+        }
+      });
+      if (matched > 0) {
+        applyFilters();
         renderDetail();
       }
     }
@@ -1977,6 +2176,7 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
           regras: [],
           atributos: [],
           DT_INCLUSAO: '',
+          alteracoes: null,
           compativeis: []
         });
         added++;
